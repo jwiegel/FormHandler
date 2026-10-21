@@ -126,12 +126,12 @@ class YadalMySQLi extends Yadal
      *
      * @param resource $sql: The sql where you want to get a result from
      * @param int $row: The row where you want a result from
-     * @param string $field: The field which result you want
+     * @param string|int $field: The field which result you want
      * @return string
      * @access public
      * @author Teye Heimans
      */
-    public function result($sql, $row = 0, $field = 0)
+    public function result($sql, $row = 0, $field = null)
     {
         return $this->mysqli_result($sql, $row, $field);
     }

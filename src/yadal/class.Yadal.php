@@ -16,7 +16,7 @@ interface DatabaseAdapter
     public function close();
     public function query($query);
     public function getInsertId();
-    public function result($sql, $row = 0, $field = 0);
+    public function result($sql, $row = 0, $field = null);
     public function getError();
     public function getErrorNo();
     public function recordCount($sql);
@@ -334,8 +334,13 @@ class Yadal implements DatabaseAdapter
 
         if (is_null($field))
         {
-            list(, $value) = each($data);
-            return $value;
+            if (!is_array($data) || $data === array())
+            {
+                return false;
+            }
+
+            $values = array_values($data);
+            return $values[0];
         }
         else
         {
