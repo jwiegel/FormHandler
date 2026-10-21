@@ -4,10 +4,10 @@ on: [push]
 
 jobs:
   build-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
       - uses: php-actions/composer@v6
 
@@ -16,4 +16,4 @@ jobs:
         with:
           php_version: 8.2
           configuration: phpstan.neon
-          memory_limit: 256M
+          memory_limit: 512M

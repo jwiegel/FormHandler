@@ -166,7 +166,10 @@ class UploadField extends Field
         // if no file is uploaded and it is a edit form, dont overwrite the current value
         if (!$this->isUploaded() && (isset($oForm->edit) && $oForm->edit) && $oForm->isPosted())
         {
-            $this->_oForm->_dontSave[] = $sName;
+            if (property_exists($this->_oForm, '_dontSave'))
+            {
+                $this->_oForm->_dontSave[] = $sName;
+            }
         }
 
         // check if the user got another value for this field.
@@ -737,15 +740,19 @@ class UploadField extends Field
      * Retrieve the extension of the given filename
      *
      * @param string $sFilename: The filename where we have to retrieve the extension from
-     * @return string: the extension
+     * @return string|false: the extension
      * @access private
      * @author Teye Heimans
      */
     private function _getExtension($sFilename)
     {
-        $sExt = substr(strrchr($sFilename, '.'), 1);
+        $pos = strrchr($sFilename, '.');
+        if ($pos === false)
+        {
+            return false;
+        }
 
-        return ($sExt !== false) ? strtolower($sExt) : false;
+        return strtolower(substr($pos, 1));
     }
 
     /**

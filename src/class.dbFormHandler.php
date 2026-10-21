@@ -621,7 +621,6 @@ class dbFormHandler extends FormHandler
                 'Error, database adapter must implement the DatabaseAdapter interface!',
                 E_USER_ERROR
             );
-            return;
         }
 
         $this->_db = $db;
@@ -1048,6 +1047,8 @@ class dbFormHandler extends FormHandler
                     $fieldInForm = false;
                     $extra       = array(); // extra query info for the where clause
                     $quoted      = array(); // fields which are already quoted
+                    $field       = null;
+                    $value       = null;
 
                     // walk all unique fields by this index
                     foreach ($fields as $field)

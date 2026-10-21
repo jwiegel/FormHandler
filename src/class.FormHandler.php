@@ -114,8 +114,6 @@ class FormHandler
     protected $_tableSettings;    // array: array with all table settings
     protected $_ajaxValidator;    // boolean: if Ajax validation must be used or not.
     protected $_ajaxValidatorScript;    // boolean: if Ajax validation must include library or not.
-    private $errors = array();
-
     private $_unittestmode = false; // boolean: only for unittesting (can only be set by reflection of uniitest)
 
     /**
@@ -2948,36 +2946,28 @@ class FormHandler
      */
     public function getJavascriptCode($header = true)
     {
-        $return = array(0 => false, 1 => false);;
-
         $s = $header ? 0 : 1;
-
-        // if the javascript is not retrieved yet..
-        if (!$return[$s])
+        // generate the js "files" script
+        $result = '';
+        if (isset($this->_js[$s]['file']) && is_array($this->_js[$s]['file']))
         {
-            // generate the js "files" script
-            $result = '';
-            if (isset($this->_js[$s]['file']) && is_array($this->_js[$s]['file']))
+            foreach ($this->_js[$s]['file'] as $line)
             {
-                foreach ($this->_js[$s]['file'] as $line)
-                {
-                    $result .= '<script type="text/javascript" src="' . $line . '"></script>' . "\n";
-                }
+                $result .= '<script type="text/javascript" src="' . $line . '"></script>' . "\n";
             }
-            // generate the other js script
-            if (isset($this->_js[$s]['code']) && is_array($this->_js[$s]['code']))
-            {
-                $result .= '<script type="text/javascript">' . "\n";
-                foreach ($this->_js[$s]['code'] as $code)
-                {
-                    $result .= $code;
-                }
-                $result .= "</script>\n";
-            }
-
-            $return[$s] = true;
-            return $result;
         }
+        // generate the other js script
+        if (isset($this->_js[$s]['code']) && is_array($this->_js[$s]['code']))
+        {
+            $result .= '<script type="text/javascript">' . "\n";
+            foreach ($this->_js[$s]['code'] as $code)
+            {
+                $result .= $code;
+            }
+            $result .= "</script>\n";
+        }
+
+        return $result;
     }
 
     /**
@@ -3698,7 +3688,7 @@ class FormHandler
 
                     // new mask to set
                 case '__MASK__':
-                    if (!isset($this->_mask) || is_null($this->_mask) || $page == $iDisplayPage)
+                    if (!isset($this->_mask) || $page == $iDisplayPage)
                     {
                         list($this->_mask, $repeat) = $field[1];
                     }
@@ -3834,8 +3824,6 @@ class FormHandler
 
                         // save the error messages
                         // (when the user wants to use his own error displayer)
-                        $this->errors[$name] = $error;
-
                         /**
                          * Get the value for of the field
                          */

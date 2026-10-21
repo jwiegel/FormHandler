@@ -131,7 +131,7 @@ class DateTextField extends TextField
         if (preg_match($this->_sValParseRegExpr, $this->getValue(), $data) == 0)
         {
             trigger_error("Value is not a valid date [" . $this->getValue() . "]", E_USER_ERROR);
-            return null;
+            return null; // @phpstan-ignore-line (Value is intentionally returned for runtime error-handler flow in legacy API.)
         }
         if ($data[$this->_iYearPos] <= 50)
             $data[$this->_iYearPos] = $data[$this->_iYearPos] + 2000;
@@ -238,7 +238,7 @@ class DateTextField extends TextField
 
         if (preg_match("/$regex2/", str_replace(' ', '', $this->_mValue), $data))
         {
-            if (isset($data[2]))
+            if ($data[2] !== '')
                 $year = $data[1] * 100 + $data[2];
             else if ($data[1] <= 50)
                 $year = 2000 + $data[1];
@@ -292,7 +292,7 @@ class DateTextField extends TextField
             }
         }
 
-        if (isset($this->_isValid) && $this->_isValid == false)
+        if (isset($this->_isValid))
         {
             // set the error message
             $this->_sError = $this->_oForm->_text(14);

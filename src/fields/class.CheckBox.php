@@ -68,10 +68,8 @@ class CheckBox extends Field
                 // options array!
                 if (
                     !empty($sValue)  ||
-                    ((is_array($this->_aOptions) &&
-                        (in_array($sValue, $this->_aOptions) ||
-                            array_key_exists($sValue, $this->_aOptions)
-                        )
+                    ((in_array($sValue, $this->_aOptions) ||
+                        array_key_exists($sValue, $this->_aOptions)
                     ) ||
                         $sValue == $this->_aOptions)
                 )
@@ -196,7 +194,7 @@ class CheckBox extends Field
         static $iCounter = 1;
 
         // create a MaskLoader object when it does not exists yet
-        if (!isset($this->_oLoader) || is_null($this->_oLoader))
+        if (!isset($this->_oLoader))
         {
             $this->_oLoader = new MaskLoader();
             $this->_oLoader->setMask($this->_sMask);

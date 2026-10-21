@@ -105,8 +105,11 @@ class PassField extends TextField
                 // it's an edit form.. keep the original
                 if (isset($this->_oForm->edit) && $this->_oForm->edit)
                 {
-                    $this->_oForm->_dontSave[] = $this->_sName;
-                    $this->_oForm->_dontSave[] = $oObj->_sName;
+                    if (property_exists($this->_oForm, '_dontSave'))
+                    {
+                        $this->_oForm->_dontSave[] = $this->_sName;
+                        $this->_oForm->_dontSave[] = $oObj->_sName;
+                    }
 
                     // make sure that no validator is overwriting the messages...
                     $this->setValidator(null);

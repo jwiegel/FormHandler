@@ -11,7 +11,6 @@
  */
 class Button
 {
-    private $_oForm;
     protected $_sName;
     protected $_sExtra;
     protected $_sCaption;
@@ -29,8 +28,15 @@ class Button
      */
     public function __construct(&$oForm, $sName)
     {
+        if (!is_object($oForm))
+        {
+            trigger_error(
+                'Error: invalid form object given to Button constructor',
+                E_USER_ERROR
+            );
+        }
+
         // set the button name and caption
-        $this->_oForm    = $oForm;
         $this->_sName    = $sName;
     }
 

@@ -146,7 +146,7 @@ class RadioButton extends Field
         $sValue = trim($sValue);
         $sTitle = trim($sTitle);
 
-        if (!isset($this->_oLoader) || is_null($this->_oLoader))
+        if (!isset($this->_oLoader))
         {
             $this->_oLoader = new MaskLoader();
             $this->_oLoader->setMask($this->_sMask);
