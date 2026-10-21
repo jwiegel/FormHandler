@@ -6,12 +6,12 @@ on:
 
 jobs:
   build:
-    name: PHP ${{ matrix.php }}
+    name: UTS PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        php: [8.0, 8.1, 8.2]
+        php: [8.2]
 
     steps:
     - name: Checkout code
@@ -21,6 +21,8 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
+        extensions: gd, mbstring, mysqli
+        coverage: xdebug
 
     - name: Validate composer.json
       run: composer validate
@@ -30,22 +32,11 @@ jobs:
       uses: actions/cache@v3
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('composer.json') }}
+        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('composer.json', 'composer.lock') }}
 
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress
 
-    #- name: Run PHPUnit
-    #  run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/
-
-    - name: Run PHPUnit
-      uses: php-actions/phpunit@master
-      env:
-        TEST_NAME: Scarlett
-      with:
-        version: 9.6.13
-        php_version: ${{ matrix.php }}
-        php_extensions: gd
-        configuration: tests/uts/phpunit.xml
-        args: --coverage-text
+    - name: Run UTS PHPUnit
+      run: vendor/bin/phpunit --configuration tests/uts/phpunit.xml --coverage-text

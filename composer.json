@@ -18,8 +18,8 @@
     ],
     "repositories": [
         {
-              "type": "vcs",
-              "url": "https://github.com/tombrain/phpunit-mock-dibi.git"
+            "type": "vcs",
+            "url": "https://github.com/tombrain/phpunit-mock-dibi.git"
         },
         {
             "type": "vcs",
@@ -29,7 +29,7 @@
             "type": "vcs",
             "url": "https://github.com/tombrain/phpunit-sql.git"
         }
-  ],
+    ],
     "require": {
         "phpunit/phpunit": "~9.0",
         "tombrain/phpunit-mock-dibi": "dev-phpunit-9",
@@ -58,6 +58,14 @@
     },
     "extra": {
         "dev-master": "v3.3.x-dev"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php tools/apply-compat-patches.php"
+        ],
+        "post-update-cmd": [
+            "@php tools/apply-compat-patches.php"
+        ]
     },
     "config": {
         "platform-check": false

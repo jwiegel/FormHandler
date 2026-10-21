@@ -8,6 +8,23 @@
 
 define('YADAL_DEFAULT_DB_TYPE', 'mysql');
 
+interface DatabaseAdapter
+{
+    public function setConnectionResource(&$conn);
+    public function isConnected();
+    public function connect($host = 'localhost', $username = '', $password = '');
+    public function close();
+    public function query($query);
+    public function getInsertId();
+    public function result($sql, $row = 0, $field = 0);
+    public function getError();
+    public function getErrorNo();
+    public function recordCount($sql);
+    public function getRecord($sql);
+    public function getFieldNames($table);
+    public function getLastQuery();
+}
+
 /**
  * newYadal()
  *
@@ -82,7 +99,7 @@ function newYadal($database = null, $type = null)
  * @author Teye Heimans
  * @package Yadal
  */
-class Yadal
+class Yadal implements DatabaseAdapter
 {
     protected $_conn;           // resource: contains the connection resource
     protected $_db;             // string: contains the database name
@@ -350,7 +367,7 @@ class Yadal
         );
     }
 
-    public function connect()
+    public function connect($host = 'localhost', $username = '', $password = '')
     {
         trigger_error(
             'Error, abstract function ' . __FUNCTION__ . ' has not been overwritten by class ' . get_class($this),

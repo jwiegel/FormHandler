@@ -1,0 +1,13 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    environment:
+      XDEBUG_MODE: coverage
+      PHP_IDE_CONFIG: serverName=formhandler
+    stdin_open: true
+    tty: true

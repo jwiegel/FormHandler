@@ -588,6 +588,51 @@ class dbFormHandler extends FormHandler
     }
 
     /**
+     * Create the database adapter used by this form.
+     *
+     * This factory method makes it possible to swap the implementation in tests
+     * or during a future database-library migration without changing the form logic.
+     *
+     * @param string $db
+     * @param string $type
+     * @return DatabaseAdapter
+     */
+    protected function createDatabaseAdapter($db, $type)
+    {
+        require_once(FH_YADAL_DIR . 'class.Yadal.php');
+
+        return newYadal($db, $type);
+    }
+
+    /**
+     * Set a database adapter directly.
+     *
+     * Useful for tests and future abstraction layers because the form logic no
+     * longer depends on the concrete Yadal constructor.
+     *
+     * @param DatabaseAdapter $db
+     * @return void
+     */
+    public function setDatabaseAdapter($db)
+    {
+        if (!($db instanceof DatabaseAdapter))
+        {
+            trigger_error(
+                'Error, database adapter must implement the DatabaseAdapter interface!',
+                E_USER_ERROR
+            );
+            return;
+        }
+
+        $this->_db = $db;
+
+        if ($this->edit && method_exists($this->_db, 'isConnected') && $this->_db->isConnected())
+        {
+            $this->_loadDbData();
+        }
+    }
+
+    /**
      * dbFormHandler::dbInfo()
      *
      * Set the DBInfo.
@@ -601,8 +646,6 @@ class dbFormHandler extends FormHandler
      */
     public function dbInfo($db, $table, $type = null)
     {
-        require_once(FH_YADAL_DIR . 'class.Yadal.php');
-
         // if no db-type is given, set the default
         if (is_null($type))
         {
@@ -613,7 +656,7 @@ class dbFormHandler extends FormHandler
         $this->_table = $table;
 
         // create a new yadal object
-        $this->_db = newYadal($db, $type);
+        $this->_db = $this->createDatabaseAdapter($db, $type);
 
         // try to fetch the database data if we are connected
         if ($this->edit && $this->_db->isConnected())
@@ -691,8 +734,6 @@ class dbFormHandler extends FormHandler
      */
     public function setConnectionResource($conn, $table = null, $type = null)
     {
-        require_once(FH_YADAL_DIR . 'class.Yadal.php');
-
         // if no db-type is given, set the default
         if (is_null($type))
         {
@@ -714,7 +755,7 @@ class dbFormHandler extends FormHandler
         $this->_table = $table;
 
         // create the yadal object
-        $this->_db = newYadal(null, $type);
+        $this->_db = $this->createDatabaseAdapter(null, $type);
 
         // set the sql resource which we should use
         $this->_db->setConnectionResource($conn);
