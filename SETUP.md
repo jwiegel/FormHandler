@@ -1,69 +1,61 @@
-# FormHandler - Lokale Entwicklungsumgebung Setup
+# FormHandler – Entwicklungsumgebung
 
-## PHP-Installation (bereits erledigt)
-PHP 8.2.31 ist konfiguriert unter: `D:\PHP-Entwicklung\php-8.2.31-Win32-vs16-x64`
+Entwickelt und getestet wird mit **PHP 8.2 im Docker-Container**. Eine lokale
+PHP-Installation ist nicht nötig. GitHub Actions nutzt dieselbe PHP-Version.
 
-## Nächste Schritte
+## Voraussetzungen
 
-### 1. Composer installieren
+- Docker mit Docker Compose (z. B. Docker Desktop)
 
-**Option A: Composer in PHP-Verzeichnis installieren (empfohlen)**
-```cmd
-cd D:\PHP-Entwicklung\php-8.2.31-Win32-vs16-x64
-curl -sS https://getcomposer.org/installer | php
+## Einrichten
+
+```sh
+# Image bauen (PHP 8.2 CLI mit gd, mbstring, mysqli, pdo_mysql, pdo_sqlite, zip, intl, xdebug, Composer)
+docker compose build
+
+# Abhängigkeiten installieren
+docker compose run --rm php composer install
 ```
 
-**Option B: Composer manuell herunterladen**
-1. Download: https://getcomposer.org/download/
-2. Speichern als: `D:\PHP-Entwicklung\php-8.2.31-Win32-vs16-x64\composer.phar`
+## Tests und statische Analyse
 
-### 2. Dependencies installieren
-```cmd
-.\composer.cmd install
+```sh
+# PHPUnit (dauert ca. 5 Minuten, weil jeder Test in einem eigenen Prozess läuft)
+docker compose run --rm php vendor/bin/phpunit -c tests/uts/phpunit.xml --no-coverage
+
+# einzelne Tests
+docker compose run --rm php vendor/bin/phpunit -c tests/uts/phpunit.xml --no-coverage --filter dbFormhandler_TextFieldTest
+
+# mit Code Coverage (HTML-Report in tests/uts/_coverage)
+docker compose run --rm php vendor/bin/phpunit -c tests/uts/phpunit.xml
+
+# PHPStan
+docker compose run --rm php vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G
 ```
 
-### 3. Tests ausführen
-```cmd
-.\runAllUTs.cmd
-```
+Eine Shell im Container: `docker compose run --rm php bash`
 
-## Verfügbare Skripte
+## GitHub Actions
 
-- **`setup-env.cmd`** - Setzt die Umgebung für das Terminal (PATH-Variable)
-- **`composer.cmd`** - Composer-Wrapper für lokales PHP
-- **`runAllUTs.cmd`** - Führt alle Unit-Tests aus
-- **`runPhpstan.cmd`** - Führt statische Code-Analyse aus
+| Workflow | Datei | Inhalt |
+|---|---|---|
+| PHPUnit | `.github/workflows/phpunit.yml` | Tests mit Coverage auf PHP 8.2 |
+| PHPStan | `.github/workflows/phpstan.yml` | statische Analyse auf PHP 8.2 |
 
-## Verwendung im Terminal
-
-Um PHP und Composer im Terminal zu verwenden:
-```cmd
-.\setup-env.cmd
-php --version
-composer --version
-```
-
-Danach können Sie normale PHP/Composer-Befehle ausführen:
-```cmd
-php -v
-composer install
-composer update
-```
-
-## PHP-Konfiguration
-
-Die PHP-Installation befindet sich unter:
-`D:\PHP-Entwicklung\php-8.2.31-Win32-vs16-x64`
-
-Benötigte Extensions (in `php.ini` aktivieren):
-- ✅ mysqli
-- ✅ mbstring
-- ✅ gd
-- ⚠️ xdebug (optional, für Code Coverage)
+Beide laufen bei jedem Push und Pull Request.
 
 ## Hinweise
 
-- Die CMD-Dateien (`runAllUTs.cmd`, `runPhpstan.cmd`) setzen den PHP-Pfad automatisch
-- Keine systemweite PHP-Installation erforderlich
-- Der PATH wird nur temporär für das jeweilige Skript gesetzt
-- Beim `composer install` werden lokale Kompatibilitäts-Patches automatisch angewendet (Composer-Patches Plugin)
+- **PHP-Version:** `composer.json` legt `config.platform.php` auf 8.2 fest. Composer
+  wählt deshalb nur Pakete, die mit PHP 8.2 laufen – auch wenn es mit einer neueren
+  PHP-Version aufgerufen wird. `composer.lock` ist eingecheckt.
+- **Datenbank in Tests:** Die DB-Tests laufen gegen eine SQLite-Datenbank im
+  Arbeitsspeicher (`tests/uts/helper/dbFormhandlerTestCase.php`). Ein Datenbankserver
+  ist nicht nötig. Für Unit-Tests ohne Datenbank lässt sich `DatabaseAdapter` mit
+  `createMock()` ersetzen.
+- **`DOCUMENT_ROOT` in Tests:** `src/includes/config.inc.php` braucht
+  `$_SERVER['DOCUMENT_ROOT']`, das PHP auf der Kommandozeile leer lässt.
+  `tests/uts/phpunit-prepend.php` setzt es als `auto_prepend_file`, damit es auch in
+  den isolierten Testprozessen von PHPUnit ankommt. Im Container hängt
+  `docker-compose.yml` dafür `tests/uts/php.ini` ein, in GitHub Actions setzt es
+  `setup-php` über `ini-values`.
