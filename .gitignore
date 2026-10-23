@@ -6,3 +6,6 @@ phpstan.out
 .vscode/launch.json
 .vscode/settings.json
 tests/uts/_coverage/
+
+# IDE project files
+nbproject/
