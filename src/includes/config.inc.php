@@ -33,6 +33,7 @@ else
     // like: /engineering/FH3/
     $__fh_root = '';
 
+    // @phpstan-ignore-next-line (stays empty until the value above is edited)
     if (empty($__fh_root))
     {
         trigger_error(

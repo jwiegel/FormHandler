@@ -5,8 +5,8 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: UTS PHP ${{ matrix.php }}
+  test:
+    name: PHPUnit PHP ${{ matrix.php }}
     runs-on: ubuntu-24.04
 
     strategy:
@@ -23,6 +23,8 @@ jobs:
         php-version: ${{ matrix.php }}
         extensions: gd, mbstring, mysqli
         coverage: xdebug
+        # must be in the system php.ini to reach PHPUnit's isolated child processes
+        ini-values: auto_prepend_file=${{ github.workspace }}/tests/uts/phpunit-prepend.php
 
     - name: Validate composer.json
       run: composer validate
@@ -30,7 +32,5 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: Run UTS PHPUnit
-      env:
-        PHPRC: ${{ github.workspace }}/tests/uts
+    - name: Run PHPUnit
       run: vendor/bin/phpunit --configuration tests/uts/phpunit.xml --coverage-text

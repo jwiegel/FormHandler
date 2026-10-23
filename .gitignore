@@ -1,6 +1,5 @@
 vendor
 runAllUTs.cmd
-composer.lock
 runPhpstan.cmd
 phpstan.out
 .phpunit.result.cache
