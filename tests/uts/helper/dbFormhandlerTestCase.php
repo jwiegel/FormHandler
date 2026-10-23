@@ -2,19 +2,14 @@
 
 declare(strict_types=1);
 
-use Cz\PHPUnit\MockDibi\Drivers\DriversFactory;
-use Cz\PHPUnit\MockDibi\Mock;
-use Dibi\IConnection;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 
 require_once 'FormhandlerTestCase.php';
-require_once 'class.Dibi.php';
 
 abstract class dbFormhandlerTestCase extends FormhandlerTestCase
 {
-    use Cz\PHPUnit\MockDibi\MockTrait;
-
-    private ?Dibi\Connection $_localDBConnection = null;
-    private ?Mock $_mock = null;
+    private ?Connection $_connection = null;
 
     private $_expectedResult;
 
@@ -42,17 +37,50 @@ abstract class dbFormhandlerTestCase extends FormhandlerTestCase
         static::assertEmpty($this->_expectedResult['values'][$field]);
     }
 
+    /**
+     * assert the stored values of a record in the table "test"
+     *
+     * @param integer $id
+     * @param array $expected field => value
+     * @return void
+     */
+    protected function assertRecord(int $id, array $expected): void
+    {
+        $record = $this->getConnection()->fetchAssociative(
+            'SELECT ' . implode(', ', array_keys($expected)) . ' FROM test WHERE id = ?',
+            [$id]
+        );
+
+        static::assertIsArray($record, "record $id not found");
+        static::assertSame($expected, $record);
+    }
+
+    protected function assertRecordCount(int $expected): void
+    {
+        static::assertEquals($expected, $this->getConnection()->fetchOne('SELECT COUNT(*) FROM test'));
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
-        /** 
-         * Your Database Connection (In This Example MySQLi) 
-         */
-        $factory = $this->getDriversFactory();
 
-        $this->_localDBConnection = new Dibi\Connection([
-            'driver' => $factory->createMySqliDriver()  // or whatever other driver you may be needing.
-        ]);
+        // in-memory database, with the columns MySQL would report for the old test table
+        $this->_connection = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+        $this->_connection->executeStatement(
+            "CREATE TABLE test (
+                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                saveInField INTEGER NULL,
+                saveInFieldString VARCHAR(10) NULL,
+                textNullable VARCHAR(255) NULL,
+                textNotNullable VARCHAR(255) NOT NULL DEFAULT '',
+                pass VARCHAR(255) NOT NULL DEFAULT ''
+            )"
+        );
+        $this->_connection->executeStatement(
+            'CREATE TABLE loadFromTable (keyField INTEGER NOT NULL PRIMARY KEY, valueField VARCHAR(10) NOT NULL)'
+        );
+        $this->_connection->executeStatement("INSERT INTO loadFromTable VALUES (1, 'foo'), (2, 'bar')");
+
         $this->_expectedResult = null;
     }
 
@@ -61,101 +89,26 @@ abstract class dbFormhandlerTestCase extends FormhandlerTestCase
         return "dbFormhandler";
     }
 
-    protected function getLocalConnection(): Dibi\Connection
+    protected function getConnection(): Connection
     {
-        return $this->_localDBConnection;
+        return $this->_connection;
+    }
+
+    /**
+     * add a record to the table "test" (before the form is connected, so an edit form can load it)
+     *
+     * @param array $record field => value
+     * @return void
+     */
+    protected function insertRecord(array $record): void
+    {
+        $this->getConnection()->insert('test', $record);
     }
 
     protected function setConnectedTable(dbFormHandler $form, string $table): void
     {
-        $db = new YadalDibi();
-        $db->setConnectionResource($this->_localDBConnection);
-        $this->setPrivateProperty($form, "_table", $table);
-        $this->setPrivateProperty($form, "_db", $db);
-
-        if ($form->edit)
-            $this->executePrivateMethod($form, "_loadDbData", array());
+        $form->setConnectionResource($this->_connection, $table);
     }
-
-    protected function getDatabaseMock(): Mock
-    {
-        if ($this->_mock == null)
-            $this->_mock = $this->createDatabaseMock($this->_localDBConnection);
-
-        return $this->_mock;
-    }
-
-    /**
-     * @return  DriversFactory
-     */
-    private function getDriversFactory(): DriversFactory
-    {
-        return new DriversFactory;
-    }
-
-    protected function createMocksForTable(): void
-    {
-        $this->getDatabaseMock()
-            ->expects($this->any())
-            ->query($this->stringStartsWith('SHOW KEYS FROM test'))
-            ->willReturnResultSet([
-                ['Table' => 'test', 'Non_unique' => '0', 'Key_name' => 'PRIMARY', 'Column_name' => 'id'],
-            ]);
-        $this->getDatabaseMock()
-            ->expects($this->any())
-            ->query($this->stringStartsWith('DESCRIBE test'))
-            ->willReturnResultSet([
-                [
-                    'Field' => 'id',
-                    'Type' => 'int(11)',
-                    'Null' => 'NO',
-                    'Key' => 'PRI',
-                    'Default' => null,
-                    'Extra' => 'auto_increment'
-                ],
-                [
-                    'Field' => 'saveInField',
-                    'Type' => 'int(11)',
-                    'Null' => 'YES',
-                    'Key' => '',
-                    'Default' => null,
-                    'Extra' => ''
-                ],
-                [
-                    'Field' => 'saveInFieldString',
-                    'Type' => 'varchar(10)',
-                    'Null' => 'YES',
-                    'Key' => '',
-                    'Default' => null,
-                    'Extra' => ''
-                ],
-                [
-                    'Field' => 'textNullable',
-                    'Type' => 'varchar(255)',
-                    'Null' => 'YES',
-                    'Key' => '',
-                    'Default' => null,
-                    'Extra' => ''
-                ],
-                [
-                    'Field' => 'textNotNullable',
-                    'Type' => 'varchar(255)',
-                    'Null' => 'NO',
-                    'Key' => '',
-                    'Default' => null,
-                    'Extra' => ''
-                ],
-                [
-                    'Field' => 'pass',
-                    'Type' => 'varchar(255)',
-                    'Null' => 'NO',
-                    'Key' => '',
-                    'Default' => null,
-                    'Extra' => ''
-                ],
-            ]);
-    }
-
 
     /**
      * set callback for validation
