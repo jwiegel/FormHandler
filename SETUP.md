@@ -1,61 +1,59 @@
-# FormHandler – Entwicklungsumgebung
+# FormHandler – Development setup
 
-Entwickelt und getestet wird mit **PHP 8.2 im Docker-Container**. Eine lokale
-PHP-Installation ist nicht nötig. GitHub Actions nutzt dieselbe PHP-Version.
+FormHandler is developed and tested with **PHP 8.2 in a Docker container**. You do
+not need a local PHP installation. GitHub Actions uses the same PHP version.
 
-## Voraussetzungen
+## Requirements
 
-- Docker mit Docker Compose (z. B. Docker Desktop)
+- Docker with Docker Compose (e.g. Docker Desktop)
 
-## Einrichten
+## Setup
 
 ```sh
-# Image bauen (PHP 8.2 CLI mit gd, mbstring, mysqli, pdo_mysql, pdo_sqlite, zip, intl, xdebug, Composer)
+# build the image (PHP 8.2 CLI with gd, mbstring, mysqli, pdo_mysql, pdo_sqlite, zip, intl, xdebug, Composer)
 docker compose build
 
-# Abhängigkeiten installieren
+# install the dependencies
 docker compose run --rm php composer install
 ```
 
-## Tests und statische Analyse
+## Tests and static analysis
 
 ```sh
-# PHPUnit (dauert ca. 5 Minuten, weil jeder Test in einem eigenen Prozess läuft)
+# PHPUnit (takes about 5 minutes, because every test runs in its own process)
 docker compose run --rm php vendor/bin/phpunit -c tests/uts/phpunit.xml --no-coverage
 
-# einzelne Tests
+# single tests
 docker compose run --rm php vendor/bin/phpunit -c tests/uts/phpunit.xml --no-coverage --filter dbFormhandler_TextFieldTest
 
-# mit Code Coverage (HTML-Report in tests/uts/_coverage)
+# with code coverage (HTML report in tests/uts/_coverage)
 docker compose run --rm php vendor/bin/phpunit -c tests/uts/phpunit.xml
 
 # PHPStan
 docker compose run --rm php vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1G
 ```
 
-Eine Shell im Container: `docker compose run --rm php bash`
+A shell in the container: `docker compose run --rm php bash`
 
 ## GitHub Actions
 
-| Workflow | Datei | Inhalt |
+| Workflow | File | Runs |
 |---|---|---|
-| PHPUnit | `.github/workflows/phpunit.yml` | Tests mit Coverage auf PHP 8.2 |
-| PHPStan | `.github/workflows/phpstan.yml` | statische Analyse auf PHP 8.2 |
+| PHPUnit | `.github/workflows/phpunit.yml` | tests with coverage on PHP 8.2 |
+| PHPStan | `.github/workflows/phpstan.yml` | static analysis on PHP 8.2 |
 
-Beide laufen bei jedem Push und Pull Request.
+Both run on every push and pull request.
 
-## Hinweise
+## Notes
 
-- **PHP-Version:** `composer.json` legt `config.platform.php` auf 8.2 fest. Composer
-  wählt deshalb nur Pakete, die mit PHP 8.2 laufen – auch wenn es mit einer neueren
-  PHP-Version aufgerufen wird. `composer.lock` ist eingecheckt.
-- **Datenbank in Tests:** Die DB-Tests laufen gegen eine SQLite-Datenbank im
-  Arbeitsspeicher (`tests/uts/helper/dbFormhandlerTestCase.php`). Ein Datenbankserver
-  ist nicht nötig. Für Unit-Tests ohne Datenbank lässt sich `DatabaseAdapter` mit
-  `createMock()` ersetzen.
-- **`DOCUMENT_ROOT` in Tests:** `src/includes/config.inc.php` braucht
-  `$_SERVER['DOCUMENT_ROOT']`, das PHP auf der Kommandozeile leer lässt.
-  `tests/uts/phpunit-prepend.php` setzt es als `auto_prepend_file`, damit es auch in
-  den isolierten Testprozessen von PHPUnit ankommt. Im Container hängt
-  `docker-compose.yml` dafür `tests/uts/php.ini` ein, in GitHub Actions setzt es
-  `setup-php` über `ini-values`.
+- **PHP version:** `composer.json` sets `config.platform.php` to 8.2, so Composer only
+  picks packages that run on PHP 8.2, even when it is started with a newer PHP version.
+  `composer.lock` is committed.
+- **Database in tests:** the database tests run against an in-memory SQLite database
+  (`tests/uts/helper/dbFormhandlerTestCase.php`), so no database server is needed. For
+  unit tests without a database, replace `DatabaseAdapter` with `createMock()`.
+- **`DOCUMENT_ROOT` in tests:** `src/includes/config.inc.php` needs
+  `$_SERVER['DOCUMENT_ROOT']`, which PHP leaves empty on the command line.
+  `tests/uts/phpunit-prepend.php` sets it as `auto_prepend_file`, so it also reaches
+  PHPUnit's isolated test processes. In the container, `docker-compose.yml` mounts
+  `tests/uts/php.ini` for this; on GitHub Actions, `setup-php` sets it via `ini-values`.
