@@ -18,7 +18,6 @@
     ],
     "require": {
         "phpunit/phpunit": "~9.0",
-        "phan/phan": "^5.1",
         "phpstan/phpstan": "^2.2",
         "doctrine/dbal": "^4.2"
     },
