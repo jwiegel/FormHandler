@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 final class formhandler_TimeFieldTest extends FormhandlerTestCase
 {
     private function getNearestMinute(int &$minute, int $intervall): int
@@ -52,14 +54,12 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
         return $r;
     }
 
-    public function timeintervall(): array
+    public static function timeintervall(): array
     {
         return [[1], [5], [10], [15], [20], [30]];
     }
 
-    /**
-     * @dataProvider timeintervall
-     */
+    // #[DataProvider('timeintervall')]
     // public function test_new($timeintervall): void
     // {
     //     define('FH_TIMEFIELD_SET_CUR_TIME', false);
@@ -83,9 +83,7 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
     //     static::assertFormFlushContains($form, $aExpected);
     // }
 
-    /**
-     * @dataProvider timeintervall
-     */
+    // #[DataProvider('timeintervall')]
     // public function test_new_currenttime($timeintervall): void
     // {
     //     define('FH_TIMEFIELD_SET_CUR_TIME', true);
@@ -231,9 +229,7 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
         $this->assertTriggertError("Invalid value as hour format! Only 12 or 24 are allowed!", E_USER_WARNING);
     }
 
-    /**
-     * @dataProvider timeintervall
-     */
+    #[DataProvider('timeintervall')]
     public function test_new_timefieldsteps($timeintervall): void
     {
         define('FH_TIMEFIELD_MINUTE_STEPS', $timeintervall);
