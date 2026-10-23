@@ -213,14 +213,8 @@ fh_conf(
     '<a style="display:block;padding-left:5px;margin:0px;width:auto;color:black;text-decoration:none;" href="#" onmouseover="this.style.background=\'#C0C0C0\';" onmouseout="this.style.background=\'#FFFFFF\';" onblur="FH_CLOSE_TEXTSELECT(\'FHSpan_%s\')" onfocus="FH_SET_TEXTSELECT( \'%1$s\', this.innerHTML );" onclick="FH_SET_TEXTSELECT( \'%1$s\',this.innerHTML );" >%s</a>' . "\n"
 );
 
-// This config var has to point to the YADAL directory.
-// Yadal is the database abstraction class which FormHandler uses
-// to interact with the databases.
-// Default this dir is located in the FH3 directory. If you put it
-// somewhere else you have to change this config var.
-fh_conf('FH_YADAL_DIR', FH_INCLUDE_DIR . 'yadal/');
-
-// The default database type which is used when no one is given.
+// The default database type which is used by dbInfo() when no one is given.
+// One of mysql, postgresql, mssql, sqlite or a Doctrine DBAL driver name.
 fh_conf('FH_DEFAULT_DB_TYPE', 'mysql');
 
 // The default host which is used when no one is given

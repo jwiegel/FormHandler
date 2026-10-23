@@ -654,7 +654,7 @@ class dbFormHandler extends FormHandler
         // set the table to use
         $this->_table = $table;
 
-        // create a new yadal object
+        // create the database adapter
         $this->_db = $this->createDatabaseAdapter($db, $type);
 
         // try to fetch the database data if we are connected
@@ -736,22 +736,23 @@ class dbFormHandler extends FormHandler
         // save the table name
         $this->_table = $table;
 
-        if (!($conn instanceof \Doctrine\DBAL\Connection))
+        if ($conn instanceof \Doctrine\DBAL\Connection)
+        {
+            $this->_db = new DbalAdapter($conn);
+
+            // try to fetch the database data already
+            if ($this->edit)
+            {
+                $this->_loadDbData();
+            }
+        }
+        else
         {
             trigger_error(
                 'Error, setConnectionResource() needs a Doctrine\DBAL\Connection! ' .
                     'Use dbInfo() and dbConnect() to let FormHandler open the connection.',
                 E_USER_ERROR
             );
-            return;
-        }
-
-        $this->_db = new DbalAdapter($conn);
-
-        // try to fetch the database data already
-        if ($this->edit)
-        {
-            $this->_loadDbData();
         }
     }
 

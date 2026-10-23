@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d2de91d99b54c7980237662716cae34",
+    "content-hash": "73f57b8adf56eb4b32fa69d9f5a1c988",
     "packages": [
         {
             "name": "composer/pcre",
@@ -224,76 +224,6 @@
                 }
             ],
             "time": "2024-05-06T16:37:16+00:00"
-        },
-        {
-            "name": "dibi/dibi",
-            "version": "v4.2.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dibi/dibi.git",
-                "reference": "6ae50220e877132ebee529ae10d762ece85e3ad1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dibi/dibi/zipball/6ae50220e877132ebee529ae10d762ece85e3ad1",
-                "reference": "6ae50220e877132ebee529ae10d762ece85e3ad1",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2"
-            },
-            "replace": {
-                "dg/dibi": "*"
-            },
-            "require-dev": {
-                "nette/di": "^3.0",
-                "nette/tester": "~2.0",
-                "phpstan/phpstan": "^0.12",
-                "tracy/tracy": "~2.2"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.2-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause",
-                "GPL-2.0-only",
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "David Grudl",
-                    "homepage": "https://davidgrudl.com"
-                }
-            ],
-            "description": "Dibi is Database Abstraction Library for PHP",
-            "homepage": "https://dibi.nette.org",
-            "keywords": [
-                "access",
-                "database",
-                "dbal",
-                "mssql",
-                "mysql",
-                "odbc",
-                "oracle",
-                "pdo",
-                "postgresql",
-                "sqlite",
-                "sqlsrv"
-            ],
-            "support": {
-                "issues": "https://github.com/dibi/dibi/issues",
-                "source": "https://github.com/dibi/dibi/tree/v4.2"
-            },
-            "time": "2025-10-30T14:57:56+00:00"
         },
         {
             "name": "doctrine/dbal",
@@ -563,60 +493,6 @@
                 "source": "https://github.com/felixfbecker/php-advanced-json-rpc/tree/v3.2.1"
             },
             "time": "2021-06-11T22:34:44+00:00"
-        },
-        {
-            "name": "jdorn/sql-formatter",
-            "version": "v1.2.17",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jdorn/sql-formatter.git",
-                "reference": "64990d96e0959dff8e059dfcdc1af130728d92bc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jdorn/sql-formatter/zipball/64990d96e0959dff8e059dfcdc1af130728d92bc",
-                "reference": "64990d96e0959dff8e059dfcdc1af130728d92bc",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.3.x-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "lib"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jeremy Dorn",
-                    "email": "jeremy@jeremydorn.com",
-                    "homepage": "http://jeremydorn.com/"
-                }
-            ],
-            "description": "a PHP SQL highlighting library",
-            "homepage": "https://github.com/jdorn/sql-formatter/",
-            "keywords": [
-                "highlight",
-                "sql"
-            ],
-            "support": {
-                "issues": "https://github.com/jdorn/sql-formatter/issues",
-                "source": "https://github.com/jdorn/sql-formatter/tree/v1.2.17"
-            },
-            "time": "2014-01-12T16:20:24+00:00"
         },
         {
             "name": "microsoft/tolerant-php-parser",
@@ -3780,160 +3656,6 @@
             "time": "2025-11-17T20:03:58+00:00"
         },
         {
-            "name": "tombrain/phpunit-mock-db",
-            "version": "dev-phpunit-9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tombrain/phpunit-mock-db.git",
-                "reference": "bf0ecfdf8678af35af1c4b5adc909d2679b42f47"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tombrain/phpunit-mock-db/zipball/bf0ecfdf8678af35af1c4b5adc909d2679b42f47",
-                "reference": "bf0ecfdf8678af35af1c4b5adc909d2679b42f47",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.0",
-                "phpunit/phpunit": "~9.0",
-                "tombrain/phpunit-sql": "dev-phpunit-9"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Cz\\PHPUnit\\MockDB\\": "classes"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cz\\PHPUnit\\MockDB\\": "tests"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Korney Czukowski",
-                    "homepage": "http://xn----0tbl7bn.com"
-                }
-            ],
-            "description": "Database Abstraction Layer mocking helpers for PHPUnit",
-            "homepage": "https://github.com/czukowski/phpunit-mock-db",
-            "keywords": [
-                "database",
-                "mock",
-                "phpunit"
-            ],
-            "support": {
-                "issues": "https://github.com/czukowski/phpunit-mock-db/issues",
-                "source": "https://github.com/tombrain/phpunit-mock-db/tree/phpunit-9"
-            },
-            "time": "2025-05-04T11:06:29+00:00"
-        },
-        {
-            "name": "tombrain/phpunit-mock-dibi",
-            "version": "dev-phpunit-9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tombrain/phpunit-mock-dibi.git",
-                "reference": "6695b58c4d4dadd8c270675668fcb69a462350a3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tombrain/phpunit-mock-dibi/zipball/6695b58c4d4dadd8c270675668fcb69a462350a3",
-                "reference": "6695b58c4d4dadd8c270675668fcb69a462350a3",
-                "shasum": ""
-            },
-            "require": {
-                "dibi/dibi": "^4.2.x-dev",
-                "php": ">=8.0",
-                "tombrain/phpunit-mock-db": "dev-phpunit-9",
-                "tombrain/phpunit-sql": "dev-phpunit-9"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Cz\\PHPUnit\\MockDibi\\": "classes"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cz\\PHPUnit\\MockDibi\\": "tests"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Korney Czukowski",
-                    "homepage": "http://xn----0tbl7bn.com"
-                }
-            ],
-            "description": "Dibi mocking helpers for PHPUnit",
-            "homepage": "https://github.com/czukowski/phpunit-mock-dibi",
-            "keywords": [
-                "database",
-                "dibi",
-                "mock",
-                "phpunit"
-            ],
-            "support": {
-                "issues": "https://github.com/czukowski/phpunit-mock-dibi/issues",
-                "source": "https://github.com/tombrain/phpunit-mock-dibi/tree/phpunit-9"
-            },
-            "time": "2025-05-04T12:08:39+00:00"
-        },
-        {
-            "name": "tombrain/phpunit-sql",
-            "version": "dev-phpunit-9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tombrain/phpunit-sql.git",
-                "reference": "8ba06850af66e84a7b33f69f376d9f1185beafc9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tombrain/phpunit-sql/zipball/8ba06850af66e84a7b33f69f376d9f1185beafc9",
-                "reference": "8ba06850af66e84a7b33f69f376d9f1185beafc9",
-                "shasum": ""
-            },
-            "require": {
-                "phpunit/phpunit": "~9.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Cz\\PHPUnit\\SQL\\": "classes"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cz\\PHPUnit\\SQL\\": "tests"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Korney Czukowski",
-                    "homepage": "http://xn----0tbl7bn.com"
-                }
-            ],
-            "description": "SQL strings testing helpers for PHPUnit",
-            "homepage": "https://github.com/czukowski/phpunit-sql",
-            "keywords": [
-                "phpunit",
-                "sql"
-            ],
-            "support": {
-                "source": "https://github.com/tombrain/phpunit-sql/tree/phpunit-9"
-            },
-            "time": "2025-05-04T11:21:02+00:00"
-        },
-        {
             "name": "tysonandre/var_representation_polyfill",
             "version": "0.1.3",
             "source": {
@@ -4065,12 +3787,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "dibi/dibi": 20,
-        "tombrain/phpunit-mock-db": 20,
-        "tombrain/phpunit-mock-dibi": 20,
-        "tombrain/phpunit-sql": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},
