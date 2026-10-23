@@ -17,6 +17,7 @@
         }
     ],
     "require": {
+        "php": ">=8.2",
         "doctrine/dbal": "^4.2"
     },
     "require-dev": {
