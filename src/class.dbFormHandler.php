@@ -1246,7 +1246,9 @@ class dbFormHandler extends FormHandler
      */
     private function deleteJunctionData($tableName, $keyField, $keyValue)
     {
-        $query = "DELETE FROM " . $tableName . " WHERE " . $keyField . " = '" . $keyValue . "';";
+        $query =
+            "DELETE FROM " . $this->_db->quote($tableName) .
+            " WHERE " . $this->_db->quote($keyField) . " = '" . $this->_db->escapeString($keyValue) . "'";
         return $this->_db->query($query);
     }
 
@@ -1270,9 +1272,10 @@ class dbFormHandler extends FormHandler
         {
             foreach ($field->getValue() as $value)
             {
-                $query = "INSERT INTO " . $tableName . "
-                (" . $destinationField . ", " . $keyField . ") 
-                VALUES ('" . $keyValue . "', '" . $value . "');";
+                $query =
+                    "INSERT INTO " . $this->_db->quote($tableName) .
+                    " (" . $this->_db->quote($destinationField) . ", " . $this->_db->quote($keyField) . ")" .
+                    " VALUES ('" . $this->_db->escapeString($keyValue) . "', '" . $this->_db->escapeString($value) . "')";
                 $this->_db->query($query);
             }
         }
@@ -1310,7 +1313,10 @@ class dbFormHandler extends FormHandler
                     // Get data from juntion table
                     foreach ($this->_tableConfig as $tableName => $fields)
                     {
-                        $qrySelectJunctiondata = "SELECT " . $fields[0] . " AS " . $fields[0] . " FROM " . $tableName . " WHERE " . $fields[1] . "='" . pos($this->_id) . "'";
+                        $qrySelectJunctiondata =
+                            "SELECT " . $this->_db->quote($fields[0]) . " AS " . $this->_db->quote($fields[0]) .
+                            " FROM " . $this->_db->quote($tableName) .
+                            " WHERE " . $this->_db->quote($fields[1]) . " = '" . $this->_db->escapeString(pos($this->_id)) . "'";
                         $sql = $this->_db->query($qrySelectJunctiondata);
                         $values = array();
                         while ($rs = $this->_db->getRecord($sql))
