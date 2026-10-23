@@ -127,4 +127,28 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
         $this->assertSavedValue("newpass", "pass");
         $this->assertRecord(4715, ['pass' => 'newpass']);
     }
+
+    public function test_update_checkPassword_emptyKeepsPassword(): void
+    {
+        $this->insertRecord(['id' => 4716, 'pass' => 'secret', 'textNullable' => 'old']);
+
+        $_POST['FormHandler_submit'] = "1";
+        $_GET['id'] = "4716";
+        $_POST['pass'] = "";
+        $_POST['pass2'] = "";
+        $_POST['textNullable'] = "new";
+
+        $form = new dbFormHandler();
+        $this->setConnectedTable($form, "test");
+
+        $form->textField("TextNullable", "textNullable");
+        $form->passField("Your password", "pass");
+        $form->passField("Repeat password", "pass2");
+        $form->checkPassword("pass", "pass2");
+
+        $this->setCallbackOnSaved($form);
+
+        static::assertEmpty($form->flush(true));
+        $this->assertRecord(4716, ['pass' => 'secret', 'textNullable' => 'new']);
+    }
 };
