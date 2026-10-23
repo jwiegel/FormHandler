@@ -44,5 +44,6 @@ return array(
     'Database' => array(
         'db_form.php'         => array('dbFormHandler: insert and edit', '88/dbFormHandler.html'),
         'db_fields.php'       => array('dbSelectField, dbListField, dbCheckBox, dbRadioButton, dbTextSelectField', '14/Database_Functions.html'),
+        'db_junction.php'     => array('addJunctionTable: n:m table', '109/addJunctionTable.html'),
     ),
 );

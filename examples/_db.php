@@ -43,6 +43,9 @@ function example_db(): Connection
             )"
         );
 
+        // n:m table for addJunctionTable(): the hobbies of a person
+        $conn->executeStatement('CREATE TABLE person_hobbies (person_id INTEGER NOT NULL, hobby_id INTEGER NOT NULL)');
+
         // lookup tables for the db* fields
         $conn->executeStatement('CREATE TABLE countries (code VARCHAR(2) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL)');
         $conn->executeStatement("INSERT INTO countries VALUES ('at', 'Austria'), ('de', 'Germany'), ('nl', 'Netherlands'), ('ch', 'Switzerland')");
@@ -75,7 +78,7 @@ function example_on_saved($id, $data, $form)
  */
 function example_table(Connection $conn, string $table, ?string $editPage = null): void
 {
-    $rows = $conn->fetchAllAssociative('SELECT * FROM ' . $table . ' ORDER BY id');
+    $rows = $conn->fetchAllAssociative('SELECT * FROM ' . $table . ' ORDER BY 1, 2');
 
     echo '<h2>Table "' . htmlspecialchars($table) . '"</h2>';
     if ($editPage)
@@ -102,7 +105,7 @@ function example_table(Connection $conn, string $table, ?string $editPage = null
         {
             echo '<td>' . htmlspecialchars((string) $value) . '</td>';
         }
-        echo $editPage ? '<td><a href="' . $editPage . '?id=' . $row['id'] . '">edit</a></td>' : '';
+        echo $editPage ? '<td><a href="' . $editPage . '?id=' . $row[array_key_first($row)] . '">edit</a></td>' : '';
         echo '</tr>';
     }
     echo '</table>';

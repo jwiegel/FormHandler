@@ -31,6 +31,9 @@ services:
     volumes:
       - .:/var/www/html
       - vendor:/var/www/html/vendor
+    # SQLite file of the database examples and sessions: empty again after a restart
+    tmpfs:
+      - /tmp
 
 volumes:
   vendor:
