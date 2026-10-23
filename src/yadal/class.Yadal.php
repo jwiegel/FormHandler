@@ -8,22 +8,7 @@
 
 define('YADAL_DEFAULT_DB_TYPE', 'mysql');
 
-interface DatabaseAdapter
-{
-    public function setConnectionResource(&$conn);
-    public function isConnected();
-    public function connect($host = 'localhost', $username = '', $password = '');
-    public function close();
-    public function query($query);
-    public function getInsertId();
-    public function result($sql, $row = 0, $field = null);
-    public function getError();
-    public function getErrorNo();
-    public function recordCount($sql);
-    public function getRecord($sql);
-    public function getFieldNames($table);
-    public function getLastQuery();
-}
+require_once dirname(__FILE__) . '/../db/interface.DatabaseAdapter.php';
 
 /**
  * newYadal()

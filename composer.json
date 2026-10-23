@@ -47,6 +47,9 @@
             "src/yadal/class.Yadal.php",
             "src/includes/class.ImageConverter.php"
         ],
+        "classmap": [
+            "src/db/"
+        ],
         "psr-4": {
             "Cz\\PHPUnit\\MockDibi\\": "vendor\\tombrain\\phpunit-mock-dibi\\classes"
         }
