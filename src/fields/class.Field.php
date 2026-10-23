@@ -187,7 +187,7 @@ class Field
                                 $val = $aVal[$val];
                             }
 
-                            if (is_object($v) && method_exists($v, $val))
+                            if (method_exists($v, $val))
                             {
                                 // call the build in  validator function
                                 $value = $this->getValue();
@@ -221,7 +221,7 @@ class Field
                     else
                     {
                         $v = new Validator();
-                        if (is_object($v) && method_exists($v, $this->_sValidator))
+                        if (method_exists($v, $this->_sValidator))
                         {
                             // call the build in  validator function
                             $value = $this->getValue();

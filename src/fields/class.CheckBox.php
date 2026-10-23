@@ -68,10 +68,8 @@ class CheckBox extends Field
                 // options array!
                 if (
                     !empty($sValue)  ||
-                    ((in_array($sValue, $this->_aOptions) ||
-                        array_key_exists($sValue, $this->_aOptions)
-                    ) ||
-                        $sValue == $this->_aOptions)
+                    in_array($sValue, $this->_aOptions) ||
+                    array_key_exists($sValue, $this->_aOptions)
                 )
                 {
                     $aValue[$iKey] = $sValue;

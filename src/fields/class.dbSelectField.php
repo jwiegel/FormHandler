@@ -43,7 +43,7 @@ class dbSelectField extends SelectField
             ' FROM ' . $oDb->quote($sTable) . ' ' . $sExtraSQL;
 
         // get the records and load the options
-        $this->_aOptions = is_array($aMergeArray) ? $aMergeArray : array(); // @phpstan-ignore-line (Else branch is unreachable because ternary operator condition is always true.)
+        $this->_aOptions = is_array($aMergeArray) ? $aMergeArray : array();
 
         // execute the query
         $sql = $oDb->query($sQuery);

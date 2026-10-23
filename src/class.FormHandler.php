@@ -2793,7 +2793,7 @@ class FormHandler
             $jsAfter .= " new Array(  ";
             foreach ($values as $value)
             {
-                if (is_array($value)) // @phpstan-ignore-line (Call to function is_array() with string will always evaluate to false.)
+                if (is_array($value))
                 {
                     $jsAfter .= " new Array(  ";
                     foreach ($value as $item)
@@ -3631,6 +3631,7 @@ class FormHandler
             }
 
             // no focus set yet. Set the focus to the first field
+            // @phpstan-ignore identical.alwaysTrue (setFocus() in the loop above changes _focus)
             if ($this->_focus === true)
             {
                 // is it a object (only fields + buttons are objects)

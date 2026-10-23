@@ -625,7 +625,7 @@ class dbFormHandler extends FormHandler
 
         $this->_db = $db;
 
-        if ($this->edit && method_exists($this->_db, 'isConnected') && $this->_db->isConnected())
+        if ($this->edit && $this->_db->isConnected())
         {
             $this->_loadDbData();
         }
@@ -1169,7 +1169,7 @@ class dbFormHandler extends FormHandler
                     $where = $this->_getWhereClause('<>', $extra);
 
                     // is there a selection filter ?
-                    if (is_array($extra) && sizeof($extra) > 0)
+                    if (sizeof($extra) > 0)
                     {
                         // check if the entry is double
                         $sql = $db->query(
