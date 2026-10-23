@@ -50,7 +50,7 @@ class ODBC extends Yadal
      * @param string dns: the dns to connect to
      * @param string username: the username which should be used to login
      * @param string password: the password which should be used to login
-     * @return resource: The connection resource or false on failure
+     * @return resource The connection resource or false on failure
      * @access public
      * @author Teye Heimans
      */

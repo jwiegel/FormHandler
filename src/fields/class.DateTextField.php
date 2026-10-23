@@ -144,7 +144,7 @@ class DateTextField extends TextField
     /**
      * Return the value of the field
      *
-     * @return mixed: the value of the field
+     * @return mixed the value of the field
      * @access public
      * @author Thomas Branius
      * @since 16-03-2010
@@ -200,7 +200,7 @@ class DateTextField extends TextField
     /**
      * try to parse other presentations of dateformat
      *
-     * @return mixed: the value of the field
+     * @return mixed the value of the field
      * @access public
      * @author Thomas Branius
      * @since 16-03-2010
@@ -259,7 +259,7 @@ class DateTextField extends TextField
     /**
      * Check if the date is valid (eg not 31-02-2003)
      *
-     * @return boolean: true if the field is correct, false if not
+     * @return boolean true if the field is correct, false if not
      * @access public
      * @author Thomas Branius
      */

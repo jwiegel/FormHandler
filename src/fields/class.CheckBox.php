@@ -128,7 +128,7 @@ class CheckBox extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: the html of the field
+     * @return string the html of the field
      * @access Public
      * @author Teye Heimans
      */
@@ -185,7 +185,7 @@ class CheckBox extends Field
      * @param string $sValue: the value for the checkbox
      * @param string $sTitle: the title for the checkbox
      * @param bool $bUseMask: do we have to use the mask after the field?
-     * @return string: the HTML for the checkbox
+     * @return string the HTML for the checkbox
      * @access private
      * @author Teye Heimans
      */

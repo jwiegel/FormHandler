@@ -58,7 +58,7 @@ class BrowserField extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: the html
+     * @return string the html
      * @access public
      * @author Johan Wiegel
      */

@@ -42,7 +42,7 @@ class MySQL extends Yadal
      * @param string $host: the host to connect to
      * @param string $username: the username which should be used to login
      * @param string $password: the password which should be used to login
-     * @return resource: The connection resource
+     * @return resource The connection resource
      * @access public
      * @author Teye Heimans
      */
@@ -482,7 +482,7 @@ class MySQL extends Yadal
      * Fetch the unique fields from the table
      *
      * @param string $table: The table where the unique-value-field should be collected from
-     * @return array: multidimensional array of the unique indexes on the table
+     * @return array multidimensional array of the unique indexes on the table
      * @access public
      * @author Teye Heimans
      */

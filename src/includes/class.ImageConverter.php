@@ -82,7 +82,7 @@ class ImageConverter
      *
      * Return the last error occoured
      *
-     * @return string: the last occoured error
+     * @return string the last occoured error
      * @author Teye Heimans
      * @access public
      */
@@ -276,7 +276,7 @@ class ImageConverter
      * Return the installed GD version
      *
      * @param int $user_ver: the version needed by the user
-     * @return int: the installed gd version or 0 on failure
+     * @return int the installed gd version or 0 on failure
      * @access public
      * @author Teye Heimans
      */
@@ -508,7 +508,7 @@ class ImageConverter
      * @param resource $rImage: the image to save
      * @param string $sDestination: how to save the new image
      * @param int $iQuality: the quality of the new image
-     * @return bool: true of succes and false on failure
+     * @return bool true of succes and false on failure
      * @access private
      * @author Teye Heimans
      */

@@ -137,7 +137,7 @@ class TimeField extends Field
      *
      * Return the current value of the field
      *
-     * @return string: the value of the field
+     * @return string the value of the field
      * @access public
      * @author Teye Heimans
      */
@@ -160,7 +160,7 @@ class TimeField extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: the html of the field
+     * @return string the html of the field
      * @access public
      * @author Teye Heimans
      */
@@ -236,8 +236,8 @@ class TimeField extends Field
      *
      * Get the nearest minute in the minutes list
      *
-     * @param int $minute
-     * @return int: 1 or 0 if the hour should be increased
+     * @param int|float $minute
+     * @return int 1 or 0 if the hour should be increased
      * @access private
      * @author Teye Heimans
      */

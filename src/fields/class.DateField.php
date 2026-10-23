@@ -251,7 +251,7 @@ class DateField extends Field
      * return the value of the field (in d-m-Y format!) or when a
      * field is given, the value of that field
      * @param string $fld: the field where you want to value of
-     * @return string: the current value of the field
+     * @return string the current value of the field
      * @access public
      * @author Teye Heimans
      */
@@ -326,7 +326,7 @@ class DateField extends Field
      *
      * Check if the date is valid (eg not 31-02-2003)
      *
-     * @return boolean: true if the field is correct, false if not
+     * @return boolean true if the field is correct, false if not
      * @access public
      * @author Teye Heimans
      */
@@ -418,7 +418,7 @@ class DateField extends Field
      *
      * return the field
      *
-     * @return string: the field
+     * @return string the field
      * @access public
      * @author Teye Heimans
      */

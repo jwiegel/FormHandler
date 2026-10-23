@@ -2083,7 +2083,7 @@ class FormHandler
      * Set the focus to a sepcific field
      *
      * @param string|false $field: The field which should get the focus
-     * @return boolean: true if the focus could be set, false if not
+     * @return boolean true if the focus could be set, false if not
      * @access public
      * @author Teye Heimans
      */
@@ -2489,7 +2489,7 @@ class FormHandler
      *
      * @param string $field: The field to set the error for
      * @param string $error: The error message to use
-     * @return boolean: Returns the success of the operation
+     * @return boolean Returns the success of the operation
      * @access public
      * @author Filippo Toso - filippotoso@libero.it
      */
@@ -2894,7 +2894,7 @@ class FormHandler
      *
      * Return the language used for the form
      *
-     * @return string: the language
+     * @return string the language
      * @access public
      * @author Teye Heimans
      */
@@ -2923,7 +2923,7 @@ class FormHandler
      *
      * Return the name of the form
      *
-     * @return string: the name of the form
+     * @return string the name of the form
      * @access public
      * @author Teye Heimans
      */
@@ -2938,7 +2938,7 @@ class FormHandler
      * Return the needed javascript code for this form
      *
      * @param bool $header: returns the javascript code for in the header (otherwise the javascript code which hase to be beneath the form will be returned)
-     * @return string: the needed javascript code for this form
+     * @return string the needed javascript code for this form
      * @access public
      * @author Teye Heimans
      * 
@@ -3153,7 +3153,7 @@ class FormHandler
      *
      * If the form is posted
      *
-     * @return boolean: if the form is posted or not
+     * @return boolean if the form is posted or not
      * @access public
      * @author Teye Heimans
      */
@@ -3167,7 +3167,7 @@ class FormHandler
      *
      * Return if the form is filled correctly (for the fields which are set!)
      *
-     * @return boolean: the form values valid or not
+     * @return boolean the form values valid or not
      * @access public
      * @author Teye Heimans
      */
@@ -3203,7 +3203,7 @@ class FormHandler
      *
      * Prints or returns the form
      *
-     * @return string|null: the form or null when the form should be printed
+     * @return string|null the form or null when the form should be printed
      * @access public
      * @author Teye Heimans
      */
@@ -3350,7 +3350,7 @@ class FormHandler
      * when no button name is given, get a unique button name
      *
      * @access private
-     * @return string: the new unique button name
+     * @return string the new unique button name
      * @author Teye Heimans
      */
     private function _getNewButtonName()
@@ -3383,7 +3383,7 @@ class FormHandler
      * Return the given text in the correct language
      *
      * @param int $iIndex: the index of the text in the textfile
-     * @return string: the text in the correct language
+     * @return string the text in the correct language
      * @access private
      * @author Teye Heimans
      */
@@ -3439,7 +3439,7 @@ class FormHandler
      *
      * @param string $sFilename: the filename to register
      * @param string $sField: the field who is registering the file
-     * @return bool: false if the filename is already registered, true otherwise
+     * @return bool false if the filename is already registered, true otherwise
      * @access private
      * @author Teye Heimans
      */
@@ -3580,7 +3580,7 @@ class FormHandler
      *
      * Private: get the form
      *
-     * @return string: the generated form
+     * @return string the generated form
      * @access public
      * @author Teye Heimans
      */

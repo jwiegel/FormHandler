@@ -45,7 +45,7 @@ class ColorPicker extends TextField
      *
      * Return the HTML of the field
      *
-     * @return string: the html of the field
+     * @return string the html of the field
      * @access public
      * @author Rick den Haan
      */

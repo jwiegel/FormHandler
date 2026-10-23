@@ -825,7 +825,7 @@ class dbFormHandler extends FormHandler
      *
      * Return if the form is filled correctly (for the fields which are set!)
      *
-     * @return boolean: the form values valid or not
+     * @return boolean the form values valid or not
      * @access public
      * @author Teye Heimans
      */
@@ -847,7 +847,7 @@ class dbFormHandler extends FormHandler
      *
      * prints or returns the form
      *
-     * @return string|null: the form or null when the form should be printed
+     * @return string|null the form or null when the form should be printed
      * @access public
      * @author Teye Heimans
      */
@@ -1019,7 +1019,7 @@ class dbFormHandler extends FormHandler
      *
      * Check if there are no double values for unique fields
      *
-     * @return boolean: false if the value is double, true otherwise
+     * @return boolean false if the value is double, true otherwise
      * @access private
      * @author Teye Heimans
      */
@@ -1376,7 +1376,7 @@ class dbFormHandler extends FormHandler
      * Save the data into the database
      *
      * @param array $data: associative array with the fields => values which should be saved
-     * @return int: the id which was used to save the record
+     * @return int the id which was used to save the record
      * @access private
      * @author Teye Heimans
      */

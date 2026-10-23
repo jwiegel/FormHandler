@@ -169,7 +169,7 @@ class ListField extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: The html
+     * @return string The html
      * @access public
      * @author Teye Heimans
      */

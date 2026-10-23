@@ -18,7 +18,7 @@ class HiddenField extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: The html of the field
+     * @return string The html of the field
      * @access public
      * @author Teye Heimans
      */

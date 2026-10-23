@@ -137,7 +137,7 @@ class Field
      * Check if the value of the field is valid. If not,
      * set the error message and return false
      *
-     * @return boolean: If the value of the field is valid
+     * @return boolean If the value of the field is valid
      * @author Teye Heimans
      * @access public
      * @since 11-04-2008 ADDED POSSIBILITY TO USE MULTIPLE VALIDATORS 
@@ -359,7 +359,7 @@ class Field
      *
      * Return the value of the field
      *
-     * @return mixed: the value of the field
+     * @return mixed the value of the field
      * @access public
      * @author Teye Heimans
      */
@@ -373,7 +373,7 @@ class Field
      *
      * Return the error of the field (if the field-value is not valid)
      *
-     * @return string: the error message
+     * @return string the error message
      * @access public
      * @author Teye Heimans
      */
@@ -430,7 +430,7 @@ class Field
      * Return the HTML of the field.
      * This function HAS TO BE OVERWRITTEN by the child class!
      *
-     * @return string: the html of the field
+     * @return string the html of the field
      * @access public
      * @author Teye Heimans
      */
@@ -488,7 +488,7 @@ class Field
      *
      * Return the value of the field
      *
-     * @return mixed: the value of the field
+     * @return mixed the value of the field
      * @access protected
      * @author Teye Heimans
      */

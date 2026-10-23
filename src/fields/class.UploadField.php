@@ -229,7 +229,7 @@ class UploadField extends Field
      *
      * Return the path were we are going to save the file
      *
-     * @return string: the path where the file is saved
+     * @return string the path where the file is saved
      * @access public
      * @author Teye Heimans
      */
@@ -243,7 +243,7 @@ class UploadField extends Field
      *
      * Return the current value
      *
-     * @return string: the current file
+     * @return string the current file
      * @access public
      * @author Teye Heimans
      */
@@ -289,7 +289,7 @@ class UploadField extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: the html of the field
+     * @return string the html of the field
      * @access public
      * @author Teye Heimans
      */
@@ -380,7 +380,7 @@ class UploadField extends Field
      *
      * Check if the value is valid
      *
-     * @return bool: check if the value is valid
+     * @return bool check if the value is valid
      * @access public
      * @author Teye Heimans
      */
@@ -563,7 +563,7 @@ class UploadField extends Field
      *
      * Upload the file
      *
-     * @return string | bool: the filename of the uploaded file, or false on an error
+     * @return string|bool the filename of the uploaded file, or false on an error
      * @access public
      * @author Teye Heimans
      */
@@ -682,7 +682,7 @@ class UploadField extends Field
      * Get the filename like we are going to save it
      *
      * @param boolean $bIgnoreRename: Ignore the rename option ?
-     * @return string|null: the filename
+     * @return string|null the filename
      * @access private
      * @author Teye Heimans
      */
@@ -740,7 +740,7 @@ class UploadField extends Field
      * Retrieve the extension of the given filename
      *
      * @param string $sFilename: The filename where we have to retrieve the extension from
-     * @return string|false: the extension
+     * @return string|false the extension
      * @access private
      * @author Teye Heimans
      */
@@ -760,7 +760,7 @@ class UploadField extends Field
      *
      * Get the max uploadsize
      *
-     * @return integer: the max upload size
+     * @return integer the max upload size
      * @access private
      * @author Teye Heimans
      */
@@ -783,7 +783,7 @@ class UploadField extends Field
      * Get the given size in bytes
      *
      * @param string $sIniSize: The size we have to make to bytes
-     * @return integer|false: the size in bytes
+     * @return integer|false the size in bytes
      * @access private
      * @author Teye Heimans
      */

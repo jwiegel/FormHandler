@@ -78,7 +78,7 @@ class jsDateTextField extends DateTextField
     /**
      * return the field
      *
-     * @return string: the field
+     * @return string the field
      * @author Thomas Branius
      * @access public
      * @since 16-03-2010

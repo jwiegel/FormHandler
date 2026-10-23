@@ -37,7 +37,7 @@ class ImageButton extends Button
      *
      * Return the HTML of the button
      *
-     * @return string: the HTML of the button
+     * @return string the HTML of the button
      * @access public
      * @author Teye Heimans
      */

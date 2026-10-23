@@ -76,7 +76,7 @@ class Button
      *
      * Return the HTML of the button
      *
-     * @return string: the button
+     * @return string the button
      * @access public
      * @author Teye Heimans
      */

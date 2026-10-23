@@ -123,7 +123,7 @@ class TextArea extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: the html of the field
+     * @return string the html of the field
      * @author Teye Heimans
      * @access public
      */

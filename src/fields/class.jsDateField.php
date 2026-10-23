@@ -88,7 +88,7 @@ class jsDateField extends DateField
      *
      * return the field
      *
-     * @return string: the field
+     * @return string the field
      * @author Teye Heimans
      * @access public
      */
