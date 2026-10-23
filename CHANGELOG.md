@@ -50,7 +50,8 @@ $form->setConnectionResource($conn, 'users');
 - `dbInfo()` accepts the type `sqlite` (the database name is the file) and every
   DBAL driver name, e.g. `pdo_mysql`.
 - Example pages for every element of the manual in `examples/`, served by the new
-  Docker service `web` (see `SETUP.md`).
+  Docker service `web` (see `SETUP.md`). The workflow `Examples` requests every page
+  on each push.
 
 ### Changed
 
@@ -75,6 +76,8 @@ $form->setConnectionResource($conn, 'users');
 ### Fixed
 
 - The Composer branch alias (`extra.branch-alias`) had no effect.
+- **Security:** `addJunctionTable()` put the submitted values and the edit id into
+  its SQL without escaping (SQL injection).
 - The captcha image of `CaptchaField` was broken when PHP displays deprecations
   (float to int conversions in the bundled securimage, PHP 8.1+).
 

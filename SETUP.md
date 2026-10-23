@@ -59,8 +59,10 @@ Then open <http://localhost:8088/examples/>. Another port: `FH_WEB_PORT=8090 doc
 
 - The server is only reachable from this computer. It serves the whole project, and the
   file manager in `src/FHTML/filemanager` has no login.
-- The database examples use an SQLite file in the container's temp folder, so
-  `docker compose restart web` starts them with fresh data.
+- The database examples use an SQLite file in the container's temp folder, which is
+  kept in memory (`tmpfs`): `docker compose restart web` starts them with fresh data.
+- `php tests/examples/smoke.php http://host.docker.internal:8088/examples/` (in the `php`
+  container) requests every page and reports PHP errors, warnings and deprecations.
 - Uploaded files are stored in `examples/uploads/` (ignored by Git).
 - PHP shows errors and deprecations in the browser (`php.ini-development`).
 - Stop the server with `docker compose stop web`.
@@ -71,8 +73,9 @@ Then open <http://localhost:8088/examples/>. Another port: `FH_WEB_PORT=8090 doc
 |---|---|---|
 | PHPUnit | `.github/workflows/phpunit.yml` | tests with coverage on PHP 8.2 |
 | PHPStan | `.github/workflows/phpstan.yml` | static analysis on PHP 8.2 |
+| Examples | `.github/workflows/examples.yml` | requests every example page on the PHP built-in server |
 
-Both run on every push and pull request.
+All three run on every push and pull request.
 
 ## Notes
 
