@@ -20,7 +20,8 @@ docker compose run --rm php composer install
 ## Tests and static analysis
 
 ```sh
-# PHPUnit (takes about 5 minutes, because every test runs in its own process)
+# PHPUnit (every test runs in its own process; with Docker Desktop on Windows or
+# macOS this takes over 10 minutes, because each process reads the mounted project folder)
 docker compose run --rm php vendor/bin/phpunit -c tests/uts/phpunit.xml --no-coverage
 
 # single tests

@@ -17,6 +17,8 @@ for all database access. The bundled Yadal abstraction layer is gone.
 - Yadal is removed: the `newYadal()` function, the `Yadal*` classes and the
   `FH_YADAL_DIR` config constant no longer exist.
 - New dependency: `doctrine/dbal ^4.2`.
+- Requires PHP 8.2 or newer. Composer's platform check is enabled again, so the
+  autoloader stops on older PHP versions.
 
 #### Migrating from 3.x
 
@@ -56,12 +58,17 @@ $form->setConnectionResource($conn, 'users');
 - The database tests run against an in-memory SQLite database instead of a mocked
   driver, and check the stored records instead of the generated SQL.
 - `SETUP.md` describes the Docker setup.
+- PHPUnit 11.5 instead of 9.6.
+- `phpunit/phpunit` and `phpstan/phpstan` moved to `require-dev`, so projects that
+  install FormHandler no longer get them.
 
 ### Removed
 
 - `src/yadal` with the MySQL, MySQLi, PostgreSQL, MSSQL, Access and ODBC drivers.
 - The test dependencies `dibi/dibi`, `jdorn/sql-formatter`, `tombrain/phpunit-mock-dibi`,
   `tombrain/phpunit-mock-db` and `tombrain/phpunit-sql`.
+- `phan/phan`, which was required but never used.
+- The NetBeans project files (`nbproject/`).
 
 ### Fixed
 
