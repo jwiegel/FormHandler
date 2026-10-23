@@ -38,7 +38,8 @@
         "dibi/dibi": "^4.2.x-dev",
         "jdorn/sql-formatter": "^1.2.17",
         "phan/phan": "^5.1",
-        "phpstan/phpstan": "^2.2"
+        "phpstan/phpstan": "^2.2",
+        "doctrine/dbal": "^4.2"
     },
     "autoload": {
         "files": [
