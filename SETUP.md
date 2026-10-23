@@ -44,6 +44,27 @@ docker compose run --rm php vendor/bin/phpstan analyse -c phpstan.neon --memory-
 
 A shell in the container: `docker compose run --rm php bash`
 
+## Example pages
+
+`examples/` has one page per element of the [manual](https://www.fh3.nl/manual/manual.html):
+all fields and buttons, look & feel, data handling and the database functions. Every page
+shows the submitted values and its own source code.
+
+```sh
+# Apache with PHP 8.2, uses the packages from the vendor volume (run composer install first)
+docker compose up -d web
+```
+
+Then open <http://localhost:8088/examples/>. Another port: `FH_WEB_PORT=8090 docker compose up -d web`.
+
+- The server is only reachable from this computer. It serves the whole project, and the
+  file manager in `src/FHTML/filemanager` has no login.
+- The database examples use an SQLite file in the container's temp folder, so
+  `docker compose restart web` starts them with fresh data.
+- Uploaded files are stored in `examples/uploads/` (ignored by Git).
+- PHP shows errors and deprecations in the browser (`php.ini-development`).
+- Stop the server with `docker compose stop web`.
+
 ## GitHub Actions
 
 | Workflow | File | Runs |

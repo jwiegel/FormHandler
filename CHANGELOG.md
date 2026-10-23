@@ -49,6 +49,8 @@ $form->setConnectionResource($conn, 'users');
 - `dbFormHandler::setDatabaseAdapter()` to use any `DatabaseAdapter` implementation.
 - `dbInfo()` accepts the type `sqlite` (the database name is the file) and every
   DBAL driver name, e.g. `pdo_mysql`.
+- Example pages for every element of the manual in `examples/`, served by the new
+  Docker service `web` (see `SETUP.md`).
 
 ### Changed
 
@@ -73,6 +75,8 @@ $form->setConnectionResource($conn, 'users');
 ### Fixed
 
 - The Composer branch alias (`extra.branch-alias`) had no effect.
+- The captcha image of `CaptchaField` was broken when PHP displays deprecations
+  (float to int conversions in the bundled securimage, PHP 8.1+).
 
 ## [3.4.0] - 2026-10-23
 
