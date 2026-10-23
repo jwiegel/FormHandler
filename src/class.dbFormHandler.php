@@ -724,7 +724,7 @@ class dbFormHandler extends FormHandler
      *
      * Use an already opened connection instead of opening a new one.
      *
-     * @param resource|string $conn:
+     * @param resource|string|\Doctrine\DBAL\Connection $conn:
      * @param resource|string|null $table: The table which should be used to save the data in
      * @param string|null $type: The type of database you are using
      * @return void
@@ -753,8 +753,10 @@ class dbFormHandler extends FormHandler
         // save the table name
         $this->_table = $table;
 
-        // create the yadal object
-        $this->_db = $this->createDatabaseAdapter(null, $type);
+        // create the database adapter (a Doctrine DBAL connection needs no type)
+        $this->_db = $conn instanceof \Doctrine\DBAL\Connection
+            ? new DbalAdapter()
+            : $this->createDatabaseAdapter(null, $type);
 
         // set the sql resource which we should use
         $this->_db->setConnectionResource($conn);
