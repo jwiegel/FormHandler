@@ -1,6 +1,7 @@
 <?php
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception as DbalException;
 use Doctrine\DBAL\Schema\Index\IndexType;
 use Doctrine\DBAL\Schema\Name\UnqualifiedName;
@@ -16,7 +17,20 @@ use Doctrine\DBAL\Schema\Table;
  */
 class DbalAdapter implements DatabaseAdapter
 {
+    // the old Yadal database types and the DBAL driver they use
+    private const DRIVERS = array(
+        'mysql'      => 'mysqli',
+        'mysqli'     => 'mysqli',
+        'postgresql' => 'pdo_pgsql',
+        'postgres'   => 'pdo_pgsql',
+        'pgsql'      => 'pdo_pgsql',
+        'mssql'      => 'pdo_sqlsrv',
+        'sqlite'     => 'pdo_sqlite',
+    );
+
     private $_conn = null;      // Connection: the DBAL connection
+    private $_database = null;  // string: database name (or file for sqlite) for connect()
+    private $_driver = null;    // string: DBAL driver for connect()
     private $_lastQuery = '';   // string: the last query executed
     private $_error = '';       // string: message of the last error
     private $_errorNo = 0;      // int: code of the last error
@@ -58,6 +72,41 @@ class DbalAdapter implements DatabaseAdapter
     }
 
     /**
+     * DbalAdapter::setDatabase()
+     *
+     * Remember which database connect() should open (used by dbFormHandler::dbInfo())
+     *
+     * @param string $database the database name, or the file for sqlite
+     * @param string $type a Yadal database type (mysql, postgresql, mssql, sqlite) or a DBAL driver name
+     * @return bool false when the type is not supported
+     */
+    public function setDatabase($database, $type)
+    {
+        $type = strtolower($type);
+        $drivers = DriverManager::getAvailableDrivers();
+
+        if (isset(self::DRIVERS[$type]))
+        {
+            $this->_driver = self::DRIVERS[$type];
+        }
+        else if (in_array($type, $drivers))
+        {
+            $this->_driver = $type;
+        }
+        else
+        {
+            trigger_error(
+                'Error, database type "' . $type . '" not supported!',
+                E_USER_ERROR
+            );
+            return false;
+        }
+
+        $this->_database = $database;
+        return true;
+    }
+
+    /**
      * DbalAdapter::isConnected()
      *
      * @return bool
@@ -70,23 +119,39 @@ class DbalAdapter implements DatabaseAdapter
     /**
      * DbalAdapter::connect()
      *
-     * DBAL connects lazily; this only checks that the connection works.
-     * The credentials belong to the DBAL connection parameters.
+     * Open the database given by setDatabase(). With a connection from
+     * setConnectionResource() this only checks that the connection works.
      *
-     * @param string $host ignored
-     * @param string $username ignored
-     * @param string $password ignored
+     * @param string $host the host to connect to
+     * @param string $username the username which should be used to login
+     * @param string $password the password which should be used to login
      * @return bool
      */
     public function connect($host = 'localhost', $username = '', $password = '')
     {
-        if (!$this->isConnected())
-        {
-            return false;
-        }
-
         try
         {
+            if (!$this->isConnected())
+            {
+                if (is_null($this->_driver))
+                {
+                    $this->_error = 'No database given, call setDatabase() first';
+                    return false;
+                }
+
+                $params = $this->_driver == 'pdo_sqlite'
+                    ? array('driver' => $this->_driver, 'path' => $this->_database)
+                    : array(
+                        'driver'   => $this->_driver,
+                        'host'     => $host,
+                        'user'     => $username,
+                        'password' => $password,
+                        'dbname'   => $this->_database
+                    );
+
+                $this->_conn = DriverManager::getConnection($params);
+            }
+
             $this->_conn->getServerVersion();
             return true;
         }

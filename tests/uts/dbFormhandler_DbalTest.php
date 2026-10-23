@@ -91,6 +91,46 @@ final class dbFormhandler_DbalTest extends FormhandlerTestCase
         static::assertEquals('annabel', $this->_conn->fetchOne('SELECT name FROM test WHERE id = 1'));
     }
 
+    public function test_dbInfo_dbConnect(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'fh') . '.sqlite';
+        $conn = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'path' => $file]);
+        $conn->executeStatement('CREATE TABLE test (id INTEGER NOT NULL PRIMARY KEY, name VARCHAR(10) NOT NULL)');
+        $conn->executeStatement("INSERT INTO test VALUES (1, 'anna')");
+        $conn->close();
+
+        $_GET['id'] = '1';
+
+        $form = new dbFormHandler();
+        $form->dbInfo($file, 'test', 'sqlite');
+        $form->dbConnect();
+        $form->textField('Name', 'name');
+
+        static::assertEquals('anna', $form->getValue('name'));
+
+        unlink($file);
+    }
+
+    public function test_dbInfo_unsupportedType(): void
+    {
+        $form = new dbFormHandler();
+        $form->dbInfo('mydb', 'test', 'access');
+
+        $this->assertTriggertError('Error, database type "access" not supported!', E_USER_ERROR);
+    }
+
+    public function test_setConnectionResource_noDbalConnection(): void
+    {
+        $form = new dbFormHandler();
+        $form->setConnectionResource('mydb', 'test');
+
+        $this->assertTriggertError(
+            'Error, setConnectionResource() needs a Doctrine\DBAL\Connection! ' .
+                'Use dbInfo() and dbConnect() to let FormHandler open the connection.',
+            E_USER_ERROR
+        );
+    }
+
     public function test_insert_uniqueViolation(): void
     {
         $_POST['FormHandler_submit'] = '1';
