@@ -1,6 +1,7 @@
 parameters:
 	level: 4
 	phpVersion: 80200 # PHP 8.2
+	treatPhpDocTypesAsCertain: false
 	paths:
 		- src
 	excludePaths:
