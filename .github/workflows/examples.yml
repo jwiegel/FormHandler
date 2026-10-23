@@ -1,0 +1,35 @@
+name: Examples
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  smoke:
+    name: Example pages PHP 8.2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: gd, mbstring, pdo_sqlite
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Start the PHP built-in server
+        run: |
+          php -d display_errors=1 -d error_reporting=-1 -S 127.0.0.1:8000 -t . > server.log 2>&1 &
+          sleep 2
+
+      - name: Request every example page
+        run: php tests/examples/smoke.php http://127.0.0.1:8000/examples/
+
+      - name: Server log
+        if: failure()
+        run: cat server.log
