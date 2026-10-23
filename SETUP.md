@@ -17,11 +17,19 @@ docker compose build
 docker compose run --rm php composer install
 ```
 
+The packages are installed into the Docker volume `formhandler_vendor`, not into the
+project's `vendor/` folder on the host (see the notes below). To give your IDE the
+current packages for autocompletion, copy them to the host after `composer install`
+or `composer update`:
+
+```sh
+docker compose run --rm php bash -c "find /host-vendor -mindepth 1 -delete && cp -a vendor/. /host-vendor/"
+```
+
 ## Tests and static analysis
 
 ```sh
-# PHPUnit (every test runs in its own process; with Docker Desktop on Windows or
-# macOS this takes over 10 minutes, because each process reads the mounted project folder)
+# PHPUnit (about 30 seconds; every test runs in its own process)
 docker compose run --rm php vendor/bin/phpunit -c tests/uts/phpunit.xml --no-coverage
 
 # single tests
@@ -47,6 +55,11 @@ Both run on every push and pull request.
 
 ## Notes
 
+- **`vendor/` in a Docker volume:** every test runs in its own PHP process, which loads
+  PHPUnit and the autoloader again. Reading these files through the mounted project
+  folder is slow on Docker Desktop (Windows/macOS): the suite took about 12 minutes
+  instead of 30 seconds. To start over, remove the volume with
+  `docker volume rm formhandler_vendor` and run `composer install` again.
 - **PHP version:** `composer.json` sets `config.platform.php` to 8.2, so Composer only
   picks packages that run on PHP 8.2, even when it is started with a newer PHP version.
   `composer.lock` is committed.
