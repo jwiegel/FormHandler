@@ -110,4 +110,29 @@ final class formhandler_TextFieldTest extends FormhandlerTestCase
 
         static::assertFormFlushContains($form, ['Textfield:<input type="text" name="textfield" id="textfield" value="" size="20"  data-old="123"']);
     }
+
+    public function test_getTypedField(): void
+    {
+        $form = new FormHandler();
+        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
+
+        // like a subclass that renders an HTML5 input type
+        $field = new class($form, 'birthday') extends TextField
+        {
+            public function getField()
+            {
+                return $this->getTypedField('date');
+            }
+        };
+        $field->setValue('2026-10-26');
+        $field->setMaxlength(10);
+
+        static::assertEquals(
+            '<input type="date" name="birthday" id="birthday" value="2026-10-26" size="20" maxlength="10" />',
+            $field->getField()
+        );
+
+        $field->setViewMode(true);
+        static::assertEquals('2026-10-26', $field->getField());
+    }
 };

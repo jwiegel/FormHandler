@@ -115,6 +115,22 @@ class TextField extends Field
      */
     public function getField()
     {
+        return $this->getTypedField();
+    }
+
+    /**
+     * TextField::getTypedField()
+     *
+     * Return the HTML of the field as an input of the given type,
+     * so that subclasses can use the HTML5 types (date, email, number, ...)
+     *
+     * @param string $type the type attribute of the input
+     * @return string the html
+     * @access protected
+     * @author Stefan Meyer
+     */
+    protected function getTypedField($type = 'text')
+    {
         // view mode enabled ?
         if ($this->getViewMode())
         {
@@ -123,7 +139,8 @@ class TextField extends Field
         }
 
         return sprintf(
-            '<input type="text" name="%s" id="%1$s" value="%s" size="%d" %s' . FH_XHTML_CLOSE . '>%s',
+            '<input type="%s" name="%s" id="%2$s" value="%s" size="%d" %s' . FH_XHTML_CLOSE . '>%s',
+            $type,
             $this->_sName,
             (isset($this->_mValue) ? htmlspecialchars($this->_mValue, ENT_COMPAT | ENT_HTML401, FH_HTML_ENCODING) : ''),
             $this->_iSize,
