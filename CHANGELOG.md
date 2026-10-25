@@ -68,7 +68,7 @@ $form->setConnectionResource($conn, 'users');
   last open source version of CKEditor 4 (GPL/LGPL/MPL). This fixes 9 of the 13 published
   CKEditor 4 vulnerabilities; the others are only fixed in the commercial 4.23+ LTS versions.
   The `samples` folder is not shipped any more, all 70 editor languages are. The skin is
-  `moono-lisa` now (`moono` is gone), and the toolbars no longer have the removed buttons
+  `moono-lisa` now; `moono` is gone and `setSkin('moono')` uses `moono-lisa`, and the toolbars no longer have the removed buttons
   `Flash`, `SpellChecker`, `DocProps` and `CreatePlaceholder`. `config.versionCheck` is
   off, so the users of a form don't see CKEditor's "version is not secure" notification.
   Remaining known issues of 4.22.1: CVE-2024-24815 (CDATA, medium), CVE-2024-43407 (only
