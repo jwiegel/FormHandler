@@ -69,7 +69,11 @@ $form->setConnectionResource($conn, 'users');
   CKEditor 4 vulnerabilities; the others are only fixed in the commercial 4.23+ LTS versions.
   The `samples` folder is not shipped any more, all 70 editor languages are. The skin is
   `moono-lisa` now (`moono` is gone), and the toolbars no longer have the removed buttons
-  `Flash`, `SpellChecker`, `DocProps` and `CreatePlaceholder`.
+  `Flash`, `SpellChecker`, `DocProps` and `CreatePlaceholder`. `config.versionCheck` is
+  off, so the users of a form don't see CKEditor's "version is not secure" notification.
+  Remaining known issues of 4.22.1: CVE-2024-24815 (CDATA, medium), CVE-2024-43407 (only
+  with the codesnippetgeshi plugin), CVE-2024-24816 and CVE-2023-4771 (only in the
+  samples, not shipped). Sanitize the submitted HTML on the server (#22).
 - `phpunit/phpunit` and `phpstan/phpstan` moved to `require-dev`, so projects that
   install FormHandler no longer get them.
 
