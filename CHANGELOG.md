@@ -86,6 +86,9 @@ $form->setConnectionResource($conn, 'users');
 - `FH_BOOL` accepted every value starting with `1` (e.g. `10`), and `Validator::IsBool()`
   converted `"false"` to `true`.
 - `Validator::IsEmail()` and four other validators could not be called statically.
+- The calendar popup of `jsDateField()`/`jsDateTextField()` threw a JavaScript error
+  when the clicked element had no target, and the help text tooltips (overLIB) failed
+  on Internet Explorer 10 and newer.
 - The captcha image of `CaptchaField` was broken when PHP displays deprecations
   (float to int conversions in the bundled securimage, PHP 8.1+).
 
