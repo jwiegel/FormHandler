@@ -47,6 +47,8 @@ $form->setConnectionResource($conn, 'users');
 - `DatabaseAdapter` interface with every method dbFormHandler and the db* fields use.
   It can be replaced with `createMock(DatabaseAdapter::class)` in unit tests.
 - `dbFormHandler::setDatabaseAdapter()` to use any `DatabaseAdapter` implementation.
+- `TextField::getTypedField($type)` (protected), so that subclasses can render HTML5
+  input types like `date` or `email`.
 - `dbInfo()` accepts the type `sqlite` (the database name is the file) and every
   DBAL driver name, e.g. `pdo_mysql`.
 - Example pages for every element of the manual in `examples/`, served by the new
