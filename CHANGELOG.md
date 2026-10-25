@@ -64,6 +64,12 @@ $form->setConnectionResource($conn, 'users');
   driver, and check the stored records instead of the generated SQL.
 - `SETUP.md` describes the Docker setup.
 - PHPUnit 11.5 instead of 9.6.
+- **Security:** the bundled CKEditor (`editor()`) is updated from 4.3.1 to 4.22.1, the
+  last open source version of CKEditor 4 (GPL/LGPL/MPL). This fixes 9 of the 13 published
+  CKEditor 4 vulnerabilities; the others are only fixed in the commercial 4.23+ LTS versions.
+  The `samples` folder is not shipped any more, all 70 editor languages are. The skin is
+  `moono-lisa` now (`moono` is gone), and the toolbars no longer have the removed buttons
+  `Flash`, `SpellChecker`, `DocProps` and `CreatePlaceholder`.
 - `phpunit/phpunit` and `phpstan/phpstan` moved to `require-dev`, so projects that
   install FormHandler no longer get them.
 
