@@ -78,6 +78,12 @@ $form->setConnectionResource($conn, 'users');
 - The Composer branch alias (`extra.branch-alias`) had no effect.
 - **Security:** `addJunctionTable()` put the submitted values and the edit id into
   its SQL without escaping (SQL injection).
+- `FH_URL` rejected URLs with a scheme like `https://www.example.org`; it accepts an
+  optional scheme, port, path and query now.
+- `FH_IP` accepted numbers above 255 and any character instead of the last dot.
+- `FH_BOOL` accepted every value starting with `1` (e.g. `10`), and `Validator::IsBool()`
+  converted `"false"` to `true`.
+- `Validator::IsEmail()` and four other validators could not be called statically.
 - The captcha image of `CaptchaField` was broken when PHP displays deprecations
   (float to int conversions in the bundled securimage, PHP 8.1+).
 
