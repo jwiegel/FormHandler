@@ -11,6 +11,11 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
 
+	// No "This CKEditor version is not secure" notification for the users of the forms.
+	// 4.22.1 is the last open source version of CKEditor 4; the remaining known issues are
+	// listed in FormHandler's CHANGELOG.md, the HTML is to be sanitized on the server.
+	config.versionCheck = false;
+
 	config.toolbar_Default =
 	[
 		{ name: 'document', items : [ 'Source','-','Save','NewPage','Preview','Print','-','Templates' ] },
