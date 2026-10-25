@@ -46,8 +46,8 @@ class Editor extends TextArea
         $this->setWidth(720);
         $this->setHeight(400);
 
-        // moono
-        $this->setSkin('moono');
+        // the skin of the bundled CKEditor 4.22
+        $this->setSkin('moono-lisa');
     }
 
     /**
@@ -169,7 +169,7 @@ class Editor extends TextArea
     /**
      * Editor::setSkin()
      *
-     * Set the skin used for the FCKeditor
+     * Set the skin used for the CKEditor
      *
      * @param string $sSkin
      * @return void
@@ -178,7 +178,8 @@ class Editor extends TextArea
      */
     public function setSkin($sSkin)
     {
-        $this->_oEditor->config['skin'] = $sSkin;
+        // CKEditor 4.22 no longer ships "moono", its successor is "moono-lisa"
+        $this->_oEditor->config['skin'] = $sSkin == 'moono' ? 'moono-lisa' : $sSkin;
     }
 
     /**
