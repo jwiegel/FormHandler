@@ -2,6 +2,8 @@
 
 [![GitHub license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://raw.githubusercontent.com/FormHandler/FormHandler/master/LICENSE)
 [![Build Status](https://travis-ci.org/FormHandler/FormHandler.svg?branch=master)](https://travis-ci.org/FormHandler/FormHandler)
+[![PHPUnit](https://github.com/tombrain/FormHandler/actions/workflows/phpunit.yml/badge.svg)](https://github.com/tombrain/FormHandler/actions/workflows/phpunit.yml)
+[![PHPStan](https://github.com/tombrain/FormHandler/actions/workflows/phpstan.yml/badge.svg)](https://github.com/tombrain/FormHandler/actions/workflows/phpstan.yml)
 
 FormHandler is a PHP written "module" which allows you to create dynamic forms in an easy way.
 So easy that you can build a fully working form, including field validations, within 10 lines!

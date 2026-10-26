@@ -1,0 +1,15 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+      # auto_prepend_file must reach PHPUnit's isolated child processes too
+      - ./tests/uts/php.ini:/usr/local/etc/php/conf.d/zz-formhandler-tests.ini:ro
+    environment:
+      XDEBUG_MODE: coverage
+      PHP_IDE_CONFIG: serverName=formhandler
+    stdin_open: true
+    tty: true

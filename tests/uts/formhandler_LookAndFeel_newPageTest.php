@@ -22,7 +22,7 @@ final class formhandler_LookAndFeel_newPageTest extends FormhandlerTestCase
         $form->textField("Question 3", "q3", FH_STRING);
         $form->submitButton("Submit");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="hidden" name="q2" id="q2" value="" />',
             '<input type="hidden" name="q3" id="q3" value="" />',
             '<input type="hidden" name="FormHandler_page" id="FormHandler_page" value="1" />',
@@ -55,7 +55,7 @@ final class formhandler_LookAndFeel_newPageTest extends FormhandlerTestCase
         $form->textField("Question 3", "q3", FH_STRING);
         $form->submitButton("Submit");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="hidden" name="q1" id="q1" value="anwser1" />',
             '<input type="hidden" name="q3" id="q3" value="" />',
             '<input type="hidden" name="FormHandler_page" id="FormHandler_page" value="2" />',
@@ -88,7 +88,7 @@ final class formhandler_LookAndFeel_newPageTest extends FormhandlerTestCase
         $form->textField("Question 3", "q3", FH_STRING);
         $form->submitButton("Submit");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="hidden" name="q1" id="q1" value="anwser1" />',
             '<input type="hidden" name="q2" id="q2" value="answer2" />',
             '<input type="hidden" name="FormHandler_page" id="FormHandler_page" value="3" />',

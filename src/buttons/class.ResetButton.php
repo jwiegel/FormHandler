@@ -33,7 +33,7 @@ class ResetButton extends Button
      *
      * Return the HTMl of the button
      *
-     * @return string: the html of the button
+     * @return string the html of the button
      * @access public
      * @author Teye Heimans
      */

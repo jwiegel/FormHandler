@@ -79,7 +79,7 @@ class RadioButton extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: the html of the field
+     * @return string the html of the field
      * @access Public
      * @author Teye Heimans
      */
@@ -134,7 +134,7 @@ class RadioButton extends Field
      * @param string $sValue: the value for the checkbox
      * @param string $sTitle: the title for the checkbox
      * @param bool $bUseMask: Do we need to use the mask ?
-     * @return string: the HTML for the checkbox
+     * @return string the HTML for the checkbox
      * @access Private
      * @author Teye Heimans
      */
@@ -146,7 +146,7 @@ class RadioButton extends Field
         $sValue = trim($sValue);
         $sTitle = trim($sTitle);
 
-        if (!isset($this->_oLoader) || is_null($this->_oLoader))
+        if (!isset($this->_oLoader))
         {
             $this->_oLoader = new MaskLoader();
             $this->_oLoader->setMask($this->_sMask);

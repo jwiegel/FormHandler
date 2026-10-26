@@ -114,7 +114,6 @@ class FormHandler
     protected $_tableSettings;    // array: array with all table settings
     protected $_ajaxValidator;    // boolean: if Ajax validation must be used or not.
     protected $_ajaxValidatorScript;    // boolean: if Ajax validation must include library or not.
-
     private $_unittestmode = false; // boolean: only for unittesting (can only be set by reflection of uniitest)
 
     /**
@@ -1517,13 +1516,13 @@ class FormHandler
         }
 
         // escape the values from dangerous characters
-        $helpTitle = is_null($helpTitle) ? "%title% - " . $this->_text(41) : htmlentities($helpTitle, null, FH_HTML_ENCODING);
+        $helpTitle = is_null($helpTitle) ? "%title% - " . $this->_text(41) : htmlentities($helpTitle, encoding: FH_HTML_ENCODING);
         $helpTitle = preg_replace("/\r?\n/", "\\n", addslashes($helpTitle));
         $helpText  = preg_replace("/\r?\n/", "\\n", addslashes($helpText));
 
         // set the help text
         $this->_help[$field] = array(
-            htmlentities($helpText, null, FH_HTML_ENCODING),
+            htmlentities($helpText, encoding: FH_HTML_ENCODING),
             $helpTitle
         );
     }
@@ -1766,7 +1765,7 @@ class FormHandler
         $js = $field . '_values = [';
         foreach ($options as $option)
         {
-            $js .= '"' . htmlentities($option, null, FH_HTML_ENCODING) . '", ';
+            $js .= '"' . htmlentities($option, encoding: FH_HTML_ENCODING) . '", ';
         }
         $this->_setJS(substr($js, 0, -2) . "];\n");
 
@@ -1823,7 +1822,7 @@ class FormHandler
         $js = $field . '_values = [';
         foreach ($options as $option)
         {
-            $js .= '"' . htmlentities($option, null, FH_HTML_ENCODING) . '", ';
+            $js .= '"' . htmlentities($option, encoding: FH_HTML_ENCODING) . '", ';
         }
         $this->_setJS(substr($js, 0, -2) . "];\n");
 
@@ -2084,7 +2083,7 @@ class FormHandler
      * Set the focus to a sepcific field
      *
      * @param string|false $field: The field which should get the focus
-     * @return boolean: true if the focus could be set, false if not
+     * @return boolean true if the focus could be set, false if not
      * @access public
      * @author Teye Heimans
      */
@@ -2490,7 +2489,7 @@ class FormHandler
      *
      * @param string $field: The field to set the error for
      * @param string $error: The error message to use
-     * @return boolean: Returns the success of the operation
+     * @return boolean Returns the success of the operation
      * @access public
      * @author Filippo Toso - filippotoso@libero.it
      */
@@ -2794,7 +2793,7 @@ class FormHandler
             $jsAfter .= " new Array(  ";
             foreach ($values as $value)
             {
-                if (is_array($value)) // @phpstan-ignore-line (Call to function is_array() with string will always evaluate to false.)
+                if (is_array($value))
                 {
                     $jsAfter .= " new Array(  ";
                     foreach ($value as $item)
@@ -2895,7 +2894,7 @@ class FormHandler
      *
      * Return the language used for the form
      *
-     * @return string: the language
+     * @return string the language
      * @access public
      * @author Teye Heimans
      */
@@ -2924,7 +2923,7 @@ class FormHandler
      *
      * Return the name of the form
      *
-     * @return string: the name of the form
+     * @return string the name of the form
      * @access public
      * @author Teye Heimans
      */
@@ -2939,7 +2938,7 @@ class FormHandler
      * Return the needed javascript code for this form
      *
      * @param bool $header: returns the javascript code for in the header (otherwise the javascript code which hase to be beneath the form will be returned)
-     * @return string: the needed javascript code for this form
+     * @return string the needed javascript code for this form
      * @access public
      * @author Teye Heimans
      * 
@@ -2947,36 +2946,28 @@ class FormHandler
      */
     public function getJavascriptCode($header = true)
     {
-        $return = array(0 => false, 1 => false);;
-
         $s = $header ? 0 : 1;
-
-        // if the javascript is not retrieved yet..
-        if (!$return[$s])
+        // generate the js "files" script
+        $result = '';
+        if (isset($this->_js[$s]['file']) && is_array($this->_js[$s]['file']))
         {
-            // generate the js "files" script
-            $result = '';
-            if (isset($this->_js[$s]['file']) && is_array($this->_js[$s]['file']))
+            foreach ($this->_js[$s]['file'] as $line)
             {
-                foreach ($this->_js[$s]['file'] as $line)
-                {
-                    $result .= '<script type="text/javascript" src="' . $line . '"></script>' . "\n";
-                }
+                $result .= '<script type="text/javascript" src="' . $line . '"></script>' . "\n";
             }
-            // generate the other js script
-            if (isset($this->_js[$s]['code']) && is_array($this->_js[$s]['code']))
-            {
-                $result .= '<script type="text/javascript">' . "\n";
-                foreach ($this->_js[$s]['code'] as $code)
-                {
-                    $result .= $code;
-                }
-                $result .= "</script>\n";
-            }
-
-            $return[$s] = true;
-            return $result;
         }
+        // generate the other js script
+        if (isset($this->_js[$s]['code']) && is_array($this->_js[$s]['code']))
+        {
+            $result .= '<script type="text/javascript">' . "\n";
+            foreach ($this->_js[$s]['code'] as $code)
+            {
+                $result .= $code;
+            }
+            $result .= "</script>\n";
+        }
+
+        return $result;
     }
 
     /**
@@ -3162,7 +3153,7 @@ class FormHandler
      *
      * If the form is posted
      *
-     * @return boolean: if the form is posted or not
+     * @return boolean if the form is posted or not
      * @access public
      * @author Teye Heimans
      */
@@ -3176,7 +3167,7 @@ class FormHandler
      *
      * Return if the form is filled correctly (for the fields which are set!)
      *
-     * @return boolean: the form values valid or not
+     * @return boolean the form values valid or not
      * @access public
      * @author Teye Heimans
      */
@@ -3212,7 +3203,7 @@ class FormHandler
      *
      * Prints or returns the form
      *
-     * @return string|null: the form or null when the form should be printed
+     * @return string|null the form or null when the form should be printed
      * @access public
      * @author Teye Heimans
      */
@@ -3359,7 +3350,7 @@ class FormHandler
      * when no button name is given, get a unique button name
      *
      * @access private
-     * @return string: the new unique button name
+     * @return string the new unique button name
      * @author Teye Heimans
      */
     private function _getNewButtonName()
@@ -3392,7 +3383,7 @@ class FormHandler
      * Return the given text in the correct language
      *
      * @param int $iIndex: the index of the text in the textfile
-     * @return string: the text in the correct language
+     * @return string the text in the correct language
      * @access private
      * @author Teye Heimans
      */
@@ -3448,7 +3439,7 @@ class FormHandler
      *
      * @param string $sFilename: the filename to register
      * @param string $sField: the field who is registering the file
-     * @return bool: false if the filename is already registered, true otherwise
+     * @return bool false if the filename is already registered, true otherwise
      * @access private
      * @author Teye Heimans
      */
@@ -3589,7 +3580,7 @@ class FormHandler
      *
      * Private: get the form
      *
-     * @return string: the generated form
+     * @return string the generated form
      * @access public
      * @author Teye Heimans
      */
@@ -3640,6 +3631,7 @@ class FormHandler
             }
 
             // no focus set yet. Set the focus to the first field
+            // @phpstan-ignore identical.alwaysTrue (setFocus() in the loop above changes _focus)
             if ($this->_focus === true)
             {
                 // is it a object (only fields + buttons are objects)
@@ -3697,7 +3689,7 @@ class FormHandler
 
                     // new mask to set
                 case '__MASK__':
-                    if (!isset($this->_mask) || is_null($this->_mask) || $page == $iDisplayPage)
+                    if (!isset($this->_mask) || $page == $iDisplayPage)
                     {
                         list($this->_mask, $repeat) = $field[1];
                     }
@@ -3833,8 +3825,6 @@ class FormHandler
 
                         // save the error messages
                         // (when the user wants to use his own error displayer)
-                        $this->errors[$name] = $error;
-
                         /**
                          * Get the value for of the field
                          */
@@ -3863,12 +3853,12 @@ class FormHandler
                                     FH_HELP_MASK,
                                     $this->_helpIcon,
                                     $this->_help[$name][0],
-                                    str_replace('%title%', addslashes(htmlentities($title, null, FH_HTML_ENCODING)), $this->_help[$name][1])
+                                    str_replace('%title%', addslashes(htmlentities($title, encoding: FH_HTML_ENCODING)), $this->_help[$name][1])
                                 );
                             }
                             else
                             {
-                                $help = str_replace(array('%helpicon%', '%helptext%', '%helptitle%'), array($this->_helpIcon, $this->_help[$name][0], str_replace('%title%',    addslashes(htmlentities($title, null, FH_HTML_ENCODING)), $this->_help[$name][1])), FH_HELP_MASK);
+                                $help = str_replace(array('%helpicon%', '%helptext%', '%helptitle%'), array($this->_helpIcon, $this->_help[$name][0], str_replace('%title%',    addslashes(htmlentities($title, encoding: FH_HTML_ENCODING)), $this->_help[$name][1])), FH_HELP_MASK);
                             }
                         }
 
@@ -3994,7 +3984,7 @@ class FormHandler
             "  This credit MUST stay intact for use\n" .
             "-->\n" .
             $this->getJavascriptCode(true) .
-            '<form id="' . $this->_name . '" method="post" action="' . htmlentities($this->_action, null, FH_HTML_ENCODING) . '"' .
+            '<form id="' . $this->_name . '" method="post" action="' . htmlentities($this->_action, encoding: FH_HTML_ENCODING) . '"' .
             (sizeof($this->_upload) > 0 ? ' enctype="multipart/form-data"' : '') .
             (!empty($this->_extra) ? " " . $this->_extra : "") . ">\n" .
             '<ins>' . $hidden . '</ins>' .

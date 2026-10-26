@@ -129,7 +129,10 @@ class DateTextField extends TextField
             return array("", "", "");
         }
         if (preg_match($this->_sValParseRegExpr, $this->getValue(), $data) == 0)
+        {
             trigger_error("Value is not a valid date [" . $this->getValue() . "]", E_USER_ERROR);
+            return null; // @phpstan-ignore-line (Value is intentionally returned for runtime error-handler flow in legacy API.)
+        }
         if ($data[$this->_iYearPos] <= 50)
             $data[$this->_iYearPos] = $data[$this->_iYearPos] + 2000;
         if ($data[$this->_iYearPos] <= 100)
@@ -141,7 +144,7 @@ class DateTextField extends TextField
     /**
      * Return the value of the field
      *
-     * @return mixed: the value of the field
+     * @return mixed the value of the field
      * @access public
      * @author Thomas Branius
      * @since 16-03-2010
@@ -197,7 +200,7 @@ class DateTextField extends TextField
     /**
      * try to parse other presentations of dateformat
      *
-     * @return mixed: the value of the field
+     * @return mixed the value of the field
      * @access public
      * @author Thomas Branius
      * @since 16-03-2010
@@ -235,7 +238,7 @@ class DateTextField extends TextField
 
         if (preg_match("/$regex2/", str_replace(' ', '', $this->_mValue), $data))
         {
-            if (isset($data[2]))
+            if ($data[2] !== '')
                 $year = $data[1] * 100 + $data[2];
             else if ($data[1] <= 50)
                 $year = 2000 + $data[1];
@@ -256,7 +259,7 @@ class DateTextField extends TextField
     /**
      * Check if the date is valid (eg not 31-02-2003)
      *
-     * @return boolean: true if the field is correct, false if not
+     * @return boolean true if the field is correct, false if not
      * @access public
      * @author Thomas Branius
      */
@@ -289,7 +292,7 @@ class DateTextField extends TextField
             }
         }
 
-        if (isset($this->_isValid) && $this->_isValid == false)
+        if (isset($this->_isValid))
         {
             // set the error message
             $this->_sError = $this->_oForm->_text(14);

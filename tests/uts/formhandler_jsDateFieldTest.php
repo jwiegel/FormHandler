@@ -8,7 +8,7 @@ final class formhandler_jsDateFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->jsDateField("Datefield", "datefield");
 
@@ -16,7 +16,7 @@ final class formhandler_jsDateFieldTest extends FormhandlerTestCase
         $disableDate1 = $year - 91;
         $disableDate2 = $year + 1;
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/js/calendar_popup.js',
             'document.write(getCalendarStyles());',
             'function getDateString( fldForm, fldYear, fldMonth, fldDay ) {',
@@ -50,7 +50,7 @@ final class formhandler_jsDateFieldTest extends FormhandlerTestCase
         define('FH_JSCALENDARPOPUP_USE_DROPDOWN', true);
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->jsDateField("Datefield", "datefield");
 
@@ -58,7 +58,7 @@ final class formhandler_jsDateFieldTest extends FormhandlerTestCase
         $disableDate1 = $year - 91;
         $disableDate2 = $year + 1;
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/js/calendar_popup.js',
             'document.write(getCalendarStyles());',
             'function getDateString( fldForm, fldYear, fldMonth, fldDay ) {',
@@ -93,7 +93,7 @@ final class formhandler_jsDateFieldTest extends FormhandlerTestCase
         define('FH_JSCALENDARPOPUP_STARTDAY', 0);
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->jsDateField("Datefield", "datefield");
 
@@ -101,7 +101,7 @@ final class formhandler_jsDateFieldTest extends FormhandlerTestCase
         $disableDate1 = $year - 91;
         $disableDate2 = $year + 1;
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/js/calendar_popup.js',
             'document.write(getCalendarStyles());',
             'function getDateString( fldForm, fldYear, fldMonth, fldDay ) {',

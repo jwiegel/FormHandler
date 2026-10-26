@@ -68,12 +68,8 @@ class CheckBox extends Field
                 // options array!
                 if (
                     !empty($sValue)  ||
-                    ((is_array($this->_aOptions) &&
-                        (in_array($sValue, $this->_aOptions) ||
-                            array_key_exists($sValue, $this->_aOptions)
-                        )
-                    ) ||
-                        $sValue == $this->_aOptions)
+                    in_array($sValue, $this->_aOptions) ||
+                    array_key_exists($sValue, $this->_aOptions)
                 )
                 {
                     $aValue[$iKey] = $sValue;
@@ -130,7 +126,7 @@ class CheckBox extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: the html of the field
+     * @return string the html of the field
      * @access Public
      * @author Teye Heimans
      */
@@ -187,7 +183,7 @@ class CheckBox extends Field
      * @param string $sValue: the value for the checkbox
      * @param string $sTitle: the title for the checkbox
      * @param bool $bUseMask: do we have to use the mask after the field?
-     * @return string: the HTML for the checkbox
+     * @return string the HTML for the checkbox
      * @access private
      * @author Teye Heimans
      */
@@ -196,7 +192,7 @@ class CheckBox extends Field
         static $iCounter = 1;
 
         // create a MaskLoader object when it does not exists yet
-        if (!isset($this->_oLoader) || is_null($this->_oLoader))
+        if (!isset($this->_oLoader))
         {
             $this->_oLoader = new MaskLoader();
             $this->_oLoader->setMask($this->_sMask);

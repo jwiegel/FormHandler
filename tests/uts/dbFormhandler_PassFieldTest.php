@@ -10,19 +10,19 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertTrue($form->insert);
-        $this->assertFalse($form->edit);
-        $this->assertFalse($form->isPosted());
+        static::assertTrue($form->insert);
+        static::assertFalse($form->edit);
+        static::assertFalse($form->isPosted());
 
         $this->setConnectedTable($form, "test");
 
         $form->passField("Your password", "pass", FH_PASSWORD);
         $form->textField("TextNullable", "textNullable");
 
-        $this->assertEmpty($form->getValue("textNullable"));
-        $this->assertEmpty($form->getValue("textNotNullable"));
+        static::assertEmpty($form->getValue("textNullable"));
+        static::assertEmpty($form->getValue("textNotNullable"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Your password:<input type="password" name="pass" id="pass" size="20" />error_pass',
             'TextNullable:<input type="text" name="textNullable" id="textNullable" value="" size="20" />error_textNullable'
         ]);
@@ -36,9 +36,9 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertFalse($form->insert);
-        $this->assertTrue($form->edit);
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->insert);
+        static::assertTrue($form->edit);
+        static::assertFalse($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->exactly(1))
@@ -52,10 +52,10 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
         $form->passField("Your password", "pass", FH_PASSWORD);
         $form->textField("TextNullable", "textNullable");
 
-        $this->assertEquals("text1", $form->getValue("textNullable"));
-        $this->assertEquals("secret", $form->getValue("pass"));
+        static::assertEquals("text1", $form->getValue("textNullable"));
+        static::assertEquals("secret", $form->getValue("pass"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Your password:<input type="password" name="pass" id="pass" size="20" />error_pass',
             'TextNullable:<input type="text" name="textNullable" id="textNullable" value="text1" size="20" />error_textNullable'
         ]);
@@ -67,9 +67,9 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertTrue($form->insert);
-        $this->assertFalse($form->edit);
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->insert);
+        static::assertFalse($form->edit);
+        static::assertTrue($form->isPosted());
 
         $this->setConnectedTable($form, "test");
 
@@ -78,7 +78,7 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
         $e = $form->catchErrors();
 
         $expected  = "You did not enter a correct value for this field!";
-        $this->assertStringContainsString($expected, $e['pass']);
+        static::assertStringContainsString($expected, $e['pass']);
     }
 
     public function test_insert(): void
@@ -91,9 +91,9 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertTrue($form->insert);
-        $this->assertFalse($form->edit);
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->insert);
+        static::assertFalse($form->edit);
+        static::assertTrue($form->isPosted());
 
         $this->setConnectedTable($form, "test");
 
@@ -111,7 +111,7 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEmpty($r);
+        static::assertEmpty($r);
         $this->assertSavedId(4711);
         $this->assertSavedValue('secret', 'pass');
         $this->assertSavedValue('thetext', 'textNullable');
@@ -126,8 +126,8 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
 
     //     $form = new dbFormHandler();
 
-    //     $this->assertFalse($form->insert);
-    //     $this->assertTrue($form->edit);
+    //     static::assertFalse($form->insert);
+    //     static::assertTrue($form->edit);
 
     //     $this->getDatabaseMock()
     //             ->expects($this->exactly(1))
@@ -149,9 +149,9 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
 
     //     $r = $form->flush(true);
 
-    //     $this->fail("forced failure: empty pass fails");
+    //     static::fail("forced failure: empty pass fails");
 
-    //     $this->assertEquals("", $r);
+    //     static::assertEquals("", $r);
     //     $this->assertSavedId(4714);
     //     $this->assertSavedValueEmtpy('textNullable');
     // }
@@ -166,9 +166,9 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertFalse($form->insert);
-        $this->assertTrue($form->edit);
-        $this->assertTrue($form->isPosted());
+        static::assertFalse($form->insert);
+        static::assertTrue($form->edit);
+        static::assertTrue($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->exactly(1))
@@ -190,7 +190,7 @@ final class dbFormhandler_PassFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEmpty($r);
+        static::assertEmpty($r);
         $this->assertSavedId(4715);
         $this->assertSavedValue("newpass", "pass");
     }

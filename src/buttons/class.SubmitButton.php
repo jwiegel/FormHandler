@@ -54,7 +54,7 @@ class SubmitButton extends Button
      *
      * Returns the button
      *
-     * @return string: the HTML of the button
+     * @return string the HTML of the button
      * @access public
      * @author Teye Heimans
      */

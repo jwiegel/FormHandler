@@ -17,19 +17,29 @@
         }
     ],
     "repositories": [
-        	{
-      		"type": "vcs",
-      		"url": "https://github.com/tombrain/phpunit-mock-dibi.git"
-    	}	    
-	],
+        {
+            "type": "vcs",
+            "url": "https://github.com/tombrain/phpunit-mock-dibi.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/tombrain/phpunit-mock-db.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/tombrain/phpunit-sql.git"
+        }
+    ],
     "require": {
-        "phpunit/phpunit": "^9.0.1",
-        "czukowski/phpunit-mock-db": "^9.0",
+        "phpunit/phpunit": "~9.0",
+        "tombrain/phpunit-mock-dibi": "dev-phpunit-9",
+        "tombrain/phpunit-mock-db": "dev-phpunit-9",
+        "tombrain/phpunit-sql": "dev-phpunit-9",
+        "dibi/dibi": "^4.2.x-dev",
         "jdorn/sql-formatter": "^1.2.17",
         "phan/phan": "^5.1",
-		"phpstan/phpstan": "^1.9.2",
-		"tombrain/phpunit-mock-dibi" : "dev-master",
-        "dibi/dibi": "^4.2"
+        "phpstan/phpstan": "^2.2",
+        "doctrine/dbal": "^4.2"
     },
     "autoload": {
         "files": [
@@ -37,6 +47,9 @@
             "src/class.dbFormHandler.php",
             "src/yadal/class.Yadal.php",
             "src/includes/class.ImageConverter.php"
+        ],
+        "classmap": [
+            "src/db/"
         ],
         "psr-4": {
             "Cz\\PHPUnit\\MockDibi\\": "vendor\\tombrain\\phpunit-mock-dibi\\classes"
@@ -50,7 +63,18 @@
     "extra": {
         "dev-master": "v3.3.x-dev"
     },
+    "scripts": {
+        "post-install-cmd": [
+            "@php tools/apply-compat-patches.php"
+        ],
+        "post-update-cmd": [
+            "@php tools/apply-compat-patches.php"
+        ]
+    },
     "config": {
-        "platform-check": false
+        "platform-check": false,
+        "platform": {
+            "php": "8.2.31"
+        }
     }
 }

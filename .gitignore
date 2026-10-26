@@ -1,8 +1,8 @@
 vendor
 runAllUTs.cmd
-composer.lock
 runPhpstan.cmd
 phpstan.out
 .phpunit.result.cache
 .vscode/launch.json
 .vscode/settings.json
+tests/uts/_coverage/

@@ -8,13 +8,13 @@ final class formhandler_EditorTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->editor("Editor", "editor");
 
-        $this->assertEmpty($form->getValue("editor"));
+        static::assertEmpty($form->getValue("editor"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
@@ -29,11 +29,11 @@ final class formhandler_EditorTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->editor("Editor", "editor");
 
-        $this->assertEquals("textvalue", $form->getValue("editor"));
+        static::assertEquals("textvalue", $form->getValue("editor"));
     }
 
     public function test_posted_fillvalue_byinvalid(): void
@@ -43,15 +43,15 @@ final class formhandler_EditorTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->editor("Editor", "editor");
 
-        $this->assertEquals("textvalue", $form->getValue("editor"));
+        static::assertEquals("textvalue", $form->getValue("editor"));
 
         $form->setError("editor", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea class="error" name="editor" id="editor" cols="40" rows="7">textvalue</textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"'
@@ -64,7 +64,7 @@ final class formhandler_EditorTest extends FormhandlerTestCase
 
         $form->editor("Editor", "editor", null, "thisisthepath");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
@@ -79,7 +79,7 @@ final class formhandler_EditorTest extends FormhandlerTestCase
 
         $form->editor("Editor", "editor", null, null, "thetoolbar");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"thetoolbar"',
@@ -93,7 +93,7 @@ final class formhandler_EditorTest extends FormhandlerTestCase
 
         $form->editor("Editor", "editor", null, null, null, "theskin");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
@@ -107,7 +107,7 @@ final class formhandler_EditorTest extends FormhandlerTestCase
 
         $form->editor("Editor", "editor", null, null, null, null, 123, 456);
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
@@ -121,7 +121,7 @@ final class formhandler_EditorTest extends FormhandlerTestCase
 
         $form->editor("Editor", "editor", null, null, null, null, null, null, ["theconfig" => "vals"]);
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',

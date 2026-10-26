@@ -12,7 +12,7 @@ final class formhandler_ButtonsTest extends FormhandlerTestCase
         $form->button("Button2", "button4711");
         $form->button("Button3", null, 'data-old="123"');
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="button" name="button1" id="button1" value="Button" />error_button1',
             '<input type="button" name="button4711" id="button4711" value="Button2" />error_button4711',
             '<input type="button" name="button2" id="button2" value="Button3" data-old="123" />error_button2'
@@ -29,7 +29,7 @@ final class formhandler_ButtonsTest extends FormhandlerTestCase
 
         $form->setTabIndex(array("but2", "but1", "but3"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="button" name="but1" id="but1" value="Button" tabindex="2" />error_but1',
             '<input type="button" name="but2" id="but2" value="Button2" tabindex="1" />error_but2',
             '<input type="button" name="but3" id="but3" value="Button3" tabindex="3" />error_but3'
@@ -46,7 +46,7 @@ final class formhandler_ButtonsTest extends FormhandlerTestCase
         $form->submitButton(null, null, 'data-old="123"');
         $form->submitButton(null, null, null, false);
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="submit" value="Submit" name="button1" id="button1"  onclick=" if (this.form.querySelector(\':invalid\') == null) { this.form.submit();this.disabled=true;}"  />error_button1',
             '<input type="submit" value="Caption" name="button2" id="button2"  onclick=" if (this.form.querySelector(\':invalid\') == null) { this.form.submit();this.disabled=true;}"  />error_button2',
             '<input type="submit" value="Submit" name="submitbutton" id="submitbutton"  onclick=" if (this.form.querySelector(\':invalid\') == null) { this.form.submit();this.disabled=true;}"  />error_submitbutton',
@@ -61,7 +61,7 @@ final class formhandler_ButtonsTest extends FormhandlerTestCase
 
         $form->submitButton("Caption", "submitbutton", "onClick='doIt()'");
 
-        $this->assertFormFlushContains($form, ['<input type="submit" value="Caption" name="submitbutton" id="submitbutton"  onclick=\'this.form.submit();this.disabled=true;doIt()\' />error_submitbutton']);
+        static::assertFormFlushContains($form, ['<input type="submit" value="Caption" name="submitbutton" id="submitbutton"  onclick=\'this.form.submit();this.disabled=true;doIt()\' />error_submitbutton']);
     }
 
     public function test_imageButton(): void
@@ -72,7 +72,7 @@ final class formhandler_ButtonsTest extends FormhandlerTestCase
         $form->imageButton("image.gif", "imagebutton");
         $form->imageButton("image.gif", null, 'data-old="123"');
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="image" src="image.gif" name="button1" id="button1" />error_button1',
             '<input type="image" src="image.gif" name="imagebutton" id="imagebutton" />error_imagebutton',
             '<input type="image" src="image.gif" name="button2" id="button2" data-old="123" />error_button2'
@@ -88,7 +88,7 @@ final class formhandler_ButtonsTest extends FormhandlerTestCase
         $form->resetButton(null, "resetbutton");
         $form->resetButton(null, null, 'data-old="123"');
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="reset" value="Reset" name="button1" id="button1" />error_button1',
             '<input type="reset" value="Resetbutton" name="button2" id="button2" />error_button2',
             '<input type="reset" value="Reset" name="resetbutton" id="resetbutton" />error_resetbutton',
@@ -106,7 +106,7 @@ final class formhandler_ButtonsTest extends FormhandlerTestCase
         $form->cancelButton(null, null, "cancelbutton");
         $form->cancelButton(null, null, null, 'data-old="123"');
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="button" name="button1" id="button1" value="Cancel"  onclick="history.back(-1)" />error_button1',
             '<input type="button" name="button2" id="button2" value="CancelButton"  onclick="history.back(-1)" />error_button2',
             '<input type="button" name="button3" id="button3" value="Cancel"  onclick="document.location.href=\'backurl\'" />error_button3',
@@ -124,7 +124,7 @@ final class formhandler_ButtonsTest extends FormhandlerTestCase
         $form->backButton(null, "backbutton");
         $form->backButton(null, null, 'data-old="123"');
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="button" name="button1" id="button1" value="Back"  onclick="pageBack(document.forms[\'FormHandler\']);" />error_button1',
             '<input type="button" name="button2" id="button2" value="BackButton"  onclick="pageBack(document.forms[\'FormHandler\']);" />error_button2',
             '<input type="button" name="backbutton" id="backbutton" value="Back"  onclick="pageBack(document.forms[\'FormHandler\']);" />error_backbutton',

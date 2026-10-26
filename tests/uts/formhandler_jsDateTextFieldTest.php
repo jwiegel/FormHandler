@@ -8,13 +8,13 @@ final class formhandler_jsDateTextFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->jsDateTextField("jsDatejsdatetextfield", "jsdatetextfield");
 
-        $this->assertEmpty($form->getValue("jsdatetextfield"));
+        static::assertEmpty($form->getValue("jsdatetextfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/js/calendar_popup.js',
             'jsDatejsdatetextfield:<input type="text" name="jsdatetextfield" id="jsdatetextfield" value="" size="20" />',
             '<a href=\'javascript:;\' onclick="if( cal_jsdatetextfield ) cal_jsdatetextfield.select(document.forms[\'FormHandler\'].elements[\'jsdatetextfield\'], \'anchor_jsdatetextfield\', \'dd-MM-yyyy\'); return false;"  name=\'anchor_jsdatetextfield\' id=\'anchor_jsdatetextfield\'>',
@@ -42,29 +42,28 @@ final class formhandler_jsDateTextFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->jsDateTextField("jsDatejsdatetextfield", "jsdatetextfield");
         $form->jsDateTextField("jsDatejsdatetextfield2", "jsdatetextfield2");
         $form->jsDateTextField("jsDatejsdatetextfield3", "jsdatetextfield3", null, "d.m.Y");
         $form->jsDateTextField("jsDatejsdatetextfield4", "jsdatetextfield4", null, null, true);
 
-        $this->assertEquals("14-04-2020", $form->getValue("jsdatetextfield"));
-        $this->assertEquals("14.04.2020", $form->getValue("jsdatetextfield2"));
-        $this->assertEquals("14.04.2020", $form->getValue("jsdatetextfield3"));
-        $this->assertEquals("14-04-2020", $form->getValue("jsdatetextfield4"));  // already parsed into correct presentation!
+        static::assertEquals("14-04-2020", $form->getValue("jsdatetextfield"));
+        static::assertEquals("14.04.2020", $form->getValue("jsdatetextfield2"));
+        static::assertEquals("14.04.2020", $form->getValue("jsdatetextfield3"));
+        static::assertEquals("14-04-2020", $form->getValue("jsdatetextfield4"));  // already parsed into correct presentation!
 
-        $this->assertEquals([2020, 4, 14], $form->getAsArray("jsdatetextfield"));
-        $this->expectError();
-        $this->expectExceptionMessage("Value is not a valid date [14.04.2020]");
-        $form->getAsArray("jsdatetextfield2");
-        $this->assertEquals([2020, 4, 14], $form->getAsArray("jsdatetextfield3"));
-        $this->assertEquals([2020, 4, 14], $form->getAsArray("jsdatetextfield4"));
+        static::assertEquals([2020, 4, 14], $form->getAsArray("jsdatetextfield"));
+        static::assertNull($form->getAsArray("jsdatetextfield2"));
+        $this->assertTriggertError("Value is not a valid date [14.04.2020]", E_USER_ERROR);
+        static::assertEquals([2020, 4, 14], $form->getAsArray("jsdatetextfield3"));
+        static::assertEquals([2020, 4, 14], $form->getAsArray("jsdatetextfield4"));
 
         $e = $form->catchErrors();
 
-        $this->assertEquals(1, sizeof($e));
-        $this->assertEquals('<span id="error_jsdatetextfield2" class="error">You did not enter a correct value for this field!</span>', $e['jsdatetextfield2']);
+        static::assertEquals(1, sizeof($e));
+        static::assertEquals('<span id="error_jsdatetextfield2" class="error">You did not enter a correct value for this field!</span>', $e['jsdatetextfield2']);
     }
 
     public function test_posted_fillvalue_byinvalid(): void
@@ -74,15 +73,15 @@ final class formhandler_jsDateTextFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->jsDateTextField("jsDatejsdatetextfield", "jsdatetextfield");
 
-        $this->assertEquals("14-04-2020", $form->getValue("jsdatetextfield"));
+        static::assertEquals("14-04-2020", $form->getValue("jsdatetextfield"));
 
         $form->setError("jsdatetextfield", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'jsDatejsdatetextfield:<input type="text" name="jsdatetextfield" id="jsdatetextfield" value="14-04-2020" size="20" class="error" />',
             '<a href=\'javascript:;\' onclick="if( cal_jsdatetextfield ) cal_jsdatetextfield.select(document.forms[\'FormHandler\'].elements[\'jsdatetextfield\'], \'anchor_jsdatetextfield\', \'dd-MM-yyyy\'); return false;"  name=\'anchor_jsdatetextfield\' id=\'anchor_jsdatetextfield\'>',
             'FHTML/images/calendar.gif\' border=\'0\' alt=\'Select Date\' class="error" /></a>',
@@ -103,12 +102,12 @@ final class formhandler_jsDateTextFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->jsDateTextField("jsDatejsdatetextfield", "jsdatetextfield", null, null, null, 'data-old="123"');
 
-        $this->assertEmpty($form->getValue("jsdatetextfield"));
+        static::assertEmpty($form->getValue("jsdatetextfield"));
 
-        $this->assertFormFlushContains($form, ['jsDatejsdatetextfield:<input type="text" name="jsdatetextfield" id="jsdatetextfield" value="" size="20"  data-old="123"']);
+        static::assertFormFlushContains($form, ['jsDatejsdatetextfield:<input type="text" name="jsdatetextfield" id="jsdatetextfield" value="" size="20"  data-old="123"']);
     }
 };

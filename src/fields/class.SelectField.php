@@ -73,7 +73,7 @@ class SelectField extends Field
      *
      * Public: return the HTML of the field
      *
-     * @return string: the html
+     * @return string the html
      * @access public
      * @author Teye Heimans
      * @since 12-08-2008 Altered by Johan Wiegel, repaired valid html </optgroup> thanks to Roland van Wanrooy

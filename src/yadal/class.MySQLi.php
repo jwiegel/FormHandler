@@ -42,7 +42,7 @@ class YadalMySQLi extends Yadal
      * @param string $host: the host to connect to
      * @param string $username: the username which should be used to login
      * @param string $password: the password which should be used to login
-     * @return mysqli|false: The connection resource
+     * @return mysqli|false The connection resource
      * @access public
      * @author Teye Heimans
      */
@@ -126,12 +126,12 @@ class YadalMySQLi extends Yadal
      *
      * @param resource $sql: The sql where you want to get a result from
      * @param int $row: The row where you want a result from
-     * @param string $field: The field which result you want
+     * @param string|int $field: The field which result you want
      * @return string
      * @access public
      * @author Teye Heimans
      */
-    public function result($sql, $row = 0, $field = 0)
+    public function result($sql, $row = 0, $field = null)
     {
         return $this->mysqli_result($sql, $row, $field);
     }
@@ -481,7 +481,7 @@ class YadalMySQLi extends Yadal
      * Fetch the unique fields from the table
      *
      * @param string $table: The table where the unique-value-field should be collected from
-     * @return array: multidimensional array of the unique indexes on the table
+     * @return array multidimensional array of the unique indexes on the table
      * @access public
      * @author Teye Heimans
      */

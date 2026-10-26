@@ -101,9 +101,9 @@ class ListField extends Field
                 // dont save an empty value when it does not exists in the
                 // options array!
                 if (
-                    isset($sValue) ||
-                    (in_array($sValue, $this->_aOptions) ||
-                        array_key_exists($sValue, $this->_aOptions))
+                    !empty($sValue) ||
+                    in_array($sValue, $this->_aOptions) ||
+                    array_key_exists($sValue, $this->_aOptions)
                 )
                 {
                     $aValue[$iKey] = $sValue;
@@ -169,7 +169,7 @@ class ListField extends Field
      *
      * Return the HTML of the field
      *
-     * @return string: The html
+     * @return string The html
      * @access public
      * @author Teye Heimans
      */
@@ -230,10 +230,10 @@ class ListField extends Field
                     $this->_oOn->getField(),
                     $this->_oOff->getField(),
                     $this->_sName,
-                    sprintf($this->_oForm->_text(34), htmlentities(strip_tags($this->_sOffTitle), null, FH_HTML_ENCODING)),
-                    sprintf($this->_oForm->_text(34), htmlentities(strip_tags($this->_sOnTitle), null, FH_HTML_ENCODING))
+                    sprintf($this->_oForm->_text(34), htmlentities(strip_tags($this->_sOffTitle), encoding: FH_HTML_ENCODING)),
+                    sprintf($this->_oForm->_text(34), htmlentities(strip_tags($this->_sOnTitle), encoding: FH_HTML_ENCODING))
                 ),
-                (!empty($this->_bVerticalMode) && $this->_bVerticalMode) ? FH_LISTFIELD_VERTICAL_MASK : FH_LISTFIELD_HORIZONTAL_MASK
+                $this->_bVerticalMode ? FH_LISTFIELD_VERTICAL_MASK : FH_LISTFIELD_HORIZONTAL_MASK
             ) .
             (isset($this->_sExtraAfter) ? $this->_sExtraAfter : '');
     }

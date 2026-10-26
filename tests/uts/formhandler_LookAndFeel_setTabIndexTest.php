@@ -14,7 +14,7 @@ final class formhandler_LookAndFeel_setTabIndexTest extends FormhandlerTestCase
 
         $form->setTabIndex("fld2, fld3, fld1");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Field 1:<input type="text" name="fld1" id="fld1" value="" size="20" tabindex="3" />error_fld1',
             'Field 2:<input type="text" name="fld2" id="fld2" value="" size="20" tabindex="1" />error_fld2',
             'Field 3:<input type="text" name="fld3" id="fld3" value="" size="20" tabindex="2" />error_fld3'
@@ -37,7 +37,7 @@ final class formhandler_LookAndFeel_setTabIndexTest extends FormhandlerTestCase
 
         $form->setTabIndex($tabs);
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Field 1:<input type="text" name="fld1" id="fld1" value="" size="20" tabindex="3" />error_fld1',
             'Field 2:<input type="text" name="fld2" id="fld2" value="" size="20" tabindex="1" />error_fld2',
             'Field 3:<input type="text" name="fld3" id="fld3" value="" size="20" tabindex="2" />error_fld3'
@@ -60,7 +60,7 @@ final class formhandler_LookAndFeel_setTabIndexTest extends FormhandlerTestCase
 
         $form->setTabIndex($tabs);
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Field 1:<input type="text" name="fld1" id="fld1" value="" size="20" tabindex="3" />error_fld1',
             'Field 2:<input type="text" name="fld2" id="fld2" value="" size="20" tabindex="1" />error_fld2',
             'Field 3:<input type="text" name="fld3" id="fld3" value="" size="20" tabindex="2" />error_fld3'
@@ -85,7 +85,7 @@ final class formhandler_LookAndFeel_setTabIndexTest extends FormhandlerTestCase
 
         $form->setTabIndex($tabs);
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Field 1:<input type="text" name="fld1" id="fld1" value="" size="20" tabindex="3" />error_fld1',
             'Field 2:<input type="text" name="fld2" id="fld2" value="" size="20" tabindex="1" />error_fld2',
             'Field 3:<input type="text" name="fld3" id="fld3" value="" size="20" tabindex="2" />error_fld3'
@@ -104,9 +104,8 @@ final class formhandler_LookAndFeel_setTabIndexTest extends FormhandlerTestCase
 
         $form->setTabIndex($tabs);
 
-        $this->expectError();
-        $this->expectErrorMessage('Error, try to set the tabindex of an unknown field "fld4"!');
-
-        $form->flush();
+        $form->flush(true);
+        $this->assertTriggertError('Error, try to set the tabindex of an unknown field "fld4"!', E_USER_NOTICE);
+        $this->assertTriggertError('Could net set focus to unknown field "fld4"', E_USER_NOTICE);
     }
 };

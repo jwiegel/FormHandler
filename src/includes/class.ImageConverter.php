@@ -82,7 +82,7 @@ class ImageConverter
      *
      * Return the last error occoured
      *
-     * @return string: the last occoured error
+     * @return string the last occoured error
      * @author Teye Heimans
      * @access public
      */
@@ -149,7 +149,18 @@ class ImageConverter
                     imagealphablending($rImgResized, false);
                     imagesavealpha($rImgResized, true);
                 }
-
+                else if ($this->_getExtension($sDestination) == 'gif') 
+                {
+                    $transparentIndex = imagecolortransparent($rOrg);
+                    if ($transparentIndex >= 0) 
+                    {
+                        $transparentColor = imagecolorsforindex($rOrg, $transparentIndex);
+                        $transparentIndex = imagecolorallocate($rImgResized, $transparentColor['red'], $transparentColor['green'], $transparentColor['blue']);
+                        imagefill($rImgResized, 0, 0, $transparentIndex);
+                        imagecolortransparent($rImgResized, $transparentIndex);
+                    }
+                }
+                
                 ImageCopyResampled($rImgResized, $rOrg, 0, 0, 0, 0, $iNewWidth, $iNewHeight, $iOrgWidth, $iOrgHeight);
             }
             else
@@ -265,7 +276,7 @@ class ImageConverter
      * Return the installed GD version
      *
      * @param int $user_ver: the version needed by the user
-     * @return int: the installed gd version or 0 on failure
+     * @return int the installed gd version or 0 on failure
      * @access public
      * @author Teye Heimans
      */
@@ -434,8 +445,8 @@ class ImageConverter
     {
         $procent = $x / 100;
         $scale   = $max / $procent;
-        $x       = $scale * $procent;
-        $y       = $scale * ($y / 100);
+        $x       = intval($scale * $procent);
+        $y       = intval($scale * ($y / 100));
     }
 
     /**
@@ -497,7 +508,7 @@ class ImageConverter
      * @param resource $rImage: the image to save
      * @param string $sDestination: how to save the new image
      * @param int $iQuality: the quality of the new image
-     * @return bool: true of succes and false on failure
+     * @return bool true of succes and false on failure
      * @access private
      * @author Teye Heimans
      */

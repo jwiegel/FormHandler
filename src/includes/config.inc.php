@@ -31,8 +31,9 @@ else
 {
     // Please set here the location to the FH3 directory
     // like: /engineering/FH3/
-    $__fh_root = 'D:/PHP-Entwicklung/Formhandler';
+    $__fh_root = '';
 
+    // @phpstan-ignore-next-line (stays empty until the value above is edited)
     if (empty($__fh_root))
     {
         trigger_error(

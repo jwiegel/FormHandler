@@ -8,33 +8,33 @@ final class dbFormhandler_BaseTest extends dbFormhandlerTestCase
     {
         $form = new dbFormHandler();
 
-        $this->assertInstanceOf("dbFormHandler", $form);
+        static::assertInstanceOf("dbFormHandler", $form);
 
         $_sql = $this->getPrivateProperty($form, '_sql');
-        $this->assertTrue(is_array($_sql));
-        $this->assertEquals(0, sizeof($_sql));
+        static::assertTrue(is_array($_sql));
+        static::assertEquals(0, sizeof($_sql));
 
         $_dbData = $this->getPrivateProperty($form, '_dbData');
-        $this->assertTrue(is_array($_dbData));
-        $this->assertEquals(0, sizeof($_dbData));
+        static::assertTrue(is_array($_dbData));
+        static::assertEquals(0, sizeof($_dbData));
 
         $_dontSave = $this->getPrivateProperty($form, '_dontSave');
-        $this->assertTrue(is_array($_dontSave));
-        $this->assertEquals(0, sizeof($_dontSave));
+        static::assertTrue(is_array($_dontSave));
+        static::assertEquals(0, sizeof($_dontSave));
 
         $_id = $this->getPrivateProperty($form, '_id');
-        $this->assertTrue(is_array($_id));
-        $this->assertEquals(0, sizeof($_id));
+        static::assertTrue(is_array($_id));
+        static::assertEquals(0, sizeof($_id));
 
         $dieOnQuery = $this->getPrivateProperty($form, 'dieOnQuery');
-        $this->assertFalse($dieOnQuery);
+        static::assertFalse($dieOnQuery);
 
         $_editName = $this->getPrivateProperty($form, '_editName');
-        $this->assertEquals("id", $_editName);
+        static::assertEquals("id", $_editName);
 
-        $this->assertTrue($form->insert);
-        $this->assertFalse($form->edit);
-        $this->assertFalse($form->isPosted());
+        static::assertTrue($form->insert);
+        static::assertFalse($form->edit);
+        static::assertFalse($form->isPosted());
     }
 
     public function test_SetConnectionResource(): void
@@ -44,12 +44,22 @@ final class dbFormhandler_BaseTest extends dbFormhandlerTestCase
         $this->setConnectedTable($form, "test");
 
         $_db = $this->getPrivateProperty($form, '_db');
-        $this->assertInstanceOf("YadalDibi", $_db);
+        static::assertInstanceOf("YadalDibi", $_db);
 
-        $this->assertTrue($_db->isConnected());
-        $this->assertTrue($_db->_quoteNumbers);
+        static::assertTrue($_db->isConnected());
+        static::assertTrue($_db->_quoteNumbers);
 
         $_table = $this->getPrivateProperty($form, '_table');
-        $this->assertEquals("test", $_table);
+        static::assertEquals("test", $_table);
+    }
+
+    public function test_SetDatabaseAdapter(): void
+    {
+        $form = new dbFormHandler();
+        $adapter = $this->createMock(DatabaseAdapter::class);
+
+        $form->setDatabaseAdapter($adapter);
+
+        static::assertSame($adapter, $this->getPrivateProperty($form, '_db'));
     }
 };

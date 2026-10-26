@@ -19,13 +19,22 @@ final class formhandler_DataHandlingTest extends FormhandlerTestCase
 
         $form->dateField('Date', 'date');
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         list($year, $month, $day) = $form->getAsArray('date');
 
-        $this->assertEquals("2020", $year);
-        $this->assertEquals("3", $month);
-        $this->assertEquals("21", $day);
+        static::assertEquals("2020", $year);
+        static::assertEquals("3", $month);
+        static::assertEquals("21", $day);
+    }
+
+    public function testGetAsArray_expectedError(): void
+    {
+        $form = new FormHandler();
+
+        static::assertFalse($form->getAsArray('date'));
+
+        $this->assertTriggertError('The datefield "date" does not exists!', E_USER_NOTICE);
     }
 
     public function testGetValue(): void
@@ -37,10 +46,10 @@ final class formhandler_DataHandlingTest extends FormhandlerTestCase
 
         $form->textField("Name", "name");
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
-        $this->assertEquals("Text", $form->getValue("name"));
-        $this->assertEquals("Text", $form->value("name"));
+        static::assertEquals("Text", $form->getValue("name"));
+        static::assertEquals("Text", $form->value("name"));
     }
 
     public function testSetValue(): void
@@ -50,11 +59,11 @@ final class formhandler_DataHandlingTest extends FormhandlerTestCase
         $form->textField("Name", "name", FH_STRING);
         $form->setValue("name", "defaultValue");
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $expected  = 'value="defaultValue"';
 
-        $this->assertStringContainsString($expected, $form->flush(true));
+        static::assertStringContainsString($expected, $form->flush(true));
     }
 
     public function testAddValue(): void
@@ -66,16 +75,16 @@ final class formhandler_DataHandlingTest extends FormhandlerTestCase
 
         $form->textField("Name", "name", FH_STRING);
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
-        $this->assertEquals("Text", $form->getValue("name"));
+        static::assertEquals("Text", $form->getValue("name"));
 
         $form->addValue("name", "Code");
 
         $form->onCorrect("doRun_ReturnDataName");
 
         $expected  = "Code";
-        $this->assertStringContainsString($expected, $form->flush(true));
+        static::assertStringContainsString($expected, $form->flush(true));
     }
 
     public function testOnCorrect(): void
@@ -90,7 +99,7 @@ final class formhandler_DataHandlingTest extends FormhandlerTestCase
         $form->onCorrect("doRun_ReturnDataName");
 
         $expected  = $_POST['name'];
-        $this->assertEquals($expected, $form->flush(true));
+        static::assertEquals($expected, $form->flush(true));
     }
 
     public function testOnCorrect_Class(): void
@@ -111,7 +120,7 @@ final class formhandler_DataHandlingTest extends FormhandlerTestCase
         );
 
         $expected  = $_POST['name'];
-        $this->assertEquals($expected, $form->flush(true));
+        static::assertEquals($expected, $form->flush(true));
     }
 
     public function testOnCorrect_Validation_false(): void
@@ -127,7 +136,7 @@ final class formhandler_DataHandlingTest extends FormhandlerTestCase
 
         $expected  = '<span id="error_name" class="error">Your name has to be at least 3 characters!</span>';
 
-        $this->assertStringContainsString($expected, $form->flush(true));
+        static::assertStringContainsString($expected, $form->flush(true));
     }
 
     public function testOnCorrect_Validation_true(): void
@@ -142,7 +151,7 @@ final class formhandler_DataHandlingTest extends FormhandlerTestCase
         $form->onCorrect("doRun_testOnCorrect_Validation");
 
         $expected  = $_POST['name'];
-        $this->assertEquals($expected, $form->flush(true));
+        static::assertEquals($expected, $form->flush(true));
     }
 
     public function testSetError(): void
@@ -154,7 +163,7 @@ final class formhandler_DataHandlingTest extends FormhandlerTestCase
         $form->setError("name", "This is an error");
 
         $expected  = '<span id="error_name" class="error">This is an error</span>';
-        $this->assertStringContainsString($expected, $form->flush(true));
+        static::assertStringContainsString($expected, $form->flush(true));
     }
 }
 

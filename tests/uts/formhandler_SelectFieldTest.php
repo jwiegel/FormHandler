@@ -14,13 +14,13 @@ final class formhandler_SelectFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->selectField("Selectfield", "selectfield", $this->aOptions, null, true);
 
-        $this->assertEmpty($form->getValue("selectfield"));
+        static::assertEmpty($form->getValue("selectfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Selectfield:<select name="selectfield" id="selectfield" size="1">',
             '<option  value="o1" >Option1</option>',
             '<option  value="o2" >Option2</option>',
@@ -33,13 +33,13 @@ final class formhandler_SelectFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->selectField("Selectfield", "selectfield", $this->aOptions, null, true, true);
 
-        $this->assertEmpty($form->getValue("selectfield"));
+        static::assertEmpty($form->getValue("selectfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Selectfield:<select name="selectfield[]" id="selectfield" size="4" multiple="multiple">',
             '<option  value="o1" >Option1</option>',
             '<option  value="o2" >Option2</option>',
@@ -57,13 +57,13 @@ final class formhandler_SelectFieldTest extends FormhandlerTestCase
         $aOptions['o6'] = 'Option6';
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->selectField("Selectfield", "selectfield", $aOptions, null, true);
 
-        $this->assertEmpty($form->getValue("selectfield"));
+        static::assertEmpty($form->getValue("selectfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Selectfield:<select name="selectfield" id="selectfield" size="1">',
             '<optgroup label="Label1">',
             '<option  value="o1" >Option1</option>',
@@ -81,13 +81,13 @@ final class formhandler_SelectFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->selectField("Selectfield", "selectfield", $this->aOptions, null, false);
 
-        $this->assertEmpty($form->getValue("selectfield"));
+        static::assertEmpty($form->getValue("selectfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Selectfield:<select name="selectfield" id="selectfield" size="1">',
             '<option  value="Option1" >Option1</option>',
             '<option  value="Option2" >Option2</option>',
@@ -103,13 +103,13 @@ final class formhandler_SelectFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->selectField("Selectfield", "selectfield", $this->aOptions);
 
-        $this->assertEquals("o1", $form->getValue("selectfield"));
+        static::assertEquals("o1", $form->getValue("selectfield"));
 
-        $this->assertTrue($form->isCorrect());
+        static::assertTrue($form->isCorrect());
     }
 
     public function test_posted_fillvalue_byinvalid(): void
@@ -119,15 +119,15 @@ final class formhandler_SelectFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->selectField("Selectfield", "selectfield", $this->aOptions);
 
-        $this->assertEquals("o1", $form->getValue("selectfield"));
+        static::assertEquals("o1", $form->getValue("selectfield"));
 
         $form->setError("selectfield", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Selectfield:<select class="error" name="selectfield" id="selectfield" size="1">',
             '<option  value="o1"  selected="selected">Option1</option>',
             '<option  value="o2" >Option2</option>',
@@ -143,15 +143,15 @@ final class formhandler_SelectFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->selectField("Selectfield", "selectfield", $this->aOptions, null, null, true);
 
-        $this->assertEquals(["o1", "o3"], $form->getValue("selectfield"));
+        static::assertEquals(["o1", "o3"], $form->getValue("selectfield"));
 
         $form->setError("selectfield", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Selectfield:<select class="error" name="selectfield[]" id="selectfield" size="4" multiple="multiple">',
             '<option  value="o1"  selected="selected">Option1</option>',
             '<option  value="o2" >Option2</option>',
@@ -164,13 +164,13 @@ final class formhandler_SelectFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->selectField("Selectfield", "selectfield", $this->aOptions, null, true, null, 2);
 
-        $this->assertEmpty($form->getValue("selectfield"));
+        static::assertEmpty($form->getValue("selectfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Selectfield:<select name="selectfield" id="selectfield" size="2">',
             '<option  value="o1" >Option1</option>',
             '<option  value="o2" >Option2</option>',
@@ -182,18 +182,27 @@ final class formhandler_SelectFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->selectField("Selectfield", "selectfield", $this->aOptions, null, true, null, null, 'data-old="123"');
 
-        $this->assertEmpty($form->getValue("selectfield"));
+        static::assertEmpty($form->getValue("selectfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Selectfield:<select name="selectfield" id="selectfield" size="1" data-old="123">',
             '<option  value="o1" >Option1</option>',
             '<option  value="o2" >Option2</option>',
             '<option  value="o3" >Option3</option>',
             '</select>error_selectfield'
         ]);
+    }
+
+    public function test_expected_error_options_no_array(): void
+    {
+        $form = new FormHandler();
+
+        $form->selectField("Selectfield", "selectfield", "noarray");
+
+        $this->assertTriggertError("You have to give an array as value with the selectfield 'selectfield'", E_USER_WARNING);
     }
 };

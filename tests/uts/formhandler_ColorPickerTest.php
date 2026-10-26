@@ -8,13 +8,13 @@ final class formhandler_ColorPickerTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->colorPicker("Colorpicker", "colorpicker");
 
-        $this->assertEmpty($form->getValue("colorpicker"));
+        static::assertEmpty($form->getValue("colorpicker"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/js/jscolor/jscolor.js',
             'Colorpicker:<input type="text" name="colorpicker" id="colorpicker" value="" size="20"  class="color" />error_colorpicker'
         ]);
@@ -24,13 +24,13 @@ final class formhandler_ColorPickerTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->colorPicker("Colorpicker", "colorpicker");
 
         $form->setFieldViewMode("colorpicker");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/js/jscolor/jscolor.js',
             'Colorpicker:error_colorpicker'
         ]);
@@ -40,11 +40,11 @@ final class formhandler_ColorPickerTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->colorPicker("Colorpicker", "colorpicker", null, null, null, "class=\"dummy\"");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'FHTML/js/jscolor/jscolor.js',
             'Colorpicker:<input type="text" name="colorpicker" id="colorpicker" value="" size="20"  class="color dummy" />error_colorpicker'
         ]);
@@ -57,11 +57,11 @@ final class formhandler_ColorPickerTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->colorPicker("Colorpicker", "colorpicker");
 
-        $this->assertEquals("FFCC00", $form->getValue("colorpicker"));
+        static::assertEquals("FFCC00", $form->getValue("colorpicker"));
     }
 
     public function test_posted_fillvalue_byinvalid(): void
@@ -71,15 +71,15 @@ final class formhandler_ColorPickerTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->colorPicker("Colorpicker", "colorpicker");
 
-        $this->assertEquals("FFCC00", $form->getValue("colorpicker"));
+        static::assertEquals("FFCC00", $form->getValue("colorpicker"));
 
         $form->setError("colorpicker", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Colorpicker:<input type="text" name="colorpicker" id="colorpicker" value="FFCC00" size="20"  class="error color" />error_colorpicker',
             '<span id="error_colorpicker" class="error">forcedError</span>'
         ]);

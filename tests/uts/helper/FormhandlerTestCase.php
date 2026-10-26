@@ -17,6 +17,37 @@ abstract class FormhandlerTestCase extends TestCase
 {
     private ?ReflectionClass $_Reflector = null;
 
+    private array $_triggeredErrors = array();
+
+    protected function assertTriggertError(string $message, int $errorlevel): void
+    {
+        static::assertTrue(count($this->_triggeredErrors) > 0, "no errors triggered");
+
+        $triggeredError = array_shift($this->_triggeredErrors);
+        static::assertEquals($triggeredError["level"], $errorlevel, "wrong expected errorlevel");
+        static::assertEquals($triggeredError["message"], $message, "wrong expected errormessage");
+    }
+
+    public function errorHandler(int $errorlevel, string $message)
+    {
+        array_push($this->_triggeredErrors, array("level" => $errorlevel, "message" => $message));
+    }
+
+    protected function setUp(): void
+    {
+        set_error_handler(array($this, 'errorhandler'));
+    }
+
+    protected function tearDown(): void
+    {
+        if (count($this->_triggeredErrors) > 0)
+        {
+            $triggeredErrormessage = $this->_triggeredErrors[0]["message"];
+            static::fail("Unexpected triggered error: {$triggeredErrormessage}");
+        }
+        restore_error_handler();
+    }
+
     protected function getFormhandlerType(): string
     {
         return "Formhandler";
@@ -82,29 +113,28 @@ abstract class FormhandlerTestCase extends TestCase
      * @param string|array $expected
      * @return string HTML for additional validation
      */
-    protected function assertFormFlushContains(FormHandler $form, $expected): string
+    protected static function assertFormFlushContains(FormHandler $form, $expected): string
     {
         $t = (string)$form->flush(true);
-
         if (is_array($expected))
         {
             // ordercheck
             $lastPos = -1;
             foreach ($expected as $e)
             {
-                //$this->assertStringContainsString($e, $t);
+                //static::assertStringContainsString($e, $t);
                 $p = strpos($t, $e);
                 if (!$p)
                 {
-                    $this->fail("missing string:\n{$e}");
+                    static::fail("missing string:\n{$e}");
                 }
 
-                $this->assertGreaterThan($lastPos, $p, "wrong order of strings '{$e}'");
+                static::assertGreaterThan($lastPos, $p, "wrong order of strings '{$e}'");
                 $lastPos = $p;
             }
         }
         else
-            $this->assertStringContainsString($expected, $t);
+            static::assertStringContainsString($expected, $t);
 
         return (string)$t;
     }
@@ -115,9 +145,9 @@ abstract class FormhandlerTestCase extends TestCase
      * @param FormHandler $form
      * @return void
      */
-    protected function assertFlush(FormHandler $form): void
+    protected static function assertFlush(FormHandler $form): void
     {
         $t = $form->flush(true);
-        $this->assertEquals("", $t);
+        static::assertEquals("", $t);
     }
 };

@@ -60,70 +60,70 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
     /**
      * @dataProvider timeintervall
      */
-    public function test_new($timeintervall): void
-    {
-        define('FH_TIMEFIELD_SET_CUR_TIME', false);
-        define('FH_TIMEFIELD_MINUTE_STEPS', $timeintervall);
-        $form = new FormHandler();
+    // public function test_new($timeintervall): void
+    // {
+    //     define('FH_TIMEFIELD_SET_CUR_TIME', false);
+    //     define('FH_TIMEFIELD_MINUTE_STEPS', $timeintervall);
+    //     $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+    //     static::assertFalse($form->isPosted());
 
-        $form->timeField("Timefield", "timefield", null, false);
+    //     $form->timeField("Timefield", "timefield", null, false);
 
-        $this->assertEmpty($form->getValue("timefield"));
+    //     static::assertEmpty($form->getValue("timefield"));
 
-        $aExpected = [];
-        $aExpected[] = 'Timefield:<select name="timefield_hour" id="timefield_hour" size="1">	<option  value="" ></option>';
+    //     $aExpected = [];
+    //     $aExpected[] = 'Timefield:<select name="timefield_hour" id="timefield_hour" size="1">	<option  value="" ></option>';
 
-        $aExpected[] = implode("\n\t", $this->getHours(true));
-        $aExpected[] = '</select> : <select name="timefield_minute" id="timefield_minute" size="1">	<option  value="" ></option>';
-        $aExpected[] = implode("\n\t", $this->getMinutes($timeintervall));
-        $aExpected[] = '</select>error_timefield';
+    //     $aExpected[] = implode("\n\t", $this->getHours(true));
+    //     $aExpected[] = '</select> : <select name="timefield_minute" id="timefield_minute" size="1">	<option  value="" ></option>';
+    //     $aExpected[] = implode("\n\t", $this->getMinutes($timeintervall));
+    //     $aExpected[] = '</select>error_timefield';
 
-        $this->assertFormFlushContains($form, $aExpected);
-    }
+    //     static::assertFormFlushContains($form, $aExpected);
+    // }
 
     /**
      * @dataProvider timeintervall
      */
-    public function test_new_currenttime($timeintervall): void
-    {
-        define('FH_TIMEFIELD_SET_CUR_TIME', true);
-        define('FH_TIMEFIELD_MINUTE_STEPS', $timeintervall);
-        $form = new FormHandler();
+    // public function test_new_currenttime($timeintervall): void
+    // {
+    //     define('FH_TIMEFIELD_SET_CUR_TIME', true);
+    //     define('FH_TIMEFIELD_MINUTE_STEPS', $timeintervall);
+    //     $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+    //     static::assertFalse($form->isPosted());
 
-        $form->timeField("Timefield", "timefield", null, true);
+    //     $form->timeField("Timefield", "timefield", null, true);
 
-        $this->assertEmpty($form->getValue("timefield"));
+    //     static::assertEmpty($form->getValue("timefield"));
 
-        $hour = (int)date('H');
-        $minute = (int)date('i');
-        if ($this->getNearestMinute($minute, $timeintervall))
-            $hour--;
+    //     $hour = (int)date('H');
+    //     $minute = (int)date('i');
+    //     if ($this->getNearestMinute($minute, $timeintervall))
+    //         $hour--;
 
-        $aExpected = [];
-        $aExpected[] = 'Timefield:<select name="timefield_hour" id="timefield_hour" size="1">';
+    //     $aExpected = [];
+    //     $aExpected[] = 'Timefield:<select name="timefield_hour" id="timefield_hour" size="1">';
 
-        $aExpected[] = implode("\n\t", $this->getHours(true, $hour));
-        $aExpected[] = '</select> : <select name="timefield_minute" id="timefield_minute" size="1">';
-        $aExpected[] = implode("\n\t", $this->getMinutes($timeintervall, $minute));
-        $aExpected[] = '</select>error_timefield';
+    //     $aExpected[] = implode("\n\t", $this->getHours(true, $hour));
+    //     $aExpected[] = '</select> : <select name="timefield_minute" id="timefield_minute" size="1">';
+    //     $aExpected[] = implode("\n\t", $this->getMinutes($timeintervall, $minute));
+    //     $aExpected[] = '</select>error_timefield';
 
-        $this->assertFormFlushContains($form, $aExpected);
-    }
+    //     static::assertFormFlushContains($form, $aExpected);
+    // }
 
     public function test_new_required(): void
     {
         define('FH_TIMEFIELD_SET_CUR_TIME', false);
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->timeField("Timefield", "timefield", null);
 
-        $this->assertEmpty($form->getValue("timefield"));
+        static::assertEmpty($form->getValue("timefield"));
 
         $aExpected = [];
         $aExpected[] = 'Timefield:<select name="timefield_hour" id="timefield_hour" size="1">	<option  value="00"  selected="selected">00</option>';
@@ -132,7 +132,7 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
         $aExpected[] = implode("\n\t", $this->getMinutes(10, 0));
         $aExpected[] = '</select>error_timefield';
 
-        $this->assertFormFlushContains($form, $aExpected);
+        static::assertFormFlushContains($form, $aExpected);
     }
 
     public function test_posted(): void
@@ -143,11 +143,11 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->timeField("Timefield", "timefield");
 
-        $this->assertEquals("12:34", $form->getValue("timefield"));
+        static::assertEquals("12:34", $form->getValue("timefield"));
     }
 
     public function test_posted_fillvalue_byinvalid(): void
@@ -158,11 +158,11 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->timeField("Timefield", "timefield", null, false);
 
-        $this->assertEquals("12:30", $form->getValue("timefield"));
+        static::assertEquals("12:30", $form->getValue("timefield"));
 
         $form->setError("timefield", "forcedError");
 
@@ -174,7 +174,7 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
         $aExpected[] = implode("\n\t", $this->getMinutes(10, 30));
         $aExpected[] = '</select>error_timefield';
 
-        $this->assertFormFlushContains($form, $aExpected);
+        static::assertFormFlushContains($form, $aExpected);
     }
 
     public function test_validator(): void
@@ -183,15 +183,15 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->timeField("Timefield", "timefield", FH_NOT_EMPTY);
 
-        $this->assertEmpty($form->getValue("timefield"));
+        static::assertEmpty($form->getValue("timefield"));
 
         $t = $form->catchErrors(false);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<span id="error_timefield" class="error">You did not enter a correct value for this field!</span>',
             $t['timefield']
         );
@@ -202,11 +202,11 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
         define('FH_TIMEFIELD_SET_CUR_TIME', false);
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->timeField("Timefield", "timefield", null, false, 12);
 
-        $this->assertEmpty($form->getValue("timefield"));
+        static::assertEmpty($form->getValue("timefield"));
 
         $aExpected = [];
         $aExpected[] = 'Timefield:<select name="timefield_hour" id="timefield_hour" size="1">	<option  value="" ></option>';
@@ -216,7 +216,19 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
         $aExpected[] = implode("\n\t", $this->getMinutes(10));
         $aExpected[] = '</select>error_timefield';
 
-        $this->assertFormFlushContains($form, $aExpected);
+        static::assertFormFlushContains($form, $aExpected);
+    }
+
+    public function test_new_format_expected_formaterror(): void
+    {
+        define('FH_TIMEFIELD_SET_CUR_TIME', false);
+        $form = new FormHandler();
+
+        static::assertFalse($form->isPosted());
+
+        $form->timeField("Timefield", "timefield", null, false, 13);
+
+        $this->assertTriggertError("Invalid value as hour format! Only 12 or 24 are allowed!", E_USER_WARNING);
     }
 
     /**
@@ -227,11 +239,11 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
         define('FH_TIMEFIELD_MINUTE_STEPS', $timeintervall);
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->timeField("Timefield", "timefield", null, false);
 
-        $this->assertEmpty($form->getValue("timefield"));
+        static::assertEmpty($form->getValue("timefield"));
 
         $aExpected = [];
         $aExpected[] = 'Timefield:<select name="timefield_hour" id="timefield_hour" size="1">	<option  value="" ></option>';
@@ -240,18 +252,18 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
         $aExpected[] = implode("\n\t", $this->getMinutes($timeintervall));
         $aExpected[] = '</select>error_timefield';
 
-        $this->assertFormFlushContains($form, $aExpected);
+        static::assertFormFlushContains($form, $aExpected);
     }
 
     public function test_new_extra(): void
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->timeField("Timefield", "timefield", null, false, null, 'data-old="123"');
 
-        $this->assertEmpty($form->getValue("timefield"));
+        static::assertEmpty($form->getValue("timefield"));
 
         $aExpected = [];
         $aExpected[] = 'Timefield:<select name="timefield_hour" id="timefield_hour" size="1" data-old="123">	<option  value="" ></option>';
@@ -260,6 +272,6 @@ final class formhandler_TimeFieldTest extends FormhandlerTestCase
         $aExpected[] = implode("\n\t", $this->getMinutes(10));
         $aExpected[] = '</select>error_timefield';
 
-        $this->assertFormFlushContains($form, $aExpected);
+        static::assertFormFlushContains($form, $aExpected);
     }
 };

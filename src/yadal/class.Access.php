@@ -49,7 +49,7 @@ class Access extends Yadal
      * @param string $connStr: Connection string data other then userid, password and datasource
      * @param string $username: the username which should be used to login
      * @param string $password: the password which should be used to login
-     * @return resource: The connection resource or false on failure
+     * @return resource The connection resource or false on failure
      * @access public
      * @author Teye Heimans
      */
@@ -408,7 +408,7 @@ class Access extends Yadal
      * Get the primary keys from the table
      *
      * @param  string $table: The table where we should fetch the primary keys from
-     * @return array: primary keys
+     * @return array primary keys
      * @access public
      * @author Teye Heimans
      */

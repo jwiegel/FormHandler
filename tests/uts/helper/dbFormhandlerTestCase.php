@@ -20,26 +20,26 @@ abstract class dbFormhandlerTestCase extends FormhandlerTestCase
 
     protected function assertSavedId(int $expected): void
     {
-        $this->assertTrue(is_array($this->_expectedResult), "function 'dbFormhandlerTestCase::setCallbackOnSaved' not called");
-        $this->assertTrue(sizeof($this->_expectedResult) > 0, "formhandler don't call callback function");
+        static::assertTrue(is_array($this->_expectedResult), "function 'dbFormhandlerTestCase::setCallbackOnSaved' not called");
+        static::assertTrue(sizeof($this->_expectedResult) > 0, "formhandler don't call callback function");
 
-        $this->assertEquals($expected, $this->_expectedResult['id']);
+        static::assertEquals($expected, $this->_expectedResult['id']);
     }
     protected function assertSavedValue($expected, string $field): void
     {
-        $this->assertTrue(is_array($this->_expectedResult), "function 'dbFormhandlerTestCase::setCallbackOnSaved' not called");
-        $this->assertTrue(sizeof($this->_expectedResult) > 0, "formhandler don't call callback function");
+        static::assertTrue(is_array($this->_expectedResult), "function 'dbFormhandlerTestCase::setCallbackOnSaved' not called");
+        static::assertTrue(sizeof($this->_expectedResult) > 0, "formhandler don't call callback function");
 
-        $this->assertTrue(array_key_exists($field, $this->_expectedResult['values']), "field not saved");
-        $this->assertEquals($expected, $this->_expectedResult['values'][$field]);
+        static::assertTrue(array_key_exists($field, $this->_expectedResult['values']), "field not saved");
+        static::assertEquals($expected, $this->_expectedResult['values'][$field]);
     }
     protected function assertSavedValueEmtpy(string $field): void
     {
-        $this->assertTrue(is_array($this->_expectedResult), "function 'dbFormhandlerTestCase::setCallbackOnSaved' not called");
-        $this->assertTrue(sizeof($this->_expectedResult) > 0, "formhandler don't call callback function");
+        static::assertTrue(is_array($this->_expectedResult), "function 'dbFormhandlerTestCase::setCallbackOnSaved' not called");
+        static::assertTrue(sizeof($this->_expectedResult) > 0, "formhandler don't call callback function");
 
-        $this->assertTrue(array_key_exists($field, $this->_expectedResult['values']), "field not saved");
-        $this->assertEmpty($this->_expectedResult['values'][$field]);
+        static::assertTrue(array_key_exists($field, $this->_expectedResult['values']), "field not saved");
+        static::assertEmpty($this->_expectedResult['values'][$field]);
     }
 
     protected function setUp(): void

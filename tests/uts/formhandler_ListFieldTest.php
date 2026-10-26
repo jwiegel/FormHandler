@@ -20,13 +20,13 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements);
 
-        $this->assertEmpty($form->getValue("listfield"));
+        static::assertEmpty($form->getValue("listfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Listfield:<input type="hidden" name="listfield" id="listfield" value="" />',
             'SelectedAvailable',
             '<select name="listfield_ListOn[]" id="listfield_ListOn" size="4" multiple="multiple"  ondblclick="changeValue(\'listfield\', false)">',
@@ -45,13 +45,13 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements, null, null, null, null, null, null, true);
 
-        $this->assertEmpty($form->getValue("listfield"));
+        static::assertEmpty($form->getValue("listfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Listfield:<input type="hidden" name="listfield" id="listfield" value="" />',
             'Available',
             '<select name="listfield_ListOff[]" id="listfield_ListOff" size="4" multiple="multiple"  ondblclick="changeValue(\'listfield\', true)">',
@@ -73,11 +73,11 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements);
 
-        $this->assertEquals(['2', '3'], $form->getValue("listfield"));
+        static::assertEquals(['2', '3'], $form->getValue("listfield"));
     }
 
     public function test_posted_empty(): void
@@ -86,11 +86,11 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements);
 
-        $this->assertEquals([], $form->getValue("listfield"));
+        static::assertEquals([], $form->getValue("listfield"));
     }
 
     public function test_posted_useArrayKeyAsValueFalse(): void
@@ -100,11 +100,11 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements, null, false);
 
-        $this->assertEquals(['elem2', 'elem3'], $form->getValue("listfield"));
+        static::assertEquals(['elem2', 'elem3'], $form->getValue("listfield"));
     }
 
     public function test_posted_fillvalue_byinvalid_horizontal(): void
@@ -114,15 +114,15 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements);
 
-        $this->assertEquals(['2', '3'], $form->getValue("listfield"));
+        static::assertEquals(['2', '3'], $form->getValue("listfield"));
 
         $form->setError("listfield", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Listfield:<input type="hidden" name="listfield" id="listfield" value="2,3" />',
             'SelectedAvailable',
             '<select class="error" name="listfield_ListOn[]" id="listfield_ListOn" size="4" multiple="multiple"  ondblclick="changeValue(\'listfield\', false)">',
@@ -144,15 +144,15 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements, null, null, null, null, null, null, true);
 
-        $this->assertEquals(['2', '3'], $form->getValue("listfield"));
+        static::assertEquals(['2', '3'], $form->getValue("listfield"));
 
         $form->setError("listfield", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Listfield:<input type="hidden" name="listfield" id="listfield" value="2,3" />',
             'Available',
             '<select class="error" name="listfield_ListOff[]" id="listfield_ListOff" size="4" multiple="multiple"  ondblclick="changeValue(\'listfield\', true)">',
@@ -173,15 +173,15 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements, FH_NOT_EMPTY);
 
-        $this->assertEmpty($form->getValue("listfield"));
+        static::assertEmpty($form->getValue("listfield"));
 
         $t = $form->catchErrors(false);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<span id="error_listfield" class="error">You did not enter a correct value for this field!</span>',
             $t['listfield']
         );
@@ -191,13 +191,13 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements, null, false);
 
-        $this->assertEmpty($form->getValue("listfield"));
+        static::assertEmpty($form->getValue("listfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Listfield:<input type="hidden" name="listfield" id="listfield" value="" />',
             'SelectedAvailable',
             '<select name="listfield_ListOn[]" id="listfield_ListOn" size="4" multiple="multiple"  ondblclick="changeValue(\'listfield\', false)">',
@@ -216,13 +216,13 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements, null, false, null, null, null, null, true);
 
-        $this->assertEmpty($form->getValue("listfield"));
+        static::assertEmpty($form->getValue("listfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Listfield:<input type="hidden" name="listfield" id="listfield" value="" />',
             'Available',
             '<select name="listfield_ListOff[]" id="listfield_ListOff" size="4" multiple="multiple"  ondblclick="changeValue(\'listfield\', true)">',
@@ -244,15 +244,15 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements, null, false);
 
-        $this->assertEquals(['elem2', 'elem3'], $form->getValue("listfield"));
+        static::assertEquals(['elem2', 'elem3'], $form->getValue("listfield"));
 
         $form->setError("listfield", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Listfield:<input type="hidden" name="listfield" id="listfield" value="elem2,elem3" />',
             'SelectedAvailable',
             '<select class="error" name="listfield_ListOn[]" id="listfield_ListOn" size="4" multiple="multiple"  ondblclick="changeValue(\'listfield\', false)">',
@@ -274,15 +274,15 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->listField("Listfield", "listfield", $this->aElements, null, false, null, null, null, null, true);
 
-        $this->assertEquals(['elem2', 'elem3'], $form->getValue("listfield"));
+        static::assertEquals(['elem2', 'elem3'], $form->getValue("listfield"));
 
         $form->setError("listfield", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Listfield:<input type="hidden" name="listfield" id="listfield" value="elem2,elem3" />',
             'Available',
             '<select class="error" name="listfield_ListOff[]" id="listfield_ListOff" size="4" multiple="multiple"  ondblclick="changeValue(\'listfield\', true)">',
@@ -301,12 +301,12 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->listField("ListfieldV", "listfieldV", $this->aElements, null, null, "OnTitleV", "OffTitleV");
         $form->listField("ListfieldH", "listfieldH", $this->aElements, null, null, "OnTitleH", "OffTitleH", null, null, false);
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Select an item to move to the OffTitleV box or double click to move all items',
             'Select an item to move to the OnTitleV box or double click to move all',
             'Select an item to move to the OffTitleH box or double click to move all items',
@@ -318,12 +318,12 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->listField("ListfieldV", "listfieldV", $this->aElements, null, null, null, null, 123);
         $form->listField("ListfieldH", "listfieldH", $this->aElements, null, null, null, null, 123, null, false);
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'id="listfieldV_ListOn" size="123"',
             'id="listfieldV_ListOff" size="123"',
             'id="listfieldH_ListOn" size="123"',
@@ -335,12 +335,12 @@ final class formhandler_ListFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->listField("ListfieldV", "listfieldV", $this->aElements, null, null, null, null, null, 'data-old="123"');
         $form->listField("ListfieldH", "listfieldH", $this->aElements, null, null, null, null, null, 'data-old="123"', false);
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'id="listfieldV_ListOn" size="4" multiple="multiple" data-old="123"',
             'id="listfieldV_ListOff" size="4" multiple="multiple" data-old="123"',
             'id="listfieldH_ListOn" size="4" multiple="multiple" data-old="123"',

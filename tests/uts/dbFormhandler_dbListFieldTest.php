@@ -10,19 +10,19 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertTrue($form->insert);
-        $this->assertFalse($form->edit);
-        $this->assertFalse($form->isPosted());
+        static::assertTrue($form->insert);
+        static::assertFalse($form->edit);
+        static::assertFalse($form->isPosted());
 
         $this->setConnectedTable($form, "test");
 
         $form->textField("TextNullable", "textNullable");
         $form->textField("TextNotNullable", "textNotNullable");
 
-        $this->assertEmpty($form->getValue("textNullable"));
-        $this->assertEmpty($form->getValue("textNotNullable"));
+        static::assertEmpty($form->getValue("textNullable"));
+        static::assertEmpty($form->getValue("textNotNullable"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'input type="text" name="textNullable" id="textNullable" value=""',
             'input type="text" name="textNotNullable" id="textNotNullable" value=""'
         ]);
@@ -36,19 +36,17 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertFalse($form->insert);
-        $this->assertTrue($form->edit);
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->insert);
+        static::assertTrue($form->edit);
+        static::assertFalse($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->exactly(1))
             ->query($this->matches("SELECT * FROM test WHERE id = '123'"))
             ->willReturnResultSet([]);
 
-        $this->expectError();
-        $this->expectErrorMessage("Try to edit a none existing record!");
-
         $this->setConnectedTable($form, "test");
+        $this->assertTriggertError("Try to edit a none existing record!", E_USER_ERROR);
     }
 
     public function test_edit(): void
@@ -59,9 +57,9 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertFalse($form->insert);
-        $this->assertTrue($form->edit);
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->insert);
+        static::assertTrue($form->edit);
+        static::assertFalse($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->exactly(1))
@@ -75,10 +73,10 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
         $form->textField("TextNullable", "textNullable");
         $form->textField("TextNotNullable", "textNotNullable");
 
-        $this->assertEquals("text1", $form->getValue("textNullable"));
-        $this->assertEquals("text2", $form->getValue("textNotNullable"));
+        static::assertEquals("text1", $form->getValue("textNullable"));
+        static::assertEquals("text2", $form->getValue("textNotNullable"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'input type="text" name="textNullable" id="textNullable" value="text1"',
             'input type="text" name="textNotNullable" id="textNotNullable" value="text2"'
         ]);
@@ -92,9 +90,9 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertTrue($form->insert);
-        $this->assertFalse($form->edit);
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->insert);
+        static::assertFalse($form->edit);
+        static::assertTrue($form->isPosted());
 
         $this->setConnectedTable($form, "test");
 
@@ -111,7 +109,7 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEmpty($r);
+        static::assertEmpty($r);
         $this->assertSavedId(4712);
         $this->assertSavedValueEmtpy('textNullable');
         $this->assertSavedValueEmtpy('textNotNullable');
@@ -127,9 +125,9 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertTrue($form->insert);
-        $this->assertFalse($form->edit);
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->insert);
+        static::assertFalse($form->edit);
+        static::assertTrue($form->isPosted());
 
         $this->setConnectedTable($form, "test");
 
@@ -146,7 +144,7 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEmpty($r);
+        static::assertEmpty($r);
         $this->assertSavedId(4713);
         $this->assertSavedValue('thetext', 'textNullable');
         $this->assertSavedValue('anothertext', 'textNotNullable');
@@ -161,9 +159,9 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertFalse($form->insert);
-        $this->assertTrue($form->edit);
-        $this->assertTrue($form->isPosted());
+        static::assertFalse($form->insert);
+        static::assertTrue($form->edit);
+        static::assertTrue($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->exactly(1))
@@ -185,7 +183,7 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEmpty($r);
+        static::assertEmpty($r);
         $this->assertSavedId(4714);
         $this->assertSavedValueEmtpy('textNullable');
         $this->assertSavedValueEmtpy('textNotNullable');
@@ -202,9 +200,9 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertFalse($form->insert);
-        $this->assertTrue($form->edit);
-        $this->assertTrue($form->isPosted());
+        static::assertFalse($form->insert);
+        static::assertTrue($form->edit);
+        static::assertTrue($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->exactly(1))
@@ -225,7 +223,7 @@ final class dbFormhandler_dbListFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEmpty($r);
+        static::assertEmpty($r);
         $this->assertSavedId(4715);
         $this->assertSavedValue('thetext', 'textNullable');
         $this->assertSavedValue('anothertext', 'textNotNullable');

@@ -8,13 +8,13 @@ final class formhandler_CaptchaFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->CaptchaField("Captchafield", "captchafield");
 
-        $this->assertEmpty($form->getValue("captchafield"));
+        static::assertEmpty($form->getValue("captchafield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="image" src="',
             'FHTML/securimage/securimage_show.php?sid=',
             'name="button1" id="button1" onclick="return false;" style="cursor:default;" />error_button1Captchafield:<input type="text" name="captchafield" id="captchafield" value="" size="20" />error_captchafield'
@@ -28,15 +28,15 @@ final class formhandler_CaptchaFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->CaptchaField("Captchafield", "captchafield");
 
-        $this->assertFalse($form->isCorrect());
+        static::assertFalse($form->isCorrect());
 
         $t = $form->catchErrors(false);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<span id="error_captchafield" class="error">You did not enter a correct value for this field!</span>',
             $t['captchafield']
         );

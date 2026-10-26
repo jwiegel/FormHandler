@@ -1,0 +1,26 @@
+name: PHPStan
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  analyse:
+    name: PHPStan PHP 8.2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: gd, mbstring, mysqli
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: PHPStan Static Analysis
+        run: vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M --no-progress

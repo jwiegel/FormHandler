@@ -34,7 +34,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
             '</select>error_saveInField'
         ];
 
-        $this->assertFormFlushContains($form, $aExpected);
+        static::assertFormFlushContains($form, $aExpected);
     }
 
     public function test_edit(): void
@@ -45,9 +45,9 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertFalse($form->insert);
-        $this->assertTrue($form->edit);
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->insert);
+        static::assertTrue($form->edit);
+        static::assertFalse($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->exactly(1))
@@ -75,7 +75,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
             FH_NOT_EMPTY
         );
 
-        $this->assertEquals("2", $form->getValue("saveInField"));
+        static::assertEquals("2", $form->getValue("saveInField"));
 
         $aExpected = [
             'Options from a table:<select name="saveInField" id="saveInField" size="1">',
@@ -84,7 +84,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
             '</select>error_saveInField'
         ];
 
-        $a = $this->assertFormFlushContains($form, $aExpected);
+        $a = static::assertFormFlushContains($form, $aExpected);
     }
 
     public function test_insert(): void
@@ -97,7 +97,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
         $this->setConnectedTable($form, "test");
         $this->createMocksForTable();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->once())
@@ -127,7 +127,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEquals("", $r);
+        static::assertEquals("", $r);
         $this->assertSavedId(4711);
         $this->assertSavedValue('2', 'saveInField');
     }
@@ -172,11 +172,11 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
     //     $r = $form->flush(true);
 
-    //     $this->assertEquals("", $r);
+    //     static::assertEquals("", $r);
     //     $this->assertSavedId(4711);
     //     $this->assertSavedValue('3', 'saveInField');
 
-    //     $this->fail("forced failure: wrong value will be saved. 3 is not in list.");
+    //     static::fail("forced failure: wrong value will be saved. 3 is not in list.");
     // }
 
     public function test_update(): void
@@ -189,9 +189,9 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertFalse($form->insert);
-        $this->assertTrue($form->edit);
-        $this->assertTrue($form->isPosted());
+        static::assertFalse($form->insert);
+        static::assertTrue($form->edit);
+        static::assertTrue($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->exactly(1))
@@ -230,7 +230,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEquals("", $r);
+        static::assertEquals("", $r);
         $this->assertSavedId(123);
         $this->assertSavedValue('2', 'saveInField');
     }
@@ -240,7 +240,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
         $form = new dbFormHandler();
 
         $this->setConnectedTable($form, "test");
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->once())
@@ -267,7 +267,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
             '</select>error_saveInFieldString'
         ];
 
-        $this->assertFormFlushContains($form, $aExpected);
+        static::assertFormFlushContains($form, $aExpected);
     }
 
     // public function test_multiple_edit(): void
@@ -278,8 +278,8 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
     //     $form = new dbFormHandler();
 
-    //     $this->assertFalse($form->insert);
-    //     $this->assertTrue($form->edit);
+    //     static::assertFalse($form->insert);
+    //     static::assertTrue($form->edit);
 
     //     $this->getDatabaseMock()
     //             ->expects($this->exactly(1))
@@ -308,7 +308,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
     //         true
     //     );
 
-    //     $this->assertEquals(['0' => "2", '1' => " 1"], $form->getValue("saveInFieldString"));
+    //     static::assertEquals(['0' => "2", '1' => " 1"], $form->getValue("saveInFieldString"));
 
     //     $aExpected = [
     //         'Options from a table:<select name="saveInFieldString[]" id="saveInFieldString" size="4" multiple="multiple">',
@@ -317,9 +317,9 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
     //         '</select>error_saveInFieldString'
     //     ];
 
-    //     $a = $this->assertFormFlushContains($form, $aExpected);
+    //     $a = static::assertFormFlushContains($form, $aExpected);
 
-    //     $this->fail("forced failure: getValue has to deliver trimmed values, not ' 1'");
+    //     static::fail("forced failure: getValue has to deliver trimmed values, not ' 1'");
     // }
 
     public function test_multiple_insert(): void
@@ -329,7 +329,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $this->setConnectedTable($form, "test");
         $this->createMocksForTable();
@@ -362,7 +362,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEquals("", $r);
+        static::assertEquals("", $r);
         $this->assertSavedId(4711);
         $this->assertSavedValue(['0' => "2", '1' => "1"], 'saveInFieldString');
     }
@@ -376,7 +376,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
         $form = new dbFormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $this->getDatabaseMock()
             ->expects($this->exactly(1))
@@ -415,7 +415,7 @@ final class dbFormhandler_dbSelectFieldTest extends dbFormhandlerTestCase
 
         $r = $form->flush(true);
 
-        $this->assertEquals("", $r);
+        static::assertEquals("", $r);
         $this->assertSavedId(123);
         $this->assertSavedValue(['0' => "2"], 'saveInFieldString');
     }

@@ -197,7 +197,7 @@ class Validator
      *
      * Public: a boolean (case-insensitive "true"/"1" or "false"/"0")
      *
-     * @param string $value
+     * @param string|bool $value
      * @return bool
      */
     public static function IsBool(&$value)

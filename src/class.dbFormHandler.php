@@ -588,6 +588,50 @@ class dbFormHandler extends FormHandler
     }
 
     /**
+     * Create the database adapter used by this form.
+     *
+     * This factory method makes it possible to swap the implementation in tests
+     * or during a future database-library migration without changing the form logic.
+     *
+     * @param string $db
+     * @param string $type
+     * @return DatabaseAdapter
+     */
+    protected function createDatabaseAdapter($db, $type)
+    {
+        require_once(FH_YADAL_DIR . 'class.Yadal.php');
+
+        return newYadal($db, $type);
+    }
+
+    /**
+     * Set a database adapter directly.
+     *
+     * Useful for tests and future abstraction layers because the form logic no
+     * longer depends on the concrete Yadal constructor.
+     *
+     * @param DatabaseAdapter $db
+     * @return void
+     */
+    public function setDatabaseAdapter($db)
+    {
+        if (!($db instanceof DatabaseAdapter))
+        {
+            trigger_error(
+                'Error, database adapter must implement the DatabaseAdapter interface!',
+                E_USER_ERROR
+            );
+        }
+
+        $this->_db = $db;
+
+        if ($this->edit && $this->_db->isConnected())
+        {
+            $this->_loadDbData();
+        }
+    }
+
+    /**
      * dbFormHandler::dbInfo()
      *
      * Set the DBInfo.
@@ -601,8 +645,6 @@ class dbFormHandler extends FormHandler
      */
     public function dbInfo($db, $table, $type = null)
     {
-        require_once(FH_YADAL_DIR . 'class.Yadal.php');
-
         // if no db-type is given, set the default
         if (is_null($type))
         {
@@ -613,7 +655,7 @@ class dbFormHandler extends FormHandler
         $this->_table = $table;
 
         // create a new yadal object
-        $this->_db = newYadal($db, $type);
+        $this->_db = $this->createDatabaseAdapter($db, $type);
 
         // try to fetch the database data if we are connected
         if ($this->edit && $this->_db->isConnected())
@@ -682,7 +724,7 @@ class dbFormHandler extends FormHandler
      *
      * Use an already opened connection instead of opening a new one.
      *
-     * @param resource|string $conn:
+     * @param resource|string|\Doctrine\DBAL\Connection $conn:
      * @param resource|string|null $table: The table which should be used to save the data in
      * @param string|null $type: The type of database you are using
      * @return void
@@ -691,8 +733,6 @@ class dbFormHandler extends FormHandler
      */
     public function setConnectionResource($conn, $table = null, $type = null)
     {
-        require_once(FH_YADAL_DIR . 'class.Yadal.php');
-
         // if no db-type is given, set the default
         if (is_null($type))
         {
@@ -713,8 +753,10 @@ class dbFormHandler extends FormHandler
         // save the table name
         $this->_table = $table;
 
-        // create the yadal object
-        $this->_db = newYadal(null, $type);
+        // create the database adapter (a Doctrine DBAL connection needs no type)
+        $this->_db = $conn instanceof \Doctrine\DBAL\Connection
+            ? new DbalAdapter()
+            : $this->createDatabaseAdapter(null, $type);
 
         // set the sql resource which we should use
         $this->_db->setConnectionResource($conn);
@@ -785,7 +827,7 @@ class dbFormHandler extends FormHandler
      *
      * Return if the form is filled correctly (for the fields which are set!)
      *
-     * @return boolean: the form values valid or not
+     * @return boolean the form values valid or not
      * @access public
      * @author Teye Heimans
      */
@@ -807,7 +849,7 @@ class dbFormHandler extends FormHandler
      *
      * prints or returns the form
      *
-     * @return string|null: the form or null when the form should be printed
+     * @return string|null the form or null when the form should be printed
      * @access public
      * @author Teye Heimans
      */
@@ -979,7 +1021,7 @@ class dbFormHandler extends FormHandler
      *
      * Check if there are no double values for unique fields
      *
-     * @return boolean: false if the value is double, true otherwise
+     * @return boolean false if the value is double, true otherwise
      * @access private
      * @author Teye Heimans
      */
@@ -1007,6 +1049,8 @@ class dbFormHandler extends FormHandler
                     $fieldInForm = false;
                     $extra       = array(); // extra query info for the where clause
                     $quoted      = array(); // fields which are already quoted
+                    $field       = null;
+                    $value       = null;
 
                     // walk all unique fields by this index
                     foreach ($fields as $field)
@@ -1127,7 +1171,7 @@ class dbFormHandler extends FormHandler
                     $where = $this->_getWhereClause('<>', $extra);
 
                     // is there a selection filter ?
-                    if (is_array($extra) && sizeof($extra) > 0)
+                    if (sizeof($extra) > 0)
                     {
                         // check if the entry is double
                         $sql = $db->query(
@@ -1334,7 +1378,7 @@ class dbFormHandler extends FormHandler
      * Save the data into the database
      *
      * @param array $data: associative array with the fields => values which should be saved
-     * @return int: the id which was used to save the record
+     * @return int the id which was used to save the record
      * @access private
      * @author Teye Heimans
      */

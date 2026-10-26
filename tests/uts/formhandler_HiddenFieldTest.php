@@ -8,13 +8,13 @@ final class formhandler_HiddenFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->hiddenField("hiddenfield", "thevalue");
 
-        $this->assertEquals("thevalue", $form->getValue("hiddenfield"));
+        static::assertEquals("thevalue", $form->getValue("hiddenfield"));
 
-        $this->assertFormFlushContains($form, ['<input type="hidden" name="hiddenfield" id="hiddenfield" value="thevalue" />']);
+        static::assertFormFlushContains($form, ['<input type="hidden" name="hiddenfield" id="hiddenfield" value="thevalue" />']);
     }
 
     public function test_posted(): void
@@ -24,11 +24,11 @@ final class formhandler_HiddenFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->hiddenField("hiddenfield");
 
-        $this->assertEquals("hiddenvalue", $form->getValue("hiddenfield"));
+        static::assertEquals("hiddenvalue", $form->getValue("hiddenfield"));
     }
 
     public function test_posted_fillvalue_byinvalid(): void
@@ -38,15 +38,15 @@ final class formhandler_HiddenFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->hiddenField("hiddenfield");
 
-        $this->assertEquals("hiddenvalue", $form->getValue("hiddenfield"));
+        static::assertEquals("hiddenvalue", $form->getValue("hiddenfield"));
 
         $form->setError("hiddenfield", "forcedError");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             '<input type="hidden" name="hiddenfield" id="hiddenfield" value="hiddenvalue" />',
             '<span id="error_hiddenfield" class="error">forcedError</span>'
         ]);
@@ -58,15 +58,15 @@ final class formhandler_HiddenFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->hiddenField("hiddenfield", "", FH_NOT_EMPTY);
 
-        $this->assertEmpty($form->getValue("hiddenfield"));
+        static::assertEmpty($form->getValue("hiddenfield"));
 
         $t = $form->catchErrors(false);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<span id="error_hiddenfield" class="error">You did not enter a correct value for this field!</span>',
             $t['hiddenfield']
         );
@@ -76,12 +76,12 @@ final class formhandler_HiddenFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->hiddenField("hiddenfield", "", null, 'data-old="123"');
 
-        $this->assertEmpty($form->getValue("hiddenfield"));
+        static::assertEmpty($form->getValue("hiddenfield"));
 
-        $this->assertFormFlushContains($form, ['<input type="hidden" name="hiddenfield" id="hiddenfield" value="" data-old="123" />']);
+        static::assertFormFlushContains($form, ['<input type="hidden" name="hiddenfield" id="hiddenfield" value="" data-old="123" />']);
     }
 };

@@ -17,13 +17,13 @@ final class formhandler_TextSelectFieldTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->textSelectField("Textselectfield", "textselectfield", $this->aOptions);
 
-        $this->assertEmpty($form->getValue("textselectfield"));
+        static::assertEmpty($form->getValue("textselectfield"));
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             "<script type=\"text/javascript\">\n" .
                 "function FH_CLOSE_TEXTSELECT( id )\n" .
                 "{\n" .
@@ -48,13 +48,13 @@ final class formhandler_TextSelectFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->textSelectField("Textselectfield", "textselectfield", $this->aOptions);
 
-        $this->assertEquals("Option2", $form->getValue("textselectfield"));
+        static::assertEquals("Option2", $form->getValue("textselectfield"));
 
-        $this->assertTrue($form->isCorrect());
+        static::assertTrue($form->isCorrect());
     }
 
     public function test_posted_fillvalue_byinvalid(): void
@@ -64,53 +64,53 @@ final class formhandler_TextSelectFieldTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->textSelectField("Textselectfield", "textselectfield", $this->aOptions);
 
-        $this->assertEquals("Option2", $form->getValue("textselectfield"));
+        static::assertEquals("Option2", $form->getValue("textselectfield"));
 
         $form->setError("textselectfield", "forcedError");
 
-        $this->assertFormFlushContains($form, ['Textselectfield:textselectfield-Option2-20---textselectfield-Option1textselectfield-Option2textselectfield-Option3error_textselectfield<span id="error_textselectfield" class="error">forcedError</span>']);
+        static::assertFormFlushContains($form, ['Textselectfield:textselectfield-Option2-20---textselectfield-Option1textselectfield-Option2textselectfield-Option3error_textselectfield<span id="error_textselectfield" class="error">forcedError</span>']);
     }
 
     public function test_new_size(): void
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->textSelectField("Textselectfield", "textselectfield", $this->aOptions, null, 123);
 
-        $this->assertEmpty($form->getValue("textselectfield"));
+        static::assertEmpty($form->getValue("textselectfield"));
 
-        $this->assertFormFlushContains($form, ['Textselectfield:textselectfield--123---textselectfield-Option1textselectfield-Option2textselectfield-Option3error_textselectfield']);
+        static::assertFormFlushContains($form, ['Textselectfield:textselectfield--123---textselectfield-Option1textselectfield-Option2textselectfield-Option3error_textselectfield']);
     }
 
     public function test_new_maxlenght(): void
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->textSelectField("Textselectfield", "textselectfield", $this->aOptions, null, null, 456);
 
-        $this->assertEmpty($form->getValue("textselectfield"));
+        static::assertEmpty($form->getValue("textselectfield"));
 
-        $this->assertFormFlushContains($form, ['Textselectfield:textselectfield--20-maxlength="456" --textselectfield-Option1textselectfield-Option2textselectfield-Option3error_textselectfield']);
+        static::assertFormFlushContains($form, ['Textselectfield:textselectfield--20-maxlength="456" --textselectfield-Option1textselectfield-Option2textselectfield-Option3error_textselectfield']);
     }
 
     public function test_new_extra(): void
     {
         $form = new FormHandler();
 
-        $this->assertFalse($form->isPosted());
+        static::assertFalse($form->isPosted());
 
         $form->textSelectField("Textselectfield", "textselectfield", $this->aOptions, null, null, null, 'data-old="123"');
 
-        $this->assertEmpty($form->getValue("textselectfield"));
+        static::assertEmpty($form->getValue("textselectfield"));
 
-        $this->assertFormFlushContains($form, ['Textselectfield:textselectfield--20- data-old="123" --textselectfield-Option1textselectfield-Option2textselectfield-Option3error_textselectfield']);
+        static::assertFormFlushContains($form, ['Textselectfield:textselectfield--20- data-old="123" --textselectfield-Option1textselectfield-Option2textselectfield-Option3error_textselectfield']);
     }
 };

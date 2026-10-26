@@ -39,7 +39,7 @@ class PassField extends TextField
      *
      * Return the HTML of the field
      *
-     * @return string: the html
+     * @return string the html
      * @author Teye Heimans
      * @access public
      */
@@ -85,7 +85,7 @@ class PassField extends TextField
      * Check the value of this field with another passfield
      *
      * @param object $oObj
-     * @return boolean: true if the values are correct, false if not
+     * @return boolean true if the values are correct, false if not
      * @author Teye Heimans
      * @access public
      */
@@ -105,8 +105,11 @@ class PassField extends TextField
                 // it's an edit form.. keep the original
                 if (isset($this->_oForm->edit) && $this->_oForm->edit)
                 {
-                    $this->_oForm->_dontSave[] = $this->_sName;
-                    $this->_oForm->_dontSave[] = $oObj->_sName;
+                    if (property_exists($this->_oForm, '_dontSave'))
+                    {
+                        $this->_oForm->_dontSave[] = $this->_sName;
+                        $this->_oForm->_dontSave[] = $oObj->_sName;
+                    }
 
                     // make sure that no validator is overwriting the messages...
                     $this->setValidator(null);

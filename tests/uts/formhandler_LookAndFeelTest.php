@@ -14,7 +14,7 @@ final class formhandler_LookAndFeelTest extends FormhandlerTestCase
                 "  </tr>"
         );
 
-        $this->assertFormFlushContains($form, "<td colspan='3'><hr size='1' /></td>");
+        static::assertFormFlushContains($form, "<td colspan='3'><hr size='1' /></td>");
     }
 
     public function test_addLine(): void
@@ -24,7 +24,7 @@ final class formhandler_LookAndFeelTest extends FormhandlerTestCase
         $form->addLine();
         $form->addLine("theline");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             "<tr><td>&nbsp;</td><td>&nbsp;</td><td></td></tr>",
             "<tr><td>&nbsp;</td><td>&nbsp;</td><td>theline</td></tr>"
         ]);
@@ -38,7 +38,7 @@ final class formhandler_LookAndFeelTest extends FormhandlerTestCase
 
         $t = (string)$form->flush(true);
 
-        $this->assertNotEquals("table", $t);
+        static::assertNotEquals("table", $t);
     }
 
     public function test_setMask(): void
@@ -57,7 +57,7 @@ final class formhandler_LookAndFeelTest extends FormhandlerTestCase
         $form->textField("Textfield4", "textfield4");
         $form->setValue("textfield4", "value4");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Textfield||:||<input type="text" name="textfield" id="textfield" value="value" size="20" />||textfield||||error_textfield||',
             'Textfield2:<input type="text" name="textfield2" id="textfield2" value="value2" size="20" />error_textfield2',
             'Textfield3--:--<input type="text" name="textfield3" id="textfield3" value="value3" size="20" />--%name----error_textfield3--',
@@ -76,7 +76,7 @@ final class formhandler_LookAndFeelTest extends FormhandlerTestCase
         $form->setErrorMessage("textfield2", "this is another individual errormessage", false);
         $form->setError("textfield2", "error2");
 
-        $this->assertFormFlushContains($form, [
+        static::assertFormFlushContains($form, [
             'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20" />error_textfield<span id="error_textfield" class="error">this is an individual errormessage</span>',
             'Textfield2:<input type="text" name="textfield2" id="textfield2" value="" size="20" />error_textfield2this is another individual errormessage'
         ]);
@@ -90,11 +90,11 @@ final class formhandler_LookAndFeelTest extends FormhandlerTestCase
         $form = new FormHandler();
         $form->setLanguage('nl');
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->textField("Textfield", "textfield", FH_DIGIT);
 
-        $this->assertFormFlushContains($form, ['De opgegeven waarde is ongeldig!']);
+        static::assertFormFlushContains($form, ['De opgegeven waarde is ongeldig!']);
     }
 
     public function test_catchErrors(): void
@@ -105,17 +105,17 @@ final class formhandler_LookAndFeelTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->textField("Textfield", "textfield", FH_DIGIT);
 
         $errors = $form->catchErrors();
 
-        $this->assertEquals('textfield-You did not enter a correct value for this field!', $errors['textfield']);
+        static::assertEquals('textfield-You did not enter a correct value for this field!', $errors['textfield']);
 
         $t = (string)$form->flush(true);
 
-        $this->assertFalse(strpos($t, "You did not enter a correct value for this field!"));
+        static::assertFalse(strpos($t, "You did not enter a correct value for this field!"));
     }
 
     public function test_catchErrors2(): void
@@ -126,15 +126,15 @@ final class formhandler_LookAndFeelTest extends FormhandlerTestCase
 
         $form = new FormHandler();
 
-        $this->assertTrue($form->isPosted());
+        static::assertTrue($form->isPosted());
 
         $form->textField("Textfield", "textfield", FH_DIGIT);
 
         $errors = $form->catchErrors(true);
 
-        $this->assertEquals('textfield-You did not enter a correct value for this field!', $errors['textfield']);
+        static::assertEquals('textfield-You did not enter a correct value for this field!', $errors['textfield']);
 
-        $this->assertFormFlushContains($form, ['Textfield:<input type="text" name="textfield" id="textfield" value="textvalue" size="20" class="error" />error_textfieldtextfield-You did not enter a correct value for this field!']);
+        static::assertFormFlushContains($form, ['Textfield:<input type="text" name="textfield" id="textfield" value="textvalue" size="20" class="error" />error_textfieldtextfield-You did not enter a correct value for this field!']);
     }
 
     public function test_setTableSettings(): void
@@ -145,6 +145,6 @@ final class formhandler_LookAndFeelTest extends FormhandlerTestCase
 
         $form->textField("Textfield", "textfield", FH_DIGIT);
 
-        $this->assertFormFlushContains($form, ["<table border='0' cellspacing='2' cellpadding='2' width='400'  style='border: 1px solid green'>"]);
+        static::assertFormFlushContains($form, ["<table border='0' cellspacing='2' cellpadding='2' width='400'  style='border: 1px solid green'>"]);
     }
 };
