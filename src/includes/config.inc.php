@@ -21,26 +21,17 @@
  * @package FormHandler
  */
 
-// Get the location where formhandler is located
+// The web path to the FHTML directory, used only for the URLs of the bundled
+// JavaScript, CSS and images. It can only be derived under a web server (from
+// DOCUMENT_ROOT). On the command line (tests, cron) there is no URL context, so
+// it stays empty; define FH_FHTML_DIR yourself if a CLI script needs those URLs.
 if (!empty($_SERVER['DOCUMENT_ROOT']))
 {
     $__fh_root = str_replace($_SERVER['DOCUMENT_ROOT'], '', str_replace('\\', '/', realpath(dirname(__FILE__) . '/../'))) . '/';
 }
-// could not fetch the location of the FH3 directory!
 else
 {
-    // Please set here the location to the FH3 directory
-    // like: /engineering/FH3/
     $__fh_root = '';
-
-    // @phpstan-ignore-next-line (stays empty until the value above is edited)
-    if (empty($__fh_root))
-    {
-        trigger_error(
-            "Please set the location to the FH3 directory in the config file!!",
-            E_USER_WARNING
-        );
-    }
 }
 
 // The default name of the form

@@ -88,6 +88,8 @@ $form->setConnectionResource($conn, 'users');
 ### Fixed
 
 - The Composer branch alias (`extra.branch-alias`) had no effect.
+- `config.inc.php` no longer triggers a warning on the command line (empty
+  `DOCUMENT_ROOT`); this broke consumers that load FormHandler via Composer in CLI.
 - **Security:** `addJunctionTable()` put the submitted values and the edit id into
   its SQL without escaping (SQL injection).
 - `FH_URL` rejected URLs with a scheme like `https://www.example.org`; it accepts an
