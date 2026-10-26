@@ -92,6 +92,8 @@ $form->setConnectionResource($conn, 'users');
   `DOCUMENT_ROOT`); this broke consumers that load FormHandler via Composer in CLI.
 - The constructor read `$_SERVER['REQUEST_METHOD']` without a guard, a warning on the
   command line.
+- The error handler used the constant `E_STRICT`, a deprecation on every PHP error
+  with PHP 8.4.
 - **Security:** `addJunctionTable()` put the submitted values and the edit id into
   its SQL without escaping (SQL injection).
 - `FH_URL` rejected URLs with a scheme like `https://www.example.org`; it accepts an
