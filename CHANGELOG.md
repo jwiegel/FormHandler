@@ -94,6 +94,8 @@ $form->setConnectionResource($conn, 'users');
   command line.
 - The error handler used the constant `E_STRICT`, a deprecation on every PHP error
   with PHP 8.4.
+- `dateTextField()` with `$parseOtherPresentations` passed `null` to `str_replace()`
+  when the field had no value (deprecation since PHP 8.1).
 - **Security:** `addJunctionTable()` put the submitted values and the edit id into
   its SQL without escaping (SQL injection).
 - `FH_URL` rejected URLs with a scheme like `https://www.example.org`; it accepts an

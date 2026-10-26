@@ -107,6 +107,18 @@ final class formhandler_DateTextFieldTest extends FormhandlerTestCase
         static::assertFormFlushContains($form, ['DateTextField:<input type="text" name="datetextfield" id="datetextfield" value="" size="20"  data-old="123"']);
     }
 
+    public function test_new_parseOtherPresentations(): void
+    {
+        $form = new FormHandler();
+
+        static::assertFalse($form->isPosted());
+
+        $form->dateTextField("DateTextField", "datetextfield", null, null, true);
+
+        // the field has no value (null), parseOtherPresentations() must not pass it to str_replace()
+        static::assertEmpty($form->getValue("datetextfield"));
+    }
+
     public static function dataTestGetAsArray(): array
     {
         // The default display of the date fields useage:
