@@ -6,6 +6,11 @@ services:
     working_dir: /var/www
     volumes:
       - .:/var/www
+      # vendor/ in a Docker volume: reading it through the bind mount made every
+      # isolated PHPUnit process slow on Docker Desktop (Windows/macOS)
+      - vendor:/var/www/vendor
+      # the host's vendor/ folder, to copy the packages there for the IDE (see SETUP.md)
+      - ./vendor:/host-vendor
       # auto_prepend_file must reach PHPUnit's isolated child processes too
       - ./tests/uts/php.ini:/usr/local/etc/php/conf.d/zz-formhandler-tests.ini:ro
     environment:
@@ -13,3 +18,22 @@ services:
       PHP_IDE_CONFIG: serverName=formhandler
     stdin_open: true
     tty: true
+
+  # example pages: docker compose up -d web, then http://localhost:8088/examples/
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+    ports:
+      # only reachable from this computer: the whole project, including the
+      # file manager in src/FHTML, is served
+      - "127.0.0.1:${FH_WEB_PORT:-8088}:80"
+    volumes:
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+    # SQLite file of the database examples and sessions: empty again after a restart
+    tmpfs:
+      - /tmp
+
+volumes:
+  vendor:

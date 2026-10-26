@@ -18,7 +18,7 @@ final class formhandler_EditorTest extends FormhandlerTestCase
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
-            '"language":"en","width":720,"height":400,"skin":"moono"}'
+            '"language":"en","width":720,"height":400,"skin":"moono-lisa"}'
         ]);
     }
 
@@ -69,7 +69,7 @@ final class formhandler_EditorTest extends FormhandlerTestCase
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
             'thisisthepath","filebrowserUploadUrl"',
-            'thisisthepath","language":"en","width":720,"height":400,"skin":"moono"}'
+            'thisisthepath","language":"en","width":720,"height":400,"skin":"moono-lisa"}'
         ]);
     }
 
@@ -83,7 +83,7 @@ final class formhandler_EditorTest extends FormhandlerTestCase
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"thetoolbar"',
-            '"language":"en","width":720,"height":400,"skin":"moono"}'
+            '"language":"en","width":720,"height":400,"skin":"moono-lisa"}'
         ]);
     }
 
@@ -111,7 +111,7 @@ final class formhandler_EditorTest extends FormhandlerTestCase
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
-            '"language":"en","width":123,"height":456,"skin":"moono"}'
+            '"language":"en","width":123,"height":456,"skin":"moono-lisa"}'
         ]);
     }
 
@@ -125,7 +125,40 @@ final class formhandler_EditorTest extends FormhandlerTestCase
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
-            '"language":"en","width":720,"height":400,"skin":"moono","theconfig":"vals"}'
+            '"language":"en","width":720,"height":400,"skin":"moono-lisa","theconfig":"vals"}'
         ]);
+    }
+
+    public function test_skin_oldMoonoIsMapped(): void
+    {
+        $form = new FormHandler();
+
+        $form->editor("Editor", "editor", null, null, null, "moono");
+
+        static::assertFormFlushContains($form, ['"skin":"moono-lisa"}']);
+    }
+
+    public function test_defaultSkinIsBundled(): void
+    {
+        static::assertFileExists(__DIR__ . '/../../src/FHTML/ckeditor/skins/moono-lisa/editor.css');
+    }
+
+    public function test_editorLanguagesAreBundled(): void
+    {
+        // The editor uses the form language without "-utf8". CKEditor falls back to English
+        // for a language it doesn't know, but fails to load when it knows the language and
+        // its file is missing. So every known language must have its file.
+        $ckeditor = __DIR__ . '/../../src/FHTML/ckeditor/';
+        static::assertSame(1, preg_match('/languages:\{([^}]+)\}/', file_get_contents($ckeditor . 'ckeditor.js'), $match));
+        $known = array_map(fn($l) => trim(explode(':', $l)[0], '"'), explode(',', $match[1]));
+
+        foreach (glob(__DIR__ . '/../../src/language/*.php') as $file)
+        {
+            $language = str_replace('-utf8', '', basename($file, '.php'));
+            if (in_array($language, $known, true))
+            {
+                static::assertFileExists($ckeditor . 'lang/' . $language . '.js', "CKEditor language file for $language");
+            }
+        }
     }
 };

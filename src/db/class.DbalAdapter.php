@@ -95,15 +95,15 @@ class DbalAdapter implements DatabaseAdapter
         }
         else
         {
+            $this->_driver = null;
             trigger_error(
                 'Error, database type "' . $type . '" not supported!',
                 E_USER_ERROR
             );
-            return false;
         }
 
         $this->_database = $database;
-        return true;
+        return !is_null($this->_driver);
     }
 
     /**
@@ -439,7 +439,7 @@ class DbalAdapter implements DatabaseAdapter
      */
     public function getUniqueFields($table)
     {
-        // like Yadal: the primary key counts as unique index
+        // the primary key counts as unique index (as it did with Yadal)
         $result = array();
         $keys = $this->getPrKeys($table);
         if (sizeof($keys) > 0)

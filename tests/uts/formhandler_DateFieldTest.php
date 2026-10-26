@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 final class formhandler_DateFieldTest extends FormhandlerTestCase
 {
     private function getDays($days, $daySelected = null): array
@@ -172,7 +174,7 @@ final class formhandler_DateFieldTest extends FormhandlerTestCase
         static::assertEquals([2018, 4, 3], $form->getAsArray("datefield4"));
     }
 
-    public function different_masks(): array
+    public static function different_masks(): array
     {
         return [
             [["d.m.y", "03.04.2018"]],
@@ -191,9 +193,7 @@ final class formhandler_DateFieldTest extends FormhandlerTestCase
             [["Y", "2018"]]
         ];
     }
-    /**
-     * @dataProvider different_masks
-     */
+    #[DataProvider('different_masks')]
     public function test_getValue($different_masks): void
     {
         $_POST['FormHandler_submit'] = "1";

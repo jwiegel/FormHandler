@@ -217,8 +217,8 @@ class FormHandler
         // set the default help icon
         $this->setHelpIcon(FH_FHTML_DIR . 'images/helpicon.gif');
 
-        // check if the form is posted
-        $this->_posted = ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST[$this->_name . '_submit']));
+        // check if the form is posted (REQUEST_METHOD is not set on the command line)
+        $this->_posted = ((($_SERVER['REQUEST_METHOD'] ?? '') == 'POST') && isset($_POST[$this->_name . '_submit']));
 
         // make a hidden field so we can identify the form
         $this->hiddenField($this->_name . '_submit', '1');

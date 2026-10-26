@@ -654,7 +654,7 @@ class dbFormHandler extends FormHandler
         // set the table to use
         $this->_table = $table;
 
-        // create a new yadal object
+        // create the database adapter
         $this->_db = $this->createDatabaseAdapter($db, $type);
 
         // try to fetch the database data if we are connected
@@ -736,22 +736,23 @@ class dbFormHandler extends FormHandler
         // save the table name
         $this->_table = $table;
 
-        if (!($conn instanceof \Doctrine\DBAL\Connection))
+        if ($conn instanceof \Doctrine\DBAL\Connection)
+        {
+            $this->_db = new DbalAdapter($conn);
+
+            // try to fetch the database data already
+            if ($this->edit)
+            {
+                $this->_loadDbData();
+            }
+        }
+        else
         {
             trigger_error(
                 'Error, setConnectionResource() needs a Doctrine\DBAL\Connection! ' .
                     'Use dbInfo() and dbConnect() to let FormHandler open the connection.',
                 E_USER_ERROR
             );
-            return;
-        }
-
-        $this->_db = new DbalAdapter($conn);
-
-        // try to fetch the database data already
-        if ($this->edit)
-        {
-            $this->_loadDbData();
         }
     }
 
@@ -1245,7 +1246,9 @@ class dbFormHandler extends FormHandler
      */
     private function deleteJunctionData($tableName, $keyField, $keyValue)
     {
-        $query = "DELETE FROM " . $tableName . " WHERE " . $keyField . " = '" . $keyValue . "';";
+        $query =
+            "DELETE FROM " . $this->_db->quote($tableName) .
+            " WHERE " . $this->_db->quote($keyField) . " = '" . $this->_db->escapeString($keyValue) . "'";
         return $this->_db->query($query);
     }
 
@@ -1269,9 +1272,10 @@ class dbFormHandler extends FormHandler
         {
             foreach ($field->getValue() as $value)
             {
-                $query = "INSERT INTO " . $tableName . "
-                (" . $destinationField . ", " . $keyField . ") 
-                VALUES ('" . $keyValue . "', '" . $value . "');";
+                $query =
+                    "INSERT INTO " . $this->_db->quote($tableName) .
+                    " (" . $this->_db->quote($destinationField) . ", " . $this->_db->quote($keyField) . ")" .
+                    " VALUES ('" . $this->_db->escapeString($keyValue) . "', '" . $this->_db->escapeString($value) . "')";
                 $this->_db->query($query);
             }
         }
@@ -1309,7 +1313,10 @@ class dbFormHandler extends FormHandler
                     // Get data from juntion table
                     foreach ($this->_tableConfig as $tableName => $fields)
                     {
-                        $qrySelectJunctiondata = "SELECT " . $fields[0] . " AS " . $fields[0] . " FROM " . $tableName . " WHERE " . $fields[1] . "='" . pos($this->_id) . "'";
+                        $qrySelectJunctiondata =
+                            "SELECT " . $this->_db->quote($fields[0]) . " AS " . $this->_db->quote($fields[0]) .
+                            " FROM " . $this->_db->quote($tableName) .
+                            " WHERE " . $this->_db->quote($fields[1]) . " = '" . $this->_db->escapeString(pos($this->_id)) . "'";
                         $sql = $this->_db->query($qrySelectJunctiondata);
                         $values = array();
                         while ($rs = $this->_db->getRecord($sql))

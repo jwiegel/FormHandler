@@ -21,26 +21,17 @@
  * @package FormHandler
  */
 
-// Get the location where formhandler is located
+// The web path to the FHTML directory, used only for the URLs of the bundled
+// JavaScript, CSS and images. It can only be derived under a web server (from
+// DOCUMENT_ROOT). On the command line (tests, cron) there is no URL context, so
+// it stays empty; define FH_FHTML_DIR yourself if a CLI script needs those URLs.
 if (!empty($_SERVER['DOCUMENT_ROOT']))
 {
     $__fh_root = str_replace($_SERVER['DOCUMENT_ROOT'], '', str_replace('\\', '/', realpath(dirname(__FILE__) . '/../'))) . '/';
 }
-// could not fetch the location of the FH3 directory!
 else
 {
-    // Please set here the location to the FH3 directory
-    // like: /engineering/FH3/
     $__fh_root = '';
-
-    // @phpstan-ignore-next-line (stays empty until the value above is edited)
-    if (empty($__fh_root))
-    {
-        trigger_error(
-            "Please set the location to the FH3 directory in the config file!!",
-            E_USER_WARNING
-        );
-    }
 }
 
 // The default name of the form
@@ -213,14 +204,8 @@ fh_conf(
     '<a style="display:block;padding-left:5px;margin:0px;width:auto;color:black;text-decoration:none;" href="#" onmouseover="this.style.background=\'#C0C0C0\';" onmouseout="this.style.background=\'#FFFFFF\';" onblur="FH_CLOSE_TEXTSELECT(\'FHSpan_%s\')" onfocus="FH_SET_TEXTSELECT( \'%1$s\', this.innerHTML );" onclick="FH_SET_TEXTSELECT( \'%1$s\',this.innerHTML );" >%s</a>' . "\n"
 );
 
-// This config var has to point to the YADAL directory.
-// Yadal is the database abstraction class which FormHandler uses
-// to interact with the databases.
-// Default this dir is located in the FH3 directory. If you put it
-// somewhere else you have to change this config var.
-fh_conf('FH_YADAL_DIR', FH_INCLUDE_DIR . 'yadal/');
-
-// The default database type which is used when no one is given.
+// The default database type which is used by dbInfo() when no one is given.
+// One of mysql, postgresql, mssql, sqlite or a Doctrine DBAL driver name.
 fh_conf('FH_DEFAULT_DB_TYPE', 'mysql');
 
 // The default host which is used when no one is given

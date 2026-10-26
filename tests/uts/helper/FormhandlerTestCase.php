@@ -40,12 +40,14 @@ abstract class FormhandlerTestCase extends TestCase
 
     protected function tearDown(): void
     {
+        // restore first: fail() throws, and PHPUnit reports tests that leave their error handler installed
+        restore_error_handler();
+
         if (count($this->_triggeredErrors) > 0)
         {
             $triggeredErrormessage = $this->_triggeredErrors[0]["message"];
             static::fail("Unexpected triggered error: {$triggeredErrormessage}");
         }
-        restore_error_handler();
     }
 
     protected function getFormhandlerType(): string
@@ -70,7 +72,6 @@ abstract class FormhandlerTestCase extends TestCase
     public function getPrivateProperty(FormHandler $form, string $propertyName)
     {
         $property = $this->getReflector()->getProperty($propertyName);
-        $property->setAccessible(true);
 
         return $property->getValue($form);
     }
@@ -85,7 +86,6 @@ abstract class FormhandlerTestCase extends TestCase
     public function setPrivateProperty(FormHandler $form, string $propertyName, $value): void
     {
         $property = $this->getReflector()->getProperty($propertyName);
-        $property->setAccessible(true);
 
         $property->setValue($form, $value);
     }
@@ -101,7 +101,6 @@ abstract class FormhandlerTestCase extends TestCase
     public function executePrivateMethod(FormHandler $form, string $methodName, array $params)
     {
         $method = $this->getReflector()->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invokeArgs($form, $params);
     }

@@ -1,0 +1,11 @@
+body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 960px; padding: 0 1rem; color: #222; }
+nav { font-size: .9rem; margin-bottom: 1rem; }
+h1 { margin-top: 0; }
+h2 { font-size: 1.1rem; }
+section.values { background: #eef8ee; border: 1px solid #9c9; padding: .5rem 1rem; margin-bottom: 1rem; }
+section.values.invalid { background: #fdeeee; border-color: #d99; }
+section.form { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem; }
+.error { color: #c00; }
+details { margin-top: 1rem; }
+details code { display: block; white-space: pre-wrap; font-size: .85rem; }
+ul.examples { columns: 2; }

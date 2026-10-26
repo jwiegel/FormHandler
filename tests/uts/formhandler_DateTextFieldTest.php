@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 final class formhandler_DateTextFieldTest extends FormhandlerTestCase
 {
     public function test_new(): void
@@ -105,7 +107,19 @@ final class formhandler_DateTextFieldTest extends FormhandlerTestCase
         static::assertFormFlushContains($form, ['DateTextField:<input type="text" name="datetextfield" id="datetextfield" value="" size="20"  data-old="123"']);
     }
 
-    public function dataTestGetAsArray(): array
+    public function test_new_parseOtherPresentations(): void
+    {
+        $form = new FormHandler();
+
+        static::assertFalse($form->isPosted());
+
+        $form->dateTextField("DateTextField", "datetextfield", null, null, true);
+
+        // the field has no value (null), parseOtherPresentations() must not pass it to str_replace()
+        static::assertEmpty($form->getValue("datetextfield"));
+    }
+
+    public static function dataTestGetAsArray(): array
     {
         // The default display of the date fields useage:
         // d = day (2 digits with leading zeros)
@@ -134,9 +148,7 @@ final class formhandler_DateTextFieldTest extends FormhandlerTestCase
             [["mask" => 'D/M/y', "value" => "1/3/20",     "result" => ['day' => "1",  'month' => "3",  'year' => "2020"]]],
         ];
     }
-    /**
-     * @dataProvider dataTestGetAsArray
-     */
+    #[DataProvider('dataTestGetAsArray')]
     public function testGetAsArray($dataTestGetAsArray): void
     {
         $_POST['FormHandler_submit'] = "1";
@@ -155,9 +167,7 @@ final class formhandler_DateTextFieldTest extends FormhandlerTestCase
         static::assertEquals($dataTestGetAsArray['result']['day'], $day);
     }
 
-    /**
-     * @dataProvider dataTestGetAsArray
-     */
+    #[DataProvider('dataTestGetAsArray')]
     public function testParseOtherRepresentaions($dataTestGetAsArray): void
     {
         $_POST['FormHandler_submit'] = "1";
