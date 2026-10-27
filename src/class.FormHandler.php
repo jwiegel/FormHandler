@@ -80,39 +80,72 @@ require_once(FH_INCLUDE_DIR . 'includes/error.inc.php');
 class FormHandler
 {
     // protected !!
-    protected $_fields;           // array: contains all the fields
-    protected $_posted;           // boolean: if the form is posted or not
-    protected $_name;             // string: the name of the form
-    protected $_action;           // string: the action of the form
-    protected $_displayErrors;    // boolean: if we have to display the errors in the form
-    protected $_mask;             // string: the mask which should be used
-    protected $_upload;           // array: contains the names of the uploadfields
-    protected $_date;             // array: contains the names of the datefields
-    protected $_onCorrect;        // string: the callback function when the form is correct
-    protected $_add;              // array: contains the data which was added by the user
-    protected $_focus;            // string: the field which should get the focus
-    protected $_convert;          // array: fields which should be converted (eg. resizeimage or mergeimage)
-    public $_buffer;              // array: buffer of set values (used when the field does not exists yet)
-    protected $_text;             // array: the language array we are using to display the messages etc
-    protected $_lang;             // string: the language used
-    protected $_setTable;         // boolean: set a html table arround the fields or has the user done that in the mask ?
-    protected $_extra;            // string: extra tag information for the <form> tag (like CSS or javascript)
-    protected $_pageCounter;      // int: how many pages has this form
-    protected $_curPage;          // int: current page
-    protected $_mail;             // array: contains the mailing data
-    protected $_tabindexes;       // array: tab indexes of the fields...
-    protected $_customMsg;        // array: custom messages of the fields...
-    protected $_js;               // array: contains all the needed javascript for the form
-    protected $_help;             // array: contains the help text for the fields
-    protected $_helpIcon;         // string: the path to the help image
-    protected $_cache;            // array: save the values of the field in this array after the flush is called (then the objects are deleted!)
-    protected $_viewMode;         // boolean: is view mode enabled or not
-    protected $_tableSettings;    // array: array with all table settings
-    protected $_ajaxValidator;    // boolean: if Ajax validation must be used or not.
-    protected $_ajaxValidatorScript;    // boolean: if Ajax validation must include library or not.
-    protected $_csrfToken = null;        // string|null: the CSRF token of the session, null when the protection is off
-    protected $_csrfFailed = false;      // boolean: the posted CSRF token was wrong
-    private $_unittestmode = false; // boolean: only for unittesting (can only be set by reflection of uniitest)
+    /** @var array<int|string, array<int, mixed>> contains all the fields */
+    protected $_fields;
+    /** @var bool if the form is posted or not */
+    protected $_posted;
+    /** @var string the name of the form */
+    protected $_name;
+    /** @var string the action of the form */
+    protected $_action;
+    /** @var bool if we have to display the errors in the form */
+    protected $_displayErrors;
+    /** @var string|null the mask which should be used */
+    protected $_mask;
+    /** @var array<int, string> contains the names of the uploadfields */
+    protected $_upload;
+    /** @var array<int, string> contains the names of the datefields */
+    protected $_date;
+    /** @var string|array<int, mixed>|null the callback function when the form is correct */
+    protected $_onCorrect;
+    /** @var array<string, mixed> contains the data which was added by the user */
+    protected $_add;
+    /** @var string|bool|null the field which should get the focus */
+    protected $_focus;
+    /** @var array<string, array<string, array<int, array<int, mixed>>>> fields which should be converted (eg. resizeimage or mergeimage) */
+    protected $_convert;
+    /** @var array<string, array{0: bool, 1: mixed}> buffer of set values (used when the field does not exists yet) */
+    public $_buffer;
+    /** @var array<int, string>|null the language array we are using to display the messages etc */
+    protected $_text;
+    /** @var string the language used */
+    protected $_lang;
+    /** @var bool set a html table arround the fields or has the user done that in the mask ? */
+    protected $_setTable;
+    /** @var string|null extra tag information for the <form> tag (like CSS or javascript) */
+    protected $_extra;
+    /** @var int how many pages has this form */
+    protected $_pageCounter;
+    /** @var int|string current page */
+    protected $_curPage;
+    /** @var array<mixed> contains the mailing data */
+    protected $_mail;
+    /** @var array<int, string> tab indexes of the fields... */
+    protected $_tabindexes;
+    /** @var array<string, array{0: string, 1: mixed}> custom messages of the fields... */
+    protected $_customMsg;
+    /** @var array<int, array<string, array<int, string>>> contains all the needed javascript for the form */
+    protected $_js;
+    /** @var array<string, array{0: string, 1: string}> contains the help text for the fields */
+    protected $_help;
+    /** @var string the path to the help image */
+    protected $_helpIcon;
+    /** @var array<string, mixed> save the values of the field in this array after the flush is called (then the objects are deleted!) */
+    protected $_cache;
+    /** @var bool is view mode enabled or not */
+    protected $_viewMode;
+    /** @var array<string, mixed> array with all table settings */
+    protected $_tableSettings;
+    /** @var bool if Ajax validation must be used or not. */
+    protected $_ajaxValidator;
+    /** @var bool if Ajax validation must include library or not. */
+    protected $_ajaxValidatorScript;
+    /** @var string|null the CSRF token of the session, null when the protection is off */
+    protected $_csrfToken = null;
+    /** @var bool the posted CSRF token was wrong */
+    protected $_csrfFailed = false;
+    /** only for unittesting (can only be set by reflection of uniitest) */
+    private bool $_unittestmode = false;
 
     /**
      * FormHandler::FormHandler()
@@ -401,7 +434,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $aOptions : the options for the select part
+     * @param array<int|string, mixed> $aOptions : the options for the select part
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param int $size: The size of the field
      * @param int $maxlength: The allowed max input of the field
@@ -544,7 +577,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $options: The options used for the field
+     * @param array<int|string, mixed> $options: The options used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param boolean $useArrayKeyAsValue: If the array key's are the values for the options in the field
      * @param boolean $multiple: Should it be possible to select multiple options ? (Default: false)
@@ -606,7 +639,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array|string $value: The option(s) used for the field
+     * @param array<int|string, mixed>|string $value: The option(s) used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param boolean $useArrayKeyAsValue: If the array key's are the values for the options in the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
@@ -644,7 +677,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $options: The options used for the field
+     * @param array<int|string, mixed> $options: The options used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param boolean $useArrayKeyAsValue: If the array key's are the values for the options in the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
@@ -692,7 +725,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $config: The configuration used for the field
+     * @param array<string, mixed> $config: The configuration used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
      * @param boolean $alertOverwrite: Do we have to alert the user when he/she is going to overwrite a file?
@@ -730,7 +763,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $options: The options used for the field
+     * @param array<int|string, mixed> $options: The options used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param string $onTitle: The title used above the ON section of the field
      * @param string $offTitle: The title used above the OFF section of the field
@@ -793,7 +826,7 @@ class FormHandler
      * @param string $skin: The skin to use
      * @param int $width: The width of the field
      * @param int $height: The height of the field
-     * @param array $config additional config
+     * @param array<string, mixed>|null $config additional config
      * @return void
      * @access public
      * @author Teye Heimans
@@ -920,6 +953,7 @@ class FormHandler
      * @param string $title: The title of the field
      * @param string $name: The name of the field
      * @param string $validator: The validator which should be used to validate the value of the field
+     * @param boolean|null $required: Is the field required
      * @param int $format: 12 or 24. Which should we use?
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
      * @return void
@@ -1036,6 +1070,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
+     * @param string|null $validator: The validator which should be used to validate the value of the field
      * @param string $mask: How do we have to display the fields? These can be used: d, m and y. (Only for DB-Field with Type 'Date')
      * @param bool $bParseOtherPresentations: try to parse other presentations of dateformat
      * @param boolean $bIncludeJS: Should we include the js file (only needed once on a page)
@@ -1701,6 +1736,7 @@ class FormHandler
      *
      * @param string $field: The field to set the message for
      * @param string $message: The message to use when the fields value is invalid
+     * @param boolean $useStyle: Use the default error mask around the message
      * @return void
      * @access public
      * @author Teye Heimans
@@ -1716,7 +1752,7 @@ class FormHandler
      * Set a list of items for auto complete
      *
      * @param string $field: The field which should be auto complete
-     * @param array $options: The list of options for the uto complete
+     * @param array<int|string, string> $options: The list of options for the uto complete
      * @return void
      * @access public
      * @author Teye Heimans
@@ -1772,7 +1808,7 @@ class FormHandler
      *
      * @param string $field: The field which should be auto complete
      * @param string $after: The character after wicht auto completion will start
-     * @param array $options: The list of options for the uto complete
+     * @param array<int|string, string> $options: The list of options for the uto complete
      * @return void
      * @access public
      * @author Rob Geerts
@@ -2024,7 +2060,7 @@ class FormHandler
      * Get the errors occoured in the form
      *
      * @param boolean $display: If we still have to display the errors in the form (default this is disabled)
-     * @return array of errors or an empty array if none occoured
+     * @return array<string, string> of errors or an empty array if none occoured
      * @access public
      * @author Teye Heimans
      */
@@ -2303,7 +2339,7 @@ class FormHandler
      * Return the value of a datefield as an array: array(y,m,d)
      *
      * @param string $datefield: return the value of the datefield as an array
-     * @return array|false
+     * @return array<int, mixed>|false
      * @access public
      * @author Teye Heimans
      */
@@ -2440,7 +2476,7 @@ class FormHandler
      *
      * Set the function which has to be called when the form is correct
      *
-     * @param string|array $callback: The name of the function
+     * @param string|array<int, mixed> $callback: The name of the function
      * @return void
      * @access public
      * @author Teye Heimans
@@ -2517,7 +2553,7 @@ class FormHandler
      * Get the file info af an uploaded file
      *
      * @param string $uploadfield: the name of the uploadfield
-     * @return array file info
+     * @return array<string, mixed> file info
      * @access public
      * @author Teye Heimans
      */
@@ -2823,7 +2859,8 @@ class FormHandler
      * Static: Make a javascript array of the given php array. This is
      * used for dynamic select fields
      *
-     * @param array $options: the new options for the select field
+     * @param array<int|string, string> $options: the new options for the select field
+     * @param boolean $useArrayKeyAsValue: use the keys of the array as values
      * @return void
      * @access public
      * @author Teye Heimans
@@ -3079,6 +3116,7 @@ class FormHandler
      * @param string $merge: The image which we should merge
      * @param string $align: The align of the merge image (eg: left, center, right)
      * @param string $valign: The vertical align of the merge image( eg: top, middle, bottom)
+     * @param array<int, int>|null $transparantColor: rgb color of the merge image which should be transparant
      * @return void
      * @access public
      * @author Teye Heimans
@@ -3220,7 +3258,7 @@ class FormHandler
      * @return string|null the token of the session, null without a session
      * @access private
      */
-    private function _getCsrfSessionToken()
+    private function _getCsrfSessionToken(): ?string
     {
         if (session_status() === PHP_SESSION_NONE && !headers_sent())
         {
@@ -3248,7 +3286,7 @@ class FormHandler
      * @return bool
      * @access private
      */
-    private function _isCsrfTokenValid()
+    private function _isCsrfTokenValid(): bool
     {
         if (!$this->_posted || $this->_csrfToken === null)
         {
@@ -3327,6 +3365,7 @@ class FormHandler
      *
      * Prints or returns the form
      *
+     * @param boolean $return: return the form instead of printing it
      * @return string|null the form or null when the form should be printed
      * @access public
      * @author Teye Heimans
@@ -3476,7 +3515,7 @@ class FormHandler
      * @return string the new unique button name
      * @author Teye Heimans
      */
-    private function _getNewButtonName()
+    private function _getNewButtonName(): string
     {
         static $counter = 1;
 
@@ -3536,6 +3575,7 @@ class FormHandler
      *
      * @param string $name: The name of the field (or button)
      * @param object $field: The object of the field or button
+     * @param string|null $title: The title of the field, '__HIDDEN__' for hidden fields
      * @return Field
      * @access private
      * @author Teye Heimans
@@ -3702,6 +3742,7 @@ class FormHandler
      *
      * Private: get the form
      *
+     * @param int|string|null $iDisplayPage: the page to display, null for the current page
      * @return string the generated form
      * @access public
      * @author Teye Heimans
