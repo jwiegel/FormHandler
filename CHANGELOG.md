@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- The Composer branch alias of `dev-master` was still `4.0.x-dev`, so `dev-master`
+  did not satisfy constraints like `^4.3`. It is `4.x-dev` now and fits every 4.x release.
+
 ## [4.3.0] - 2026-10-27
 
 ### Changed
