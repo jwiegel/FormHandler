@@ -1,5 +1,9 @@
+includes:
+	# level 6 findings of the older files, to be fixed file by file (remove the entries then)
+	- phpstan-baseline.neon
+
 parameters:
-	level: 5
+	level: 6
 	phpVersion: 80200 # PHP 8.2
 	treatPhpDocTypesAsCertain: false
 	paths:

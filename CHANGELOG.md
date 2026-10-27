@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- PHPStan checks on level 6. `FormHandler` has PHPDoc types for all properties, parameters
+  and return values, its private members native types. The level 6 findings of the other
+  files are in `phpstan-baseline.neon`, to be fixed file by file.
+
 ## [4.6.4] - 2026-10-30
 
 ### Fixed
