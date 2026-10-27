@@ -56,7 +56,7 @@ final class formhandler_jsDateTextFieldTest extends FormhandlerTestCase
 
         static::assertEquals([2020, 4, 14], $form->getAsArray("jsdatetextfield"));
         static::assertNull($form->getAsArray("jsdatetextfield2"));
-        $this->assertTriggertError("Value is not a valid date [14.04.2020]", E_USER_ERROR);
+        $this->assertTriggertError("Value is not a valid date [14.04.2020]", E_USER_WARNING);
         static::assertEquals([2020, 4, 14], $form->getAsArray("jsdatetextfield3"));
         static::assertEquals([2020, 4, 14], $form->getAsArray("jsdatetextfield4"));
 

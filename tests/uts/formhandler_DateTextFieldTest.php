@@ -43,7 +43,7 @@ final class formhandler_DateTextFieldTest extends FormhandlerTestCase
 
         static::assertEquals([2020, 4, 14], $form->getAsArray("datetextfield"));
         static::assertNull($form->getAsArray("datetextfield2"));
-        $this->assertTriggertError("Value is not a valid date [14.04.2020]", E_USER_ERROR);
+        $this->assertTriggertError("Value is not a valid date [14.04.2020]", E_USER_WARNING);
         static::assertEquals([2020, 4, 14], $form->getAsArray("datetextfield3"));
         static::assertEquals([2020, 4, 14], $form->getAsArray("datetextfield4"));
 
@@ -184,7 +184,7 @@ final class formhandler_DateTextFieldTest extends FormhandlerTestCase
         if ($dataTestGetAsArray['mask'] != FH_DATETEXTFIELD_DEFAULT_DISPLAY)
         {
             static::assertNull($form->getAsArray('datetextfield'));
-            $this->assertTriggertError("Value is not a valid date [" . $dataTestGetAsArray['value'] . "]", E_USER_ERROR);
+            $this->assertTriggertError("Value is not a valid date [" . $dataTestGetAsArray['value'] . "]", E_USER_WARNING);
         }
         else
         {

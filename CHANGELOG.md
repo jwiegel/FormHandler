@@ -14,6 +14,9 @@ and the project follows [Semantic Versioning](https://semver.org/).
   validator method, an invalid date mask, an invalid database adapter, connection or
   type, editing a record that does not exist, and a failed move of an uploaded file.
   As before, the script stops unless the exception is caught.
+- `DateTextField::getAsArray()` (and `getAsArray()` of the form for a date text field)
+  reports an invalid date with `E_USER_WARNING` instead of `E_USER_ERROR` and returns
+  `null`. The value can come from the user, so it no longer stops the script.
 
 ## [4.0.0] - 2026-10-23
 

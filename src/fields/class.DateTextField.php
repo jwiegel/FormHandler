@@ -117,7 +117,7 @@ class DateTextField extends TextField
     /**
      * Get the date value as an array: array(y,m,d)
      *
-     * @return array
+     * @return array|null null (and a warning) when the value is not a valid date
      * @access public
      * @author Thomas Branius
      * @since 16-03-2010
@@ -130,8 +130,9 @@ class DateTextField extends TextField
         }
         if (preg_match($this->_sValParseRegExpr, $this->getValue(), $data) == 0)
         {
-            trigger_error("Value is not a valid date [" . $this->getValue() . "]", E_USER_ERROR);
-            return null; // @phpstan-ignore-line (Value is intentionally returned for runtime error-handler flow in legacy API.)
+            // the value can come from the user, so no exception here
+            trigger_error("Value is not a valid date [" . $this->getValue() . "]", E_USER_WARNING);
+            return null;
         }
         if ($data[$this->_iYearPos] <= 50)
             $data[$this->_iYearPos] = $data[$this->_iYearPos] + 2000;
