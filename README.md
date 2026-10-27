@@ -119,6 +119,27 @@ callback, invalid date mask, editing a record that does not exist, ...) throws a
 e.g. `TextArea` in your own fields. Including `class.FormHandler.php` without Composer is
 no longer supported.
 
+**CSRF protection** (4.6). Every form has a hidden field `<form name>_csrf` with a token of
+the PHP session. A form posted without the right token (e.g. from another website) is not
+processed; it is shown again with the message "The form has expired or was not sent from
+this page".
+
+- It needs a PHP session. FormHandler starts it when no output was sent yet; otherwise
+  call `session_start()` before any output. Without a session the form warns and is not
+  protected.
+- Own AJAX requests that post a form have to send the token. Requests that post all fields
+  of the form, including the hidden ones, already do; otherwise add it yourself:
+
+  ```php
+  // in the page: pass the token to your JavaScript
+  echo '<script>var formToken = ' . json_encode($form->getCsrfToken()) . ';</script>';
+  // in the request: POST FormHandler_csrf=<formToken> (the field is "<form name>_csrf")
+  ```
+
+- Turn it off for a single form with `$form->setCsrfProtection(false)`, or for all forms
+  with `fh_conf('FH_CSRF_PROTECTION', false)` before the first form is created (the
+  `fh_conf()` values become constants then).
+
 ### License
 
 FormHandler is licensed under the GNU Lesser General Public License Version 2.1 - see the `LICENSE` file for details
