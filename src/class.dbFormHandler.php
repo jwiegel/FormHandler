@@ -863,7 +863,7 @@ class dbFormHandler extends FormHandler
             $data = array();
             foreach ($this->_fields as $name => $fld)
             {
-                if (is_object($fld[1]) &&  method_exists($fld[1], 'getValue') && $name != $this->_name . '_submit')
+                if (is_object($fld[1]) &&  method_exists($fld[1], 'getValue') && !$this->_isInternalField($name))
                 {
                     $data[$name] = $fld[1]->getValue();
                 }

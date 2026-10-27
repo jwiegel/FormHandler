@@ -4,6 +4,25 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Security
+
+- Every form is protected against cross-site request forgery (CSRF). FormHandler had no
+  protection, so another website could make the browser of a logged-in user submit a
+  form (e.g. save or change a record). Now each form has a hidden field
+  `<form name>_csrf` with a token of the PHP session; a posted form without the right
+  token is not processed, the form is shown again with the message "The form has
+  expired or was not sent from this page" (text 44 in the language files).
+  - On by default (config `FH_CSRF_PROTECTION`), per form `setCsrfProtection(false)`.
+  - It needs a PHP session: FormHandler starts it if no output was sent yet. Start it
+    yourself before any output otherwise; without a session the form warns and is not
+    protected.
+  - Own AJAX requests that post a form have to send the token, see `getCsrfToken()`.
+    Requests that post all fields of the form (including the hidden ones) work as before.
+  - The token is not part of the values passed to `onCorrect`/`onSaved`, the database or
+    `getAsMailBody()`.
+
 ## [4.5.1] - 2026-10-27
 
 ### Fixed

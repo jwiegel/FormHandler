@@ -110,6 +110,8 @@ class FormHandler
     protected $_tableSettings;    // array: array with all table settings
     protected $_ajaxValidator;    // boolean: if Ajax validation must be used or not.
     protected $_ajaxValidatorScript;    // boolean: if Ajax validation must include library or not.
+    protected $_csrfToken = null;        // string|null: the CSRF token of the session, null when the protection is off
+    protected $_csrfFailed = false;      // boolean: the posted CSRF token was wrong
     private $_unittestmode = false; // boolean: only for unittesting (can only be set by reflection of uniitest)
 
     /**
@@ -218,6 +220,12 @@ class FormHandler
 
         // make a hidden field so we can identify the form
         $this->hiddenField($this->_name . '_submit', '1');
+
+        // protection against cross-site request forgery
+        if (FH_CSRF_PROTECTION) // @phpstan-ignore-line (If condition is always false: the constant is configurable.)
+        {
+            $this->setCsrfProtection(true);
+        }
 
         // get the current page
         $this->_curPage = isset($_POST[$this->_name . '_page']) ? $_POST[$this->_name . '_page'] : 1;
@@ -2975,7 +2983,7 @@ class FormHandler
         foreach ($this->_fields as $name => $fld)
         {
             // only use it in the mail if it has a view value (the fields)
-            if (is_object($fld[1]) && method_exists($fld[1], 'getViewValue') && $name != $this->_name . '_submit')
+            if (is_object($fld[1]) && method_exists($fld[1], 'getViewValue') && !$this->_isInternalField($name))
             {
                 // search and replace the %field% %value% items
                 $loader->setSearch(array('/%field%/', '/%value%/'));
@@ -3137,6 +3145,135 @@ class FormHandler
     }
 
     /**
+     * FormHandler::setCsrfProtection()
+     *
+     * Turn the protection against cross-site request forgery (CSRF) on or off.
+     * It is on by default (FH_CSRF_PROTECTION): the form gets a hidden field with a
+     * token of the session, and a posted form with another token is not processed.
+     * It needs a PHP session; FormHandler starts it when no output was sent yet.
+     *
+     * @param bool $enabled
+     * @return void
+     * @access public
+     */
+    public function setCsrfProtection($enabled)
+    {
+        $field = $this->_name . '_csrf';
+
+        if (!$enabled)
+        {
+            $this->_csrfToken = null;
+            unset($this->_fields[$field]);
+            return;
+        }
+
+        $this->_csrfToken = $this->_getCsrfSessionToken();
+        if ($this->_csrfToken === null)
+        {
+            trigger_error(
+                'FormHandler: there is no PHP session, so the form is not protected against CSRF. ' .
+                    'Start the session before any output, or turn the protection off with setCsrfProtection(false).',
+                E_USER_WARNING
+            );
+            return;
+        }
+
+        if (!$this->fieldExists($field))
+        {
+            $this->hiddenField($field, $this->_csrfToken);
+        }
+
+        // always the token of the session, never the posted one
+        $this->setValue($field, $this->_csrfToken, true);
+    }
+
+    /**
+     * FormHandler::getCsrfToken()
+     *
+     * The CSRF token of this form, e.g. to send it with an own AJAX request as the
+     * POST value "<form name>_csrf". Null when the protection is off.
+     *
+     * @return string|null
+     * @access public
+     */
+    public function getCsrfToken()
+    {
+        return $this->_csrfToken;
+    }
+
+    /**
+     * FormHandler::_getCsrfSessionToken()
+     *
+     * @return string|null the token of the session, null without a session
+     * @access private
+     */
+    private function _getCsrfSessionToken()
+    {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent())
+        {
+            session_start();
+        }
+
+        if (session_status() !== PHP_SESSION_ACTIVE)
+        {
+            return null;
+        }
+
+        if (empty($_SESSION['FH_CSRF_TOKEN']) || !is_string($_SESSION['FH_CSRF_TOKEN']))
+        {
+            $_SESSION['FH_CSRF_TOKEN'] = bin2hex(random_bytes(32));
+        }
+
+        return $_SESSION['FH_CSRF_TOKEN'];
+    }
+
+    /**
+     * FormHandler::_isCsrfTokenValid()
+     *
+     * Check the posted CSRF token; a wrong token marks the token field invalid.
+     *
+     * @return bool
+     * @access private
+     */
+    private function _isCsrfTokenValid()
+    {
+        if (!$this->_posted || $this->_csrfToken === null)
+        {
+            return true;
+        }
+
+        $field = $this->_name . '_csrf';
+        $posted = isset($_POST[$field]) ? $_POST[$field] : '';
+
+        if (is_string($posted) && hash_equals($this->_csrfToken, $posted))
+        {
+            return true;
+        }
+
+        if (!$this->_csrfFailed)
+        {
+            $this->_csrfFailed = true;
+            $this->setError($field, $this->_text(44));
+        }
+
+        return false;
+    }
+
+    /**
+     * FormHandler::_isInternalField()
+     *
+     * Fields of FormHandler itself, which are not part of the submitted data
+     *
+     * @param string $name
+     * @return bool
+     * @access protected
+     */
+    protected function _isInternalField($name)
+    {
+        return $name == $this->_name . '_submit' || $name == $this->_name . '_csrf';
+    }
+
+    /**
      * FormHandler::isCorrect()
      *
      * Return if the form is filled correctly (for the fields which are set!)
@@ -3147,7 +3284,7 @@ class FormHandler
      */
     public function isCorrect()
     {
-        $result = true;
+        $result = $this->_isCsrfTokenValid();
 
         foreach ($this->_fields as $id => $data)
         {
@@ -3229,7 +3366,7 @@ class FormHandler
             $data = array();
             foreach ($this->_fields as $name => $fld)
             {
-                if (is_object($fld[1]) && method_exists($fld[1], 'getValue') && $name != $this->_name . '_submit')
+                if (is_object($fld[1]) && method_exists($fld[1], 'getValue') && !$this->_isInternalField($name))
                 {
                     $data[$name] = $fld[1]->getValue();
                 }

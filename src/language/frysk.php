@@ -49,7 +49,8 @@ $fh_lang = array(
   40 => 'Jo meie net mear as %d karakters brûke. Jo ha %d brûkt. D\'r matte dus nog %5 ôf.',
   41 => 'Help',
   42 => 'Today',
-  43 => "'S','M','T','W','T','F','S'"
+  43 => "'S','M','T','W','T','F','S'",
+  44 => 'The form has expired or was not sent from this page. Please submit it again.'
 );
 
 ?>

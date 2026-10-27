@@ -8,3 +8,10 @@ if (empty($_SERVER['DOCUMENT_ROOT']))
 {
     $_SERVER['DOCUMENT_ROOT'] = str_replace('\\', '/', dirname(__DIR__, 2));
 }
+
+// The tests post forms without the CSRF token of the session; formhandler_CsrfTest
+// turns the protection on per form with setCsrfProtection(true).
+if (!defined('FH_CSRF_PROTECTION'))
+{
+    define('FH_CSRF_PROTECTION', false);
+}

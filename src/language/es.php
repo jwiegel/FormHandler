@@ -50,6 +50,7 @@ $fh_lang = array(
   40 => 'El m&aacute;ximo numero de caracteres permitidos es %d! Tu has capturado %d caracteres. Por Favor quite %d caracteres',
   41 => 'Ayuda',
   42 => 'Today',
-  43 => "'S','M','T','W','T','F','S'"
+  43 => "'S','M','T','W','T','F','S'",
+  44 => 'The form has expired or was not sent from this page. Please submit it again.'
 );
 ?>

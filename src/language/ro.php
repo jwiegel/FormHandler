@@ -49,7 +49,8 @@ $fh_lang = array(
   40 => 'Numarul maxim de carcatere permise este %d! Ati introdus %d caractere. Va rugam inlaturati %d caractere',
   41 => 'Ajutor',
   42 => 'Astazi',
-  43 => "'D','L','M','M','J','V','S'"
+  43 => "'D','L','M','M','J','V','S'",
+  44 => 'The form has expired or was not sent from this page. Please submit it again.'
 );
 
 ?>

@@ -49,7 +49,8 @@ $fh_lang = array(
   40 => 'A maximális megengedett karakterhossz %d! Ön %d karaktert vitt be. Kérem töröljön %d karaktert.',
   41 => 'Segítség',
   42 => 'Today',
-  43 => "'S','M','T','W','T','F','S'"
+  43 => "'S','M','T','W','T','F','S'",
+  44 => 'The form has expired or was not sent from this page. Please submit it again.'
 );
 
 ?>

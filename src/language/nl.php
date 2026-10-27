@@ -49,7 +49,8 @@ $fh_lang = array(
   40 => 'Het maximale toegestane karakters is %d! U heeft %d karakters ingevoerd. Verwijder %d karakters.',
   41 => 'Help',
   42 => 'Vandaag',
-  43 => "'Z','M','D','W','D','V','Z'"
+  43 => "'Z','M','D','W','D','V','Z'",
+  44 => 'Het formulier is verlopen of is niet vanaf deze pagina verstuurd. Verstuur het opnieuw.'
 );
 
 ?>
