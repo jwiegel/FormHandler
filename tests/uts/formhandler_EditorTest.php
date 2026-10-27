@@ -73,6 +73,17 @@ final class formhandler_EditorTest extends FormhandlerTestCase
         ]);
     }
 
+    public function test_path_false(): void
+    {
+        $form = new FormHandler();
+
+        // false turns the file browser of the editor off
+        $form->editor("Editor", "editor", null, false);
+
+        $html = static::assertFormFlushContains($form, ['CKEDITOR.replace( \'editor\', {"toolbar":"Default","language":"en"']);
+        static::assertStringNotContainsString('filebrowser', $html);
+    }
+
     public function test_toolbar(): void
     {
         $form = new FormHandler();

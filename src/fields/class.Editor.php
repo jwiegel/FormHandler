@@ -209,10 +209,10 @@ class Editor extends TextArea
      */
     public function setServerPath($sPath)
     {
+        // false: no file browser in the editor
         if ($sPath === false)
         {
-            $this->_oEditor->Config['filebrowserBrowseUrl']  = false;
-            $this->_oEditor->Config['filebrowserUploadUrl'] = false;
+            unset($this->_oEditor->config['filebrowserBrowseUrl'], $this->_oEditor->config['filebrowserUploadUrl']);
             return;
         }
 
