@@ -6,6 +6,25 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Security
+
+- `editor()` sanitizes its HTML on the server ([tombrain/FormHandler#22](https://github.com/tombrain/FormHandler/issues/22)).
+  It accepted any HTML, so a request sent by hand could store scripts, event handlers
+  (`onerror`, `onmouseover`) or `javascript:` links (stored XSS). Every value (posted,
+  loaded from the database, `setValue()`) now only keeps the safe elements and attributes
+  of `symfony/html-sanitizer`: text, lists, tables, absolute and relative links and images.
+  Scripts, event handlers, `javascript:`/`data:` links, iframes and forms are removed.
+  HTML that is already stored is sanitized when it is loaded and saved again.
+
+### Added
+
+- `Editor::isStyleAllowed()` and the config `FH_EDITOR_ALLOW_STYLE` (default `false`):
+  keep the `style` attribute for colors, font sizes and alignment. A style with `url()`,
+  `expression()`, `javascript:`, `@import` or CSS escapes is removed (`EditorStyleSanitizer`).
+  Override `isStyleAllowed()` in a subclass, as the constant is set as soon as Composer
+  loads FormHandler. `Editor::getSanitizerConfig()` can be overridden for another allow list.
+- New dependency: `symfony/html-sanitizer` (`^7.4 || ^8.0`).
+
 ### Fixed
 
 - The Composer branch alias of `dev-master` was still `4.0.x-dev`, so `dev-master`

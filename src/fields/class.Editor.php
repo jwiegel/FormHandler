@@ -1,9 +1,17 @@
 <?php
 
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+
 /**
  * class Editor
  *
- * Create a Editor on the given form with CKEDitor 4.3.1
+ * Create a Editor on the given form with CKEditor 4.22.
+ *
+ * The HTML is sanitized on the server (symfony/html-sanitizer): the editor can be
+ * bypassed by sending the request by hand, so every value (posted, loaded from the
+ * database or set with setValue()) only keeps safe elements and attributes.
+ * Override getSanitizerConfig() to change the allow list.
  *
  * @author Johan Wiegel
  * @package FormHandler
@@ -14,6 +22,7 @@
 class Editor extends TextArea
 {
     private $_oEditor;
+    private $_oSanitizer = null; // HtmlSanitizer, created on first use
 
     public function __construct($oForm, $sName)
     {
@@ -68,16 +77,77 @@ class Editor extends TextArea
     /**
      * Editor::setValue()
      *
-     * Set the value of the field
+     * Set the value of the field. The HTML is sanitized, see getSanitizerConfig().
      *
-     * @param string $sValue: The html to set into the field
+     * @param string|null $sValue: The html to set into the field
      * @return void
      * @access public
      * @author Teye Heimans
      */
     public function setValue($sValue)
     {
-        $this->_mValue = $sValue;
+        $this->_mValue = is_null($sValue) ? null : $this->_getSanitizer()->sanitize((string) $sValue);
+    }
+
+    /**
+     * Editor::getSanitizerConfig()
+     *
+     * The allow list for the HTML of the editor: the safe elements and attributes
+     * (no scripts, event handlers, javascript: or data: links, iframes or forms),
+     * absolute and relative links and images. With isStyleAllowed() also the
+     * style attribute (for colors and font sizes), checked by EditorStyleSanitizer.
+     * Override it in a subclass for another allow list.
+     *
+     * @return HtmlSanitizerConfig
+     * @access protected
+     */
+    protected function getSanitizerConfig()
+    {
+        $config = (new HtmlSanitizerConfig())
+            ->allowSafeElements()
+            ->allowRelativeLinks()
+            ->allowRelativeMedias()
+            // no limit: the sanitizer cuts longer input to 20000 chars by default
+            ->withMaxInputLength(-1);
+
+        if ($this->isStyleAllowed())
+        {
+            $config = $config
+                ->allowAttribute('style', '*')
+                ->withAttributeSanitizer(new EditorStyleSanitizer());
+        }
+
+        return $config;
+    }
+
+    /**
+     * Editor::isStyleAllowed()
+     *
+     * Keep the style attribute (colors, font sizes, alignment)? Default: FH_EDITOR_ALLOW_STYLE.
+     * Override it in a subclass, as the constant is set as soon as Composer loads FormHandler.
+     *
+     * @return bool
+     * @access protected
+     */
+    protected function isStyleAllowed()
+    {
+        return (bool) FH_EDITOR_ALLOW_STYLE;
+    }
+
+    /**
+     * Editor::_getSanitizer()
+     *
+     * @return HtmlSanitizer
+     * @access private
+     */
+    private function _getSanitizer()
+    {
+        if ($this->_oSanitizer === null)
+        {
+            $this->_oSanitizer = new HtmlSanitizer($this->getSanitizerConfig());
+        }
+
+        return $this->_oSanitizer;
     }
 
 
