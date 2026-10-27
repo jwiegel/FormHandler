@@ -1122,6 +1122,50 @@ class FormHandler
         $this->_date[] = $name;
     }
 
+    /**
+     * FormHandler::html5DateField()
+     *
+     * Create a date field rendered as HTML5 <input type="date"> on the form.
+     * The browser shows its own date picker, the value is always yyyy-mm-dd.
+     *
+     * @param string $title: The title of the field
+     * @param string $name: The name of the field
+     * @param string $validator: The validator which should be used to validate the value of the field
+     * @param string $mask: How to display the date in view mode. These can be used: d, D, m, M, y and Y
+     * @param boolean $setCurDate: Set the current date when a new form is shown
+     * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
+     * @return void
+     * @access public
+     */
+    public function html5DateField(
+        $title,
+        $name,
+        $validator  = null,
+        $mask       = null,
+        $setCurDate = false,
+        $extra      = null
+    )
+    {
+        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
+        require_once(FH_INCLUDE_DIR . 'fields/class.Html5DateField.php');
+
+        $fld = new Html5DateField(
+            $this,
+            $name,
+            !empty($mask) ? $mask : null,
+            (bool) $setCurDate
+        );
+
+        if (!empty($validator))  $fld->setValidator($validator);
+        if (!empty($extra))      $fld->setExtra($extra);
+
+        /// register the field
+        $this->_registerField($name, $fld, $title);
+
+        // save the field in the datefields array (special treatment! :)
+        $this->_date[] = $name;
+    }
+
     /*****************/
     /**** BUTTONS ****/
     /*****************/

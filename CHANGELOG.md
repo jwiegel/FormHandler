@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `html5DateField()` and the class `Html5DateField`: a date field rendered as HTML5
+  `<input type="date">`, so the browser shows its own date picker. The value is always
+  `yyyy-mm-dd`; the mask (same chars as `dateTextField()`) is only used in view mode.
+  `$setCurDate` sets today's date in a new form. Invalid dates fail the validation, and
+  `getAsArray()` returns `null` with a warning, like `dateTextField()`.
+
 ## [4.1.0] - 2026-10-27
 
 ### Changed
