@@ -224,7 +224,7 @@ class DbalAdapter implements DatabaseAdapter
     /**
      * DbalAdapter::result()
      *
-     * @param DbalResult $sql the result to read from
+     * @param mixed $sql the DbalResult to read from (anything else has no records)
      * @param int $row the row to read
      * @param string|null $field the field to read, or null for the first field
      * @return mixed the value or false when it does not exist
@@ -261,7 +261,7 @@ class DbalAdapter implements DatabaseAdapter
     /**
      * DbalAdapter::recordCount()
      *
-     * @param DbalResult $sql
+     * @param mixed $sql a DbalResult of query() (anything else counts 0 records)
      * @return int
      */
     public function recordCount($sql)
@@ -272,7 +272,7 @@ class DbalAdapter implements DatabaseAdapter
     /**
      * DbalAdapter::getRecord()
      *
-     * @param DbalResult $sql
+     * @param mixed $sql a DbalResult of query() (anything else has no records)
      * @return array|false the next record in assoc mode or false when there are no records left
      */
     public function getRecord($sql)

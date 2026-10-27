@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- PHPDoc: `setValue()` of `FormHandler` and `dbFormHandler` accepts any value
+  (`mixed`), e.g. an `int` id or `null`; it was documented as `string`. `DbalAdapter`
+  documents `recordCount()`, `getRecord()` and `result()` with `mixed`, as they already
+  accept anything that is not a `DbalResult`, and `DatabaseAdapter::query()` has a
+  PHPDoc. Projects that run PHPStan on a high level no longer get false errors.
+
 ## [4.2.0] - 2026-10-27
 
 ### Added

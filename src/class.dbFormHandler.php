@@ -507,7 +507,7 @@ class dbFormHandler extends FormHandler
      * Set the value of the specified field
      *
      * @param string $sField: The field which value we have to set
-     * @param string|array $sValue: The value we have to set
+     * @param mixed $sValue: The value we have to set
      * @param boolean $bOverwriteCurrentValue: Do we have to overwrite the current value of the field (posted or db-loaded values)
      * @return void
      * @access public

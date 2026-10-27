@@ -2429,7 +2429,7 @@ class FormHandler
      * Set the value of the spicified field
      *
      * @param string $sField: The field which value we have to set
-     * @param string $sValue: The value we have to set
+     * @param mixed $sValue: The value we have to set
      * @param boolean $bOverwriteCurrentValue: Do we have to overwrite the current value of the field (posted value)
      * @return void
      * @access public
