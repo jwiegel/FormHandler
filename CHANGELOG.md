@@ -92,7 +92,7 @@ $form->setConnectionResource($conn, 'users');
   off, so the users of a form don't see CKEditor's "version is not secure" notification.
   Remaining known issues of 4.22.1: CVE-2024-24815 (CDATA, medium), CVE-2024-43407 (only
   with the codesnippetgeshi plugin), CVE-2024-24816 and CVE-2023-4771 (only in the
-  samples, not shipped). Sanitize the submitted HTML on the server (#22).
+  samples, not shipped). Sanitize the submitted HTML on the server ([tombrain/FormHandler#22](https://github.com/tombrain/FormHandler/issues/22)).
 - `phpunit/phpunit` and `phpstan/phpstan` moved to `require-dev`, so projects that
   install FormHandler no longer get them.
 
