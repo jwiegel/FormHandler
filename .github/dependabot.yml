@@ -1,0 +1,29 @@
+# Pull requests for new versions of the dependencies (the CI tests each of them)
+version: 2
+updates:
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # one pull request for all development tools
+      dev-tools:
+        dependency-type: development
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: docker
+    directories:
+      - /docker/php
+      - /docker/web
+    schedule:
+      interval: monthly
+    ignore:
+      # stay on PHP 8.2 (config.platform.php), only get rebuilt 8.2 images
+      - dependency-name: php
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor

@@ -552,7 +552,7 @@ class Securimage {
 
     $end = $start + rand(75, 110);
 
-    imagearc($this->im, $xpos, $ypos, $width, $height, $start, $end, $linecolor);
+    imagearc($this->im, (int) $xpos, (int) $ypos, (int) $width, (int) $height, (int) $start, (int) $end, $linecolor);
 
     $color = $colors[rand(0, sizeof($colors) - 1)];
     $linecolor = imagecolorallocate($this->im, hexdec(substr($color, 1, 2)), hexdec(substr($color, 3, 2)), hexdec(substr($color, 5, 2)));
@@ -568,7 +568,7 @@ class Securimage {
 
     $end = $start + rand(75, 100);
 
-    imagearc($this->im, $this->image_width * .75, $ypos, $width, $height, $start, $end, $linecolor);
+    imagearc($this->im, (int) ($this->image_width * .75), (int) $ypos, (int) $width, (int) $height, (int) $start, (int) $end, $linecolor);
   }
 
   /**
@@ -641,7 +641,7 @@ class Securimage {
 
       for($i = 0; $i < $strlen; ++$i) {
         $angle = rand($this->text_angle_minimum, $this->text_angle_maximum);
-        $y = rand($y_min, $y_max);
+        $y = rand((int) $y_min, (int) $y_max);
         if ($this->use_multi_text == true) {
           $idx = rand(0, sizeof($colors) - 1);
           $r = substr($colors[$idx], 1, 2);

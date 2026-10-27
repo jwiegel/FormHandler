@@ -588,27 +588,27 @@ class dbFormHandler extends FormHandler
     }
 
     /**
-     * Create the database adapter used by this form.
+     * dbFormHandler::createDatabaseAdapter()
      *
-     * This factory method makes it possible to swap the implementation in tests
-     * or during a future database-library migration without changing the form logic.
+     * Create the database adapter used by dbInfo(). Override it to use another
+     * DatabaseAdapter implementation.
      *
-     * @param string $db
-     * @param string $type
+     * @param string $db the database name (or the file for sqlite)
+     * @param string $type the type of database
      * @return DatabaseAdapter
      */
     protected function createDatabaseAdapter($db, $type)
     {
-        require_once(FH_YADAL_DIR . 'class.Yadal.php');
+        $adapter = new DbalAdapter();
+        $adapter->setDatabase($db, $type);
 
-        return newYadal($db, $type);
+        return $adapter;
     }
 
     /**
-     * Set a database adapter directly.
+     * dbFormHandler::setDatabaseAdapter()
      *
-     * Useful for tests and future abstraction layers because the form logic no
-     * longer depends on the concrete Yadal constructor.
+     * Use the given database adapter, e.g. a mock in tests.
      *
      * @param DatabaseAdapter $db
      * @return void
@@ -654,7 +654,7 @@ class dbFormHandler extends FormHandler
         // set the table to use
         $this->_table = $table;
 
-        // create a new yadal object
+        // create the database adapter
         $this->_db = $this->createDatabaseAdapter($db, $type);
 
         // try to fetch the database data if we are connected
@@ -722,49 +722,37 @@ class dbFormHandler extends FormHandler
     /**
      * dbFormHandler::setConnectionResource()
      *
-     * Use an already opened connection instead of opening a new one.
+     * Use an already opened Doctrine DBAL connection instead of opening a new one.
      *
-     * @param resource|string|\Doctrine\DBAL\Connection $conn:
-     * @param resource|string|null $table: The table which should be used to save the data in
-     * @param string|null $type: The type of database you are using
+     * @param \Doctrine\DBAL\Connection $conn: the connection to use
+     * @param string|null $table: The table which should be used to save the data in
+     * @param string|null $type: not used anymore, DBAL knows the database type
      * @return void
      * @access public
      * @author Teye Heimans
      */
     public function setConnectionResource($conn, $table = null, $type = null)
     {
-        // if no db-type is given, set the default
-        if (is_null($type))
-        {
-            $type = FH_DEFAULT_DB_TYPE;
-        }
-
-        // make this function backwards compatible ( $table, $conn, $type  as arguments )
-        if (is_string($conn) && is_resource($table))
-        {
-            $tmp   = $table;
-            unset($table);
-            $table = $conn;
-            unset($conn);
-            $conn  = $tmp;
-            unset($tmp);
-        }
-
         // save the table name
         $this->_table = $table;
 
-        // create the database adapter (a Doctrine DBAL connection needs no type)
-        $this->_db = $conn instanceof \Doctrine\DBAL\Connection
-            ? new DbalAdapter()
-            : $this->createDatabaseAdapter(null, $type);
-
-        // set the sql resource which we should use
-        $this->_db->setConnectionResource($conn);
-
-        // try to fetch the database data already
-        if ($this->edit)
+        if ($conn instanceof \Doctrine\DBAL\Connection)
         {
-            $this->_loadDbData();
+            $this->_db = new DbalAdapter($conn);
+
+            // try to fetch the database data already
+            if ($this->edit)
+            {
+                $this->_loadDbData();
+            }
+        }
+        else
+        {
+            trigger_error(
+                'Error, setConnectionResource() needs a Doctrine\DBAL\Connection! ' .
+                    'Use dbInfo() and dbConnect() to let FormHandler open the connection.',
+                E_USER_ERROR
+            );
         }
     }
 
@@ -1258,7 +1246,9 @@ class dbFormHandler extends FormHandler
      */
     private function deleteJunctionData($tableName, $keyField, $keyValue)
     {
-        $query = "DELETE FROM " . $tableName . " WHERE " . $keyField . " = '" . $keyValue . "';";
+        $query =
+            "DELETE FROM " . $this->_db->quote($tableName) .
+            " WHERE " . $this->_db->quote($keyField) . " = '" . $this->_db->escapeString($keyValue) . "'";
         return $this->_db->query($query);
     }
 
@@ -1282,9 +1272,10 @@ class dbFormHandler extends FormHandler
         {
             foreach ($field->getValue() as $value)
             {
-                $query = "INSERT INTO " . $tableName . "
-                (" . $destinationField . ", " . $keyField . ") 
-                VALUES ('" . $keyValue . "', '" . $value . "');";
+                $query =
+                    "INSERT INTO " . $this->_db->quote($tableName) .
+                    " (" . $this->_db->quote($destinationField) . ", " . $this->_db->quote($keyField) . ")" .
+                    " VALUES ('" . $this->_db->escapeString($keyValue) . "', '" . $this->_db->escapeString($value) . "')";
                 $this->_db->query($query);
             }
         }
@@ -1322,7 +1313,10 @@ class dbFormHandler extends FormHandler
                     // Get data from juntion table
                     foreach ($this->_tableConfig as $tableName => $fields)
                     {
-                        $qrySelectJunctiondata = "SELECT " . $fields[0] . " AS " . $fields[0] . " FROM " . $tableName . " WHERE " . $fields[1] . "='" . pos($this->_id) . "'";
+                        $qrySelectJunctiondata =
+                            "SELECT " . $this->_db->quote($fields[0]) . " AS " . $this->_db->quote($fields[0]) .
+                            " FROM " . $this->_db->quote($tableName) .
+                            " WHERE " . $this->_db->quote($fields[1]) . " = '" . $this->_db->escapeString(pos($this->_id)) . "'";
                         $sql = $this->_db->query($qrySelectJunctiondata);
                         $values = array();
                         while ($rs = $this->_db->getRecord($sql))

@@ -213,7 +213,10 @@ class DateTextField extends TextField
         // d.m.YY, d/m/YY, d-m-YY
         $regex1 = '^([0-3]?\d)([\-\.\/])([01]?\d)\2([0-9]{2})(\d\d){0,1}$';
 
-        if (preg_match("/$regex1/", str_replace(' ', '', $this->_mValue), $data))
+        // the value is null if the field has no value yet
+        $sTrimmed = str_replace(' ', '', (string) $this->_mValue);
+
+        if (preg_match("/$regex1/", $sTrimmed, $data))
         {
             if (isset($data[5]))
                 $year = $data[4] * 100 + $data[5];
@@ -236,7 +239,7 @@ class DateTextField extends TextField
         // YY/m/d, YY-m-y
         $regex2 = '^([0-9]{2})(\d\d){0,1}([\-\/])([01]?\d)\3([0-3]?\d)$';
 
-        if (preg_match("/$regex2/", str_replace(' ', '', $this->_mValue), $data))
+        if (preg_match("/$regex2/", $sTrimmed, $data))
         {
             if ($data[2] !== '')
                 $year = $data[1] * 100 + $data[2];

@@ -4,7 +4,7 @@
  * interface DatabaseAdapter
  *
  * Everything dbFormHandler and the db* fields need from a database layer.
- * Implemented by Yadal (legacy) and DbalAdapter (Doctrine DBAL).
+ * Implemented by DbalAdapter (Doctrine DBAL); mock it in tests.
  *
  * @package FormHandler
  */

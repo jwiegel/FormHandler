@@ -44,10 +44,10 @@ final class dbFormhandler_BaseTest extends dbFormhandlerTestCase
         $this->setConnectedTable($form, "test");
 
         $_db = $this->getPrivateProperty($form, '_db');
-        static::assertInstanceOf("YadalDibi", $_db);
+        static::assertInstanceOf("DbalAdapter", $_db);
 
         static::assertTrue($_db->isConnected());
-        static::assertTrue($_db->_quoteNumbers);
+        static::assertTrue($_db->quoteNumbers());
 
         $_table = $this->getPrivateProperty($form, '_table');
         static::assertEquals("test", $_table);

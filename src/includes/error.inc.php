@@ -33,7 +33,8 @@ function &catchErrors()
         }
 
         // dont save E_STRICT error messages
-        if (defined('E_STRICT') && func_get_arg(0) == E_STRICT)
+        // (2048 is the value of E_STRICT, the constant is deprecated since PHP 8.4)
+        if (func_get_arg(0) == 2048)
         {
             $var = null;
             return $var;

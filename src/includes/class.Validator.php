@@ -202,9 +202,9 @@ class Validator
      */
     public static function IsBool(&$value)
     {
-        if (preg_match("/^true$|^1|^false|^0$/i", $value))
+        if (preg_match('/^(true|1|false|0)$/i', (string) $value))
         {
-            $value = true;
+            $value = in_array(strtolower((string) $value), array('true', '1'), true);
             return true;
         }
         else
@@ -262,20 +262,22 @@ class Validator
     // check for a valid url
     public static function IsURL($value)
     {
-        //$regex = '/^((http|ftp|https):\/{2})?(([0-9a-zA-Z_-]+\.)+[a-zA-Z]+)((:[0-9]+)?)((\/([0-9a-zA-Z=%\.\/_-]+)?(\?[0-9a-zA-Z%\/&=_-]+)?)?)$/';
-        $regex = '/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/';
-        $result = preg_match($regex, $value, $match);
+        $regex =
+            '/^((https?|ftp):\/\/)?' .                                         // optional scheme
+            '([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}' . // host name
+            '(:[0-9]{1,5})?' .                                                 // optional port
+            '([\/?#][^\s]*)?$/';                                               // optional path, query, fragment
 
-        return $result;
+        return preg_match($regex, $value);
     }
 
-    function _IsURL($value)
+    public static function _IsURL($value)
     {
         return StrLen($value) == 0 || Validator::IsURL($value);
     }
 
     // a valid URL (http connection is used to check if url exists!)
-    function IsURLHost($href)
+    public static function IsURLHost($href)
     {
         if (strlen($href) <= 3)
         {
@@ -299,18 +301,18 @@ class Validator
         return false;
     }
 
-    function _IsURLHost($value)
+    public static function _IsURLHost($value)
     {
         return StrLen($value) == 0 || Validator::IsURLHost($value);
     }
 
     // a valid email address (only checks for valid format: xxx@xxx.xxx)
-    function IsEmail($value)
+    public static function IsEmail($value)
     {
         return preg_match("/^[a-z0-9_\.-]+@([a-z0-9]+([\-]+[a-z0-9]+)*\.)+[a-z]{2,7}$/i", $value);
     }
 
-    function _IsEmail($value)
+    public static function _IsEmail($value)
     {
         return StrLen($value) == 0 || Validator::IsEmail($value);
     }
@@ -406,7 +408,12 @@ class Validator
     // check if it's a valid ip adres
     public static function IsIp($ip)
     {
-        return preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}:?\d*$/', $ip);
+        // four numbers from 0 to 255, optional port
+        if (!preg_match('/^([0-9.]+)(:[0-9]{1,5})?$/', $ip, $match))
+        {
+            return false;
+        }
+        return filter_var($match[1], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
     }
 
     public static function _IsIp($ip)

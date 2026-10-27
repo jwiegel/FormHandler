@@ -7,12 +7,6 @@ parameters:
 	excludePaths:
 		- src/FHTML/*
 		- src/includes/class.ImageConverter.php
-		- src/yadal/class.Access.php
-		- src/yadal/class.MSSQL.php
-		- src/yadal/class.MySQL.php
-		- src/yadal/class.ODBC.php
-		- src/yadal/class.PostgreSQL.php
-		- src/yadal/test/*
 	ignoreErrors:
 		- '#Constant [a-zA-Z0-9\\_]+ not found.#'
 		- '#Binary operation "|" between 2 and .. results in an error.#'
