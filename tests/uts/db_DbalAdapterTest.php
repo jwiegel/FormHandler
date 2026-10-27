@@ -54,6 +54,18 @@ final class db_DbalAdapterTest extends TestCase
         static::assertEquals('SELECT name, email FROM test ORDER BY id', $this->_db->getLastQuery());
     }
 
+    public function test_query_valuesAreStrings(): void
+    {
+        $this->_conn->executeStatement('CREATE TABLE numbers (i INTEGER, f REAL, n INTEGER NULL)');
+        $this->_conn->executeStatement('INSERT INTO numbers VALUES (42, 1.5, NULL)');
+
+        // like Yadal in FormHandler 3: strings (or null), the drivers return ints/floats
+        $record = $this->_db->getRecord($this->_db->query('SELECT * FROM numbers'));
+
+        static::assertSame(['i' => '42', 'f' => '1.5', 'n' => null], $record);
+        static::assertSame('1', $this->_db->result($this->_db->query('SELECT id FROM test ORDER BY id'), 0, 'id'));
+    }
+
     public function test_query_insert(): void
     {
         $sql = $this->_db->query("INSERT INTO test (name) VALUES ('carl')");

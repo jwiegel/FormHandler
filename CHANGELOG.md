@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Values loaded from the database are strings (or `null`) again, like with the Yadal
+  drivers of 3.x. Since 4.0 `DbalAdapter` returned ints and floats as the drivers do
+  since PHP 8.1, so code with `strict_types` that compared or trimmed the loaded values
+  (e.g. to log changed values) stopped with a `TypeError`.
+
 ## [4.5.0] - 2026-10-27
 
 ### Security
