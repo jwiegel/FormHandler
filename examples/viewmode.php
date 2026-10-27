@@ -8,10 +8,13 @@ $form = new FormHandler();
 $form->textField('Name', 'name', FH_STRING);
 $form->textField('E-mail', 'email', FH_EMAIL);
 $form->selectField('Country', 'country', array('de' => 'Germany', 'nl' => 'Netherlands'), null, true);
+// the mask is only used in view mode, the field itself shows the date picker
+$form->html5DateField('Birthday', 'birthday', null, 'd.m.Y');
 
 $form->setValue('name', 'Anna Meyer');
 $form->setValue('email', 'anna@example.org');
 $form->setValue('country', 'nl');
+$form->setValue('birthday', '1990-04-14');
 
 if (isset($_GET['all']))
 {
