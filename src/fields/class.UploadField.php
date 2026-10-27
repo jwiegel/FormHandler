@@ -672,7 +672,7 @@ class UploadField extends Field
             return true; // avoid 'xyz:\' problem.
         }
 
-        return ($this->_forceDir(dirname($sPath), $sPath) && mkdir($sPath, $iMode));
+        return ($this->_forceDir(dirname($sPath), $iMode) && mkdir($sPath, $iMode));
     }
 
     /**

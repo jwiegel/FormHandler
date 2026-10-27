@@ -23,6 +23,12 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - GitHub Actions runs the tests on PHP 8.2, 8.3 and 8.4.
 - The PHP version of the Docker container can be chosen with `FH_PHP_VERSION`.
 
+### Fixed
+
+- `UploadField` could not create an upload directory with more than one missing
+  parent directory: it passed the path instead of the mode to `mkdir()` (`TypeError`
+  since PHP 8).
+
 ## [4.0.0] - 2026-10-23
 
 FormHandler now uses [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html)
