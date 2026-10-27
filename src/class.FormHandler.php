@@ -70,6 +70,7 @@ require_once(FH_INCLUDE_DIR . 'fields/class.Field.php');
 require_once(FH_INCLUDE_DIR . 'buttons/class.Button.php');
 require_once(FH_INCLUDE_DIR . 'includes/config.inc.php');
 require_once(FH_INCLUDE_DIR . 'includes/error.inc.php');
+require_once(FH_INCLUDE_DIR . 'includes/class.FormHandlerException.php');
 require_once(FH_INCLUDE_DIR . 'includes/class.Validator.php');
 require_once(FH_INCLUDE_DIR . 'includes/class.MaskLoader.php');
 
@@ -2007,10 +2008,9 @@ class FormHandler
             // language file does not exists
             else
             {
-                trigger_error(
+                throw new FormHandlerException(
                     'Unknown language: ' . $sLanguage . '. Could not find ' .
-                        'file ' . FH_INCLUDE_DIR . 'language/' . $sLanguage . '.php!',
-                    E_USER_ERROR
+                        'file ' . FH_INCLUDE_DIR . 'language/' . $sLanguage . '.php!'
                 );
             }
         }
@@ -2456,9 +2456,8 @@ class FormHandler
             // the given callback function does not exists
             else
             {
-                trigger_error(
-                    'Error, the onCorrect function "' . $callback . '" does not exists!',
-                    E_USER_ERROR
+                throw new FormHandlerException(
+                    'Error, the onCorrect function "' . $callback . '" does not exists!'
                 );
             }
         }
@@ -2473,10 +2472,9 @@ class FormHandler
             // the method does not exists
             else
             {
-                trigger_error(
+                throw new FormHandlerException(
                     'Error, the onCorrect method "' . $callback[1] . '" does not exists in the given object' .
-                        (is_object($callback[0]) ? ' "' . get_class($callback[0]) . '"!' : '!'),
-                    E_USER_ERROR
+                        (is_object($callback[0]) ? ' "' . get_class($callback[0]) . '"!' : '!')
                 );
             }
         }
@@ -3393,7 +3391,7 @@ class FormHandler
         // is a language set?
         if (!isset($this->_text) || !is_array($this->_text))
         {
-            trigger_error('No language file set!', E_USER_ERROR);
+            throw new FormHandlerException('No language file set!');
         }
 
         // does the index exists in the language file ?

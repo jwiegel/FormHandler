@@ -114,21 +114,24 @@ final class dbFormhandler_DbalTest extends FormhandlerTestCase
     public function test_dbInfo_unsupportedType(): void
     {
         $form = new dbFormHandler();
-        $form->dbInfo('mydb', 'test', 'access');
 
-        $this->assertTriggertError('Error, database type "access" not supported!', E_USER_ERROR);
+        $this->expectException(FormHandlerException::class);
+        $this->expectExceptionMessage('Error, database type "access" not supported!');
+
+        $form->dbInfo('mydb', 'test', 'access');
     }
 
     public function test_setConnectionResource_noDbalConnection(): void
     {
         $form = new dbFormHandler();
-        $form->setConnectionResource('mydb', 'test');
 
-        $this->assertTriggertError(
+        $this->expectException(FormHandlerException::class);
+        $this->expectExceptionMessage(
             'Error, setConnectionResource() needs a Doctrine\DBAL\Connection! ' .
-                'Use dbInfo() and dbConnect() to let FormHandler open the connection.',
-            E_USER_ERROR
+                'Use dbInfo() and dbConnect() to let FormHandler open the connection.'
         );
+
+        $form->setConnectionResource('mydb', 'test');
     }
 
     public function test_insert_uniqueViolation(): void

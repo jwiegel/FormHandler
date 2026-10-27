@@ -598,13 +598,12 @@ class UploadField extends Field
                 // uploading
                 if (!move_uploaded_file($aFile['tmp_name'], $sUpload))
                 {
-                    trigger_error(
+                    throw new FormHandlerException(
                         sprintf(
                             'Unable to move uploaded file %s to location %s',
                             $aFile['tmp_name'],
                             $sUpload
-                        ),
-                        E_USER_ERROR
+                        )
                     );
                 }
                 @chmod($sUpload, FH_DEFAULT_CHMOD);

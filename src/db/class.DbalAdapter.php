@@ -64,9 +64,8 @@ class DbalAdapter implements DatabaseAdapter
         }
         else
         {
-            trigger_error(
-                'Error, DbalAdapter needs a Doctrine\DBAL\Connection!',
-                E_USER_ERROR
+            throw new FormHandlerException(
+                'Error, DbalAdapter needs a Doctrine\DBAL\Connection!'
             );
         }
     }
@@ -78,7 +77,8 @@ class DbalAdapter implements DatabaseAdapter
      *
      * @param string $database the database name, or the file for sqlite
      * @param string $type a Yadal database type (mysql, postgresql, mssql, sqlite) or a DBAL driver name
-     * @return bool false when the type is not supported
+     * @return bool always true
+     * @throws FormHandlerException when the type is not supported
      */
     public function setDatabase($database, $type)
     {
@@ -96,9 +96,8 @@ class DbalAdapter implements DatabaseAdapter
         else
         {
             $this->_driver = null;
-            trigger_error(
-                'Error, database type "' . $type . '" not supported!',
-                E_USER_ERROR
+            throw new FormHandlerException(
+                'Error, database type "' . $type . '" not supported!'
             );
         }
 

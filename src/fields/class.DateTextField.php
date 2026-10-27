@@ -65,7 +65,7 @@ class DateTextField extends TextField
             || strtolower($data[1]) == strtolower($data[4])
             || strtolower($data[3]) == strtolower($data[4])
         )
-            trigger_error("Invalid mask ['{$sMask}']. Useable chars: d, D, m, M, y, Y, ., -, /", E_USER_ERROR);
+            throw new FormHandlerException("Invalid mask ['{$sMask}']. Useable chars: d, D, m, M, y, Y, ., -, /");
 
         // set postion of day, month and year
         for ($i = 1; $i < 5; $i++)

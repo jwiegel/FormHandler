@@ -249,10 +249,9 @@ class Field
                 }
                 else
                 {
-                    trigger_error(
+                    throw new FormHandlerException(
                         "Error, the validator method '" . $this->_sValidator[1] . "' does not exists " .
-                            "in object '" . get_class($this->_sValidator[0]) . "'!",
-                        E_USER_ERROR
+                            "in object '" . get_class($this->_sValidator[0]) . "'!"
                     );
                 }
             }

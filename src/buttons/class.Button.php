@@ -30,9 +30,8 @@ class Button
     {
         if (!is_object($oForm))
         {
-            trigger_error(
-                'Error: invalid form object given to Button constructor',
-                E_USER_ERROR
+            throw new FormHandlerException(
+                'Error: invalid form object given to Button constructor'
             );
         }
 

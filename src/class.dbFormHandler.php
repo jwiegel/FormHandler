@@ -617,9 +617,8 @@ class dbFormHandler extends FormHandler
     {
         if (!($db instanceof DatabaseAdapter))
         {
-            trigger_error(
-                'Error, database adapter must implement the DatabaseAdapter interface!',
-                E_USER_ERROR
+            throw new FormHandlerException(
+                'Error, database adapter must implement the DatabaseAdapter interface!'
             );
         }
 
@@ -748,10 +747,9 @@ class dbFormHandler extends FormHandler
         }
         else
         {
-            trigger_error(
+            throw new FormHandlerException(
                 'Error, setConnectionResource() needs a Doctrine\DBAL\Connection! ' .
-                    'Use dbInfo() and dbConnect() to let FormHandler open the connection.',
-                E_USER_ERROR
+                    'Use dbInfo() and dbConnect() to let FormHandler open the connection.'
             );
         }
     }
@@ -779,9 +777,8 @@ class dbFormHandler extends FormHandler
             // the given callback function does not exists
             else
             {
-                trigger_error(
-                    'Error, the onSaved function "' . $callback . '" does not exists!',
-                    E_USER_ERROR
+                throw new FormHandlerException(
+                    'Error, the onSaved function "' . $callback . '" does not exists!'
                 );
             }
         }
@@ -796,10 +793,9 @@ class dbFormHandler extends FormHandler
             // the method does not exists
             else
             {
-                trigger_error(
+                throw new FormHandlerException(
                     'Error, the onSaved method "' . $callback[1] . '" does not exists in the given object' .
-                        (is_object($callback[0]) ? ' "' . get_class($callback[0]) . '"!' : '!'),
-                    E_USER_ERROR
+                        (is_object($callback[0]) ? ' "' . get_class($callback[0]) . '"!' : '!')
                 );
             }
         }
@@ -1351,7 +1347,7 @@ class dbFormHandler extends FormHandler
             // trigger error message
             else
             {
-                trigger_error('Try to edit a none existing record!', E_USER_ERROR);
+                throw new FormHandlerException('Try to edit a none existing record!');
             }
         }
         else

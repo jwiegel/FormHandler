@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Errors in the use of FormHandler throw a `FormHandlerException` (a `RuntimeException`)
+  instead of `trigger_error(..., E_USER_ERROR)`, which is deprecated since PHP 8.4.
+  This affects an unknown language, a missing `onCorrect`/`onSaved` callback or
+  validator method, an invalid date mask, an invalid database adapter, connection or
+  type, editing a record that does not exist, and a failed move of an uploaded file.
+  As before, the script stops unless the exception is caught.
+
 ## [4.0.0] - 2026-10-23
 
 FormHandler now uses [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html)
