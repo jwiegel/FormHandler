@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    name: PHPUnit PHP ${{ matrix.php }}
+    name: PHPUnit PHP ${{ matrix.php }}${{ matrix.deps == 'latest' && ' (latest dependencies)' || '' }}
     runs-on: ubuntu-24.04
 
     strategy:
@@ -14,6 +14,12 @@ jobs:
       fail-fast: false
       matrix:
         php: ['8.2', '8.3', '8.4']
+        deps: ['locked']
+        include:
+          # composer.lock is resolved for PHP 8.2; projects on a newer PHP get newer
+          # dependencies (e.g. symfony/html-sanitizer 8), so test them as well
+          - php: '8.4'
+            deps: 'latest'
 
     steps:
     - name: Checkout code
@@ -32,7 +38,16 @@ jobs:
       run: composer validate
 
     - name: Install dependencies
+      if: matrix.deps == 'locked'
       run: composer install --prefer-dist --no-progress
+
+    - name: Update to the latest dependencies
+      if: matrix.deps == 'latest'
+      # without the platform PHP 8.2 of composer.json, Composer resolves for the PHP of the job
+      run: |
+        composer config --unset platform.php
+        composer update --prefer-dist --no-progress
+        composer show symfony/html-sanitizer | grep -E '^versions'
 
     - name: Run PHPUnit
       run: vendor/bin/phpunit --configuration tests/uts/phpunit.xml --coverage-text
