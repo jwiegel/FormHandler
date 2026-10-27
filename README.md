@@ -62,6 +62,57 @@ function doRun($data)
 For an extended version of the documentation please check our manual located at
 http://www.fh3.nl/manual/manual.html
 
+The manual describes version 3. The changes of every version are in `CHANGELOG.md`,
+and `examples/` has a page for every element (see `SETUP.md`).
+
+### New in 4.x (not in the manual)
+
+**Database connection with Doctrine DBAL.** `dbInfo()` and `dbConnect()` work as before.
+An open connection has to be a DBAL connection:
+
+```php
+$conn = \Doctrine\DBAL\DriverManager::getConnection([
+    'driver' => 'pdo_mysql', 'host' => 'localhost',
+    'user' => 'user', 'password' => 'secret', 'dbname' => 'mydb',
+]);
+$form = new dbFormHandler();
+$form->setConnectionResource($conn, 'users');
+```
+
+**HTML5 date field** (4.2). The browser shows its own date picker, the value is always
+`yyyy-mm-dd`. The mask is only used in view mode; `true` sets today's date in a new form.
+
+```php
+// html5DateField($title, $name, $validator, $mask, $setCurDate, $extra)
+$form->html5DateField('Birthday', 'birthday', FH_NOT_EMPTY, 'd.m.Y');
+```
+
+**The editor HTML is sanitized on the server** (4.4). `editor()` only keeps safe HTML:
+scripts, event handlers, `javascript:` links, iframes and forms are removed, also when the
+request is sent by hand. The `style` attribute is removed as well; to keep colors and
+font sizes, extend `Editor`:
+
+```php
+class StyledEditor extends Editor
+{
+    protected function isStyleAllowed()
+    {
+        return true;
+    }
+}
+```
+
+`examples/editor.php` shows how to add such an editor to a form; override
+`getSanitizerConfig()` for another allow list.
+
+**Errors are exceptions** (4.1). A wrong use of FormHandler (unknown language, missing
+callback, invalid date mask, editing a record that does not exist, ...) throws a
+`FormHandlerException` instead of `trigger_error(..., E_USER_ERROR)`.
+
+**Composer only** (4.3). All classes are loaded by Composer's autoloader, so you can extend
+e.g. `TextArea` in your own fields. Including `class.FormHandler.php` without Composer is
+no longer supported.
+
 ### License
 
 FormHandler is licensed under the GNU Lesser General Public License Version 2.1 - see the `LICENSE` file for details
