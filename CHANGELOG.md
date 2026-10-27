@@ -27,6 +27,9 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `editor()` with `$path = false` (or `Editor::setServerPath(false)`) did not turn the
+  file browser of the editor off: it wrote to a misspelled property, so the "Browse
+  server" button kept linking to the file manager.
 - The Composer branch alias of `dev-master` was still `4.0.x-dev`, so `dev-master`
   did not satisfy constraints like `^4.3`. It is `4.x-dev` now and fits every 4.x release.
 
