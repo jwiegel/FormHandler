@@ -13,6 +13,7 @@ and the project follows [Semantic Versioning](https://semver.org/).
   `yyyy-mm-dd`; the mask (same chars as `dateTextField()`) is only used in view mode.
   `$setCurDate` sets today's date in a new form. Invalid dates fail the validation, and
   `getAsArray()` returns `null` with a warning, like `dateTextField()`.
+- Example page `examples/html5datefield.php`.
 
 ## [4.1.0] - 2026-10-27
 
