@@ -27,13 +27,16 @@ The container keeps that version until it is built again (`docker compose build 
 for PHP 8.2).
 
 The packages are installed into the Docker volume `formhandler_vendor`, not into the
-project's `vendor/` folder on the host (see the notes below). To give your IDE the
-current packages for autocompletion, copy them to the host after `composer install`
-or `composer update`:
+project's `vendor/` folder on the host (see the notes below). After `composer install`
+and `composer update`, Composer mirrors them to the host's `vendor/` for your IDE
+(`docker/php/sync-vendor.php`, with rsync: only changed files are copied, removed ones
+are deleted). To mirror them by hand:
 
 ```sh
-docker compose run --rm php bash -c "find /host-vendor -mindepth 1 -delete && cp -a vendor/. /host-vendor/"
+docker compose run --rm php composer sync-vendor
 ```
+
+The host's `vendor/` is only a copy for the IDE; PHP in the containers uses the volume.
 
 ## Tests and static analysis
 

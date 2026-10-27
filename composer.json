@@ -41,6 +41,14 @@
             "tests/uts/helper"
         ]
     },
+    "scripts": {
+        "sync-vendor": "@php docker/php/sync-vendor.php",
+        "post-install-cmd": "@sync-vendor",
+        "post-update-cmd": "@sync-vendor"
+    },
+    "scripts-descriptions": {
+        "sync-vendor": "Mirror vendor/ from the Docker volume to the host for the IDE (only in the php container)"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "4.0.x-dev"
