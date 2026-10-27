@@ -231,7 +231,8 @@ class FormHandler
         if (FH_DISPLAY_ERRORS) // @phpstan-ignore-line (If condition is always false.)
         {
             error_reporting(E_ALL);
-            set_error_handler('catchErrors');
+            // catchErrors() also returns the collected errors, PHP accepts any return value of a handler
+            set_error_handler('catchErrors'); // @phpstan-ignore argument.type
         }
 
         // set the language...
@@ -378,7 +379,7 @@ class FormHandler
             if (!empty($maxlength)) $fld->setMaxlength($maxlength);
             if (!empty($extra))     $fld->setExtra($extra);
 
-            $this->ImageButton(FH_FHTML_DIR . 'securimage/securimage_show.php?sid=' . md5(uniqid(time())), null, 'onclick="return false;" style="cursor:default;"');
+            $this->ImageButton(FH_FHTML_DIR . 'securimage/securimage_show.php?sid=' . md5(uniqid((string) time())), null, 'onclick="return false;" style="cursor:default;"');
 
             // register the field
             $this->_registerField($name, $fld, $title);
@@ -713,7 +714,7 @@ class FormHandler
      * @param array $config: The configuration used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
-     * @param string $alertOverwrite: Do we have to alert the user when he/she is going to overwrite a file?
+     * @param boolean $alertOverwrite: Do we have to alert the user when he/she is going to overwrite a file?
      * @return void
      * @access public
      * @author Teye Heimans
@@ -757,7 +758,7 @@ class FormHandler
      * @param boolean $useArrayKeyAsValue: If the array key's are the values for the options in the field
      * @param int $size: The size of the field (how many options are displayed)
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
-     * @param string $verticalMode: Verticalmode
+     * @param boolean $verticalMode: Verticalmode
      * @return void
      * @access public
      * @author Teye Heimans
@@ -2808,7 +2809,7 @@ class FormHandler
 
             $jsAfter = substr($jsAfter, 0, -2) . "));\n\n";
 
-            $this->_setJS($jsAfter, 0, 0);
+            $this->_setJS($jsAfter, false, false);
         }
 
         // set the js..
@@ -3965,8 +3966,8 @@ class FormHandler
                     "      elem.focus();\n" .
                     "    } catch(e) {}\n" .
                     "}\n",
-                0,
-                0
+                false,
+                false
             );
         }
 

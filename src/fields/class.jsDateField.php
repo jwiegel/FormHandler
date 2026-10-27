@@ -142,8 +142,8 @@ class jsDateField extends DateField
                 //"    cal_".$sName.".setDate(
                 "   }\n" .
                 "}\n",
-            0,
-            0
+            false,
+            false
         );
 
         $html .=

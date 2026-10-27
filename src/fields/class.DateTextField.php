@@ -189,7 +189,7 @@ class DateTextField extends TextField
         }
         else if (preg_match($regex, $mValue, $data))
         {
-            $timestamp = mktime(0, 0, 0, $data[2], $data[3], $data[1]);
+            $timestamp = mktime(0, 0, 0, (int) $data[2], (int) $data[3], (int) $data[1]);
             $this->_mValue = date($this->_sDateMask, $timestamp);
         }
         else
@@ -229,7 +229,7 @@ class DateTextField extends TextField
             $day = $data[1];
             $month = $data[3];
 
-            $timestamp = mktime(0, 0, 0, $month, $day, $year);
+            $timestamp = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
             $this->_mValue = date($this->_sDateMask, $timestamp);
             return date($this->_sDateMask, $timestamp);
         }
@@ -252,7 +252,7 @@ class DateTextField extends TextField
             $day = $data[5];
             $month = $data[4];
 
-            $timestamp = mktime(0, 0, 0, $month, $day, $year);
+            $timestamp = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
             $this->_mValue = date($this->_sDateMask, $timestamp);
             return date($this->_sDateMask, $timestamp);
         }

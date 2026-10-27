@@ -17,6 +17,8 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - `DateTextField::getAsArray()` (and `getAsArray()` of the form for a date text field)
   reports an invalid date with `E_USER_WARNING` instead of `E_USER_ERROR` and returns
   `null`. The value can come from the user, so it no longer stops the script.
+- PHPStan checks on level 5 instead of 4. The date fields cast the parts of a date to
+  `int` before they pass them to `mktime()`, `checkdate()` and `date()`.
 
 ### Added
 

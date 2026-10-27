@@ -343,7 +343,7 @@ class dbFormHandler extends FormHandler
      * @param string $offTitle: The title used above the OFF section of the field
      * @param int $size: The size of the field (how many options are displayed)
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
-     * @param string $verticalMode: Verticale mode
+     * @param boolean $verticalMode: Verticale mode
      * @return void
      * @access public
      * @author Teye Heimans

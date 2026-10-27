@@ -268,8 +268,8 @@ class Editor extends TextArea
             "
             CKEDITOR.replace( '" . $this->_sName . "', " . json_encode($this->_oEditor->config) . " );		
         ",
-            0,
-            0
+            false,
+            false
         );
 
         return $html;
