@@ -779,7 +779,8 @@ class FormHandler
      * @param string $title: The title of the field
      * @param string $name: The name of the field
      * @param string $validator: The validator which should be used to validate the value of the field
-     * @param string $path: Path on the server where we have to upload the files
+     * @param string $path: Path on the server where we have to upload the files. Only with a path the
+     *                      editor links the file manager, which needs FH_FILEMANAGER_ENABLED=1 (see README)
      * @param string $toolbar: The toolbar we have to use
      * @param string $skin: The skin to use
      * @param int $width: The width of the field

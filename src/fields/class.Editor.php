@@ -46,7 +46,6 @@ class Editor extends TextArea
         $this->_oEditor->Value = isset($this->_mValue) ? $this->_mValue : '';
 
         $this->setToolbar('Default'); // Default or Basic
-        $this->setServerPath('');
 
         // set the language
         $this->_oEditor->config['language']  = str_replace('-utf8', '', $oForm->GetLang());

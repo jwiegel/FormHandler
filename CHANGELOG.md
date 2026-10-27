@@ -4,6 +4,23 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Security
+
+- The file manager in `src/FHTML/filemanager` (used by `browserField()` and the
+  editor's "Browse server") has no login, and its connector was enabled: anyone who
+  could request it could upload files (images, documents, archives, ...), create
+  folders and list folders. `ServerPath` came unchecked from the URL, so with `..`
+  this worked outside the document root too.
+  - The connector is off unless the web server sets the environment variable
+    `FH_FILEMANAGER_ENABLED=1`. Only enable it behind a login.
+  - `ServerPath` with `..`, backslashes, colons or control characters turns the
+    connector off.
+  - `delete.php` is removed: it deleted any file below the document root without a
+    path check (only a session variable `login`), and its trash icon in the file list.
+  - `editor()` only links the file manager when it gets a `$path`.
+
 ## [4.4.0] - 2026-10-27
 
 ### Security

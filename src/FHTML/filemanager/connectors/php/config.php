@@ -24,13 +24,21 @@
 
 global $Config ;
 
-// SECURITY: You must explicitly enable this "connector". (Set it to "true").
-// WARNING: don't just set "$Config['Enabled'] = true ;", you must be sure that only
-//		authenticated users can access this file or use some kind of session checking.
-$Config['Enabled'] = true ;
+// SECURITY (FormHandler): the connector has no login. Anyone who can request it can
+// upload files and list folders. It is off unless the web server sets the environment
+// variable FH_FILEMANAGER_ENABLED=1 (e.g. "SetEnv FH_FILEMANAGER_ENABLED 1" in Apache),
+// and then only protect it yourself, e.g. with a login in front of this folder.
+$Config['Enabled'] = getenv('FH_FILEMANAGER_ENABLED') === '1' ;
 
-// Path to user files relative to the document root.
-$Config['UserFilesPath'] = $_GET['ServerPath'].'/' ;
+// Path to user files relative to the document root, set by editor() and browserField().
+// Only a folder below the document root: no "..", backslashes, colons or control chars.
+$sFhServerPath = isset( $_GET['ServerPath'] ) ? (string) $_GET['ServerPath'] : '' ;
+if ( preg_match( '/\.\.|\\\\|:|[[:cntrl:]]/', $sFhServerPath ) )
+{
+	$Config['Enabled'] = false ;
+	$sFhServerPath = '' ;
+}
+$Config['UserFilesPath'] = $sFhServerPath.'/' ;
 
 // Fill the following value it you prefer to specify the absolute path for the
 // user files directory. Useful if you are using a virtual directory, symbolic

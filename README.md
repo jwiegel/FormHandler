@@ -26,6 +26,12 @@ For example: map vendor/formhandler/formhandler/src/FHTML to /FHTML/ of your web
 fh_conf('FH_FHTML_DIR', '/FHTML/');
 ```
 
+**File manager:** `FHTML/filemanager` (used by `browserField()` and by `editor()` with a
+`$path`) has no login: whoever can request it can upload files and list folders. It is
+off unless the web server sets the environment variable `FH_FILEMANAGER_ENABLED=1`
+(Apache: `SetEnv FH_FILEMANAGER_ENABLED 1`). Only enable it for a folder that is
+protected by a login, e.g. the admin area of your site.
+
 ## Basic Usage
 
 ```php
