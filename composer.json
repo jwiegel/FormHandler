@@ -26,12 +26,14 @@
     },
     "autoload": {
         "files": [
-            "src/class.FormHandler.php",
-            "src/class.dbFormHandler.php",
-            "src/includes/class.ImageConverter.php"
+            "src/class.FormHandler.php"
         ],
         "classmap": [
-            "src/db/"
+            "src/class.dbFormHandler.php",
+            "src/buttons/",
+            "src/db/",
+            "src/fields/",
+            "src/includes/"
         ]
     },
     "autoload-dev": {

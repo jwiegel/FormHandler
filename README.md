@@ -31,10 +31,7 @@ fh_conf('FH_FHTML_DIR', '/FHTML/');
 ```php
 <?php
 
-//include the class (only needed when not using Composer)
-include "FH3/class.FormHandler.php";
-
-//when using composer include the autoloader of composer
+//FormHandler and all its classes are loaded by Composer's autoloader
 require __DIR__ . '/vendor/autoload.php';
 
 //create a new FormHandler object

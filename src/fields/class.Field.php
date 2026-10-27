@@ -301,7 +301,6 @@ class Field
         if( $this->_oForm->_ajaxValidator === true )
         {
         echo 'JAJA';
-        require_once( FH_INCLUDE_DIR . 'includes/class.AjaxValidator.php' );
         $oAjaxValidator = new AjaxValidator( $this );
         $oAjaxValidator->AjaxValidator( $this );
         }

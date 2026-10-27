@@ -133,9 +133,6 @@ class dbFormHandler extends FormHandler
         $sMask      = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.CheckBox.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbCheckBox.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -184,10 +181,6 @@ class dbFormHandler extends FormHandler
         $extra      = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextSelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbTextSelectField.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -238,9 +231,6 @@ class dbFormHandler extends FormHandler
         $sMask      = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.RadioButton.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbRadioButton.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -294,9 +284,6 @@ class dbFormHandler extends FormHandler
         $mergeArray = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbSelectField.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -362,10 +349,6 @@ class dbFormHandler extends FormHandler
         $verticalMode     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.ListField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbListField.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -841,7 +824,6 @@ class dbFormHandler extends FormHandler
     {
         if ($this->_ajaxValidator === true)
         {
-            require_once(FH_INCLUDE_DIR . 'includes/class.AjaxValidator.php');
             $oAjaxValidator = new AjaxValidator($this->_ajaxValidatorScript);
             $oAjaxValidator->CreateObservers($this);
         }
@@ -1190,7 +1172,6 @@ class dbFormHandler extends FormHandler
                                 // no field in the form (propably added with addValue)
                                 else
                                 {
-
                                     // get the error message
                                     $error =
                                         sizeof($unique[$index]) == 1 ?

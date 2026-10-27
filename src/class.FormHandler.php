@@ -66,13 +66,8 @@ define(
 
 // include needed files
 define('FH_INCLUDE_DIR', str_replace('\\', '/', dirname(__FILE__)) . '/');
-require_once(FH_INCLUDE_DIR . 'fields/class.Field.php');
-require_once(FH_INCLUDE_DIR . 'buttons/class.Button.php');
 require_once(FH_INCLUDE_DIR . 'includes/config.inc.php');
 require_once(FH_INCLUDE_DIR . 'includes/error.inc.php');
-require_once(FH_INCLUDE_DIR . 'includes/class.FormHandlerException.php');
-require_once(FH_INCLUDE_DIR . 'includes/class.Validator.php');
-require_once(FH_INCLUDE_DIR . 'includes/class.MaskLoader.php');
 
 /**
  * class FormHandler
@@ -290,9 +285,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.BrowserField.php');
-        require_once(FH_INCLUDE_DIR . 'buttons/class.Button.php');
-
         // create the field
         $fld = new BrowserField($this, $name, $path);
         if (!empty($validator)) $fld->setValidator($validator);
@@ -327,8 +319,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-
         // create the field
         $fld = new TextField($this, $name);
         if (!empty($validator)) $fld->setValidator($validator);
@@ -367,7 +357,6 @@ class FormHandler
         if ($bCaptcha)
         {
             $bCaptcha = false;
-            require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
 
             // create the field
             $fld = new TextField($this, $name);
@@ -424,9 +413,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextSelectField.php');
-
         // create the field
         $fld = new TextSelectField($this, $name, $aOptions);
         if (!empty($validator)) $fld->setValidator($validator);
@@ -462,9 +448,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.PassField.php');
-
         // create the field
         $fld = new PassField($this, $name);
 
@@ -497,8 +480,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.HiddenField.php');
-
         // create new hidden field
         $fld = new HiddenField($this, $name);
 
@@ -536,8 +517,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextArea.php');
-
         // create new textarea
         $fld = new TextArea($this, $name);
 
@@ -578,8 +557,6 @@ class FormHandler
         $extra              = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-
         // options has to be an array
         if (!is_array($options))
         {
@@ -640,8 +617,6 @@ class FormHandler
         $mask               = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.CheckBox.php');
-
         // create a new checkbox
         $fld = new CheckBox($this, $name, $value);
 
@@ -680,8 +655,6 @@ class FormHandler
         $mask               = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.RadioButton.php');
-
         // value has to be an array
         if (!is_array($options))
         {
@@ -728,8 +701,6 @@ class FormHandler
         $alertOverwrite = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.UploadField.php');
-
         // create a new uploadfield
         $fld = new UploadField($this, $name, $config);
 
@@ -776,9 +747,6 @@ class FormHandler
         $verticalMode       = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.ListField.php');
-
         // options has to be an array
         if (!is_array($options))
         {
@@ -833,9 +801,6 @@ class FormHandler
         $config    = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextArea.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.Editor.php');
-
 
         // create a new editor
         $fld = new Editor($this, $name);
@@ -878,10 +843,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.DateField.php');
-
         // create a new datefield
         $fld = new DateField(
             $this,
@@ -929,11 +890,6 @@ class FormHandler
         $bIncludeJS = true
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.DateField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.jsDateField.php');
-
         // create a new datefield
         $fld = new jsDateField($this, $name, $mask, $required, $interval, $bIncludeJS);
 
@@ -970,9 +926,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TimeField.php');
-
         // create a new timefield
         $fld = new TimeField($this, $name);
 
@@ -1010,8 +963,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.ColorPicker.php');
-
         // create the field
         $fld = new ColorPicker($this, $name);
         if (!empty($validator)) $fld->setValidator($validator);
@@ -1050,9 +1001,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.DateTextField.php');
-
         // create a new datetextfield
         $fld = new DateTextField(
             $this,
@@ -1099,10 +1047,6 @@ class FormHandler
         $bIncludeJS = true
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.DateTextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.jsDateTextField.php');
-
         // create a new datetextfield
         $fld = new jsDateTextField(
             $this,
@@ -1146,9 +1090,6 @@ class FormHandler
         $extra      = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.Html5DateField.php');
-
         $fld = new Html5DateField(
             $this,
             $name,
@@ -1218,8 +1159,6 @@ class FormHandler
      */
     public function submitButton($caption = null, $name = null, $extra = null, $disableOnSubmit = null)
     {
-        require_once(FH_INCLUDE_DIR . 'buttons/class.SubmitButton.php');
-
         // get new button name if none is given
         if (empty($name))
         {
@@ -1251,8 +1190,6 @@ class FormHandler
      */
     public function imageButton($image, $name = null, $extra = null)
     {
-        require_once(FH_INCLUDE_DIR . 'buttons/class.ImageButton.php');
-
         // get new button name if none is given
         if (empty($name))
         {
@@ -1282,8 +1219,6 @@ class FormHandler
      */
     public function resetButton($caption = null, $name = null, $extra = null)
     {
-        require_once(FH_INCLUDE_DIR . 'buttons/class.ResetButton.php');
-
         // get new button name if none given
         if (empty($name))
         {
@@ -2873,7 +2808,6 @@ class FormHandler
      */
     public function setDynamicOptions($options, $useArrayKeyAsValue = true)
     {
-
         $output = 'var options = Array(' . " \n";
 
         // generate a javascript array from the given array
@@ -3096,8 +3030,6 @@ class FormHandler
      */
     public function resizeImage($field, $saveAs = null, $maxWidth = null, $maxHeight = null, $quality = null, $constrainProportions = true)
     {
-        require_once(FH_INCLUDE_DIR . 'includes/class.ImageConverter.php');
-
         // is gd enabled ?
         if (!ImageConverter::GDVersion())
         {
@@ -3131,8 +3063,6 @@ class FormHandler
      */
     public function mergeImage($field, $merge, $align = 'center', $valign = 'bottom', $transparantColor = null)
     {
-        require_once(FH_INCLUDE_DIR . 'includes/class.ImageConverter.php');
-
         // is gd enabled ?
         if (!ImageConverter::GDVersion())
         {
@@ -3254,7 +3184,6 @@ class FormHandler
     {
         if ($this->_ajaxValidator === true)
         {
-            require_once(FH_INCLUDE_DIR . 'includes/class.AjaxValidator.php');
             $oAjaxValidator = new AjaxValidator($this->_ajaxValidatorScript);
             $oAjaxValidator->CreateObservers($this);
         }
@@ -3432,7 +3361,6 @@ class FormHandler
      */
     public function _text($iIndex)
     {
-
         // is a language set?
         if (!isset($this->_text) || !is_array($this->_text))
         {

@@ -1,5 +1,4 @@
 <?php
-require_once(dirname(__FILE__) . "/class.TextField.php");
 
 /**
  * class ColorPicker

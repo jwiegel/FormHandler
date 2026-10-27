@@ -4,6 +4,19 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- All classes of FormHandler (fields, buttons, `dbFormHandler`, `Validator`,
+  `ImageConverter`, ...) are loaded by Composer's autoloader (`classmap`). The
+  `require_once` of these classes in the form methods are removed, so projects can
+  extend e.g. `TextArea` or `TextField` without loading the file themselves, and
+  PHPStan and IDEs find the classes.
+- FormHandler must be loaded with Composer's autoloader (`vendor/autoload.php`).
+  Including `class.FormHandler.php` without Composer is no longer supported: the field
+  and button classes would not be found.
+
 ## [4.2.1] - 2026-10-27
 
 ### Fixed
