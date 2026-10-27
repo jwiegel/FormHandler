@@ -123,7 +123,8 @@ class Editor extends TextArea
      * Editor::isStyleAllowed()
      *
      * Keep the style attribute (colors, font sizes, alignment)? Default: FH_EDITOR_ALLOW_STYLE.
-     * Override it in a subclass, as the constant is set as soon as Composer loads FormHandler.
+     * Set it for all editors with fh_conf('FH_EDITOR_ALLOW_STYLE', true) before the first form
+     * is created, or override this method in a subclass.
      *
      * @return bool
      * @access protected

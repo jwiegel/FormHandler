@@ -71,8 +71,9 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - `Editor::isStyleAllowed()` and the config `FH_EDITOR_ALLOW_STYLE` (default `false`):
   keep the `style` attribute for colors, font sizes and alignment. A style with `url()`,
   `expression()`, `javascript:`, `@import` or CSS escapes is removed (`EditorStyleSanitizer`).
-  Override `isStyleAllowed()` in a subclass, as the constant is set as soon as Composer
-  loads FormHandler. `Editor::getSanitizerConfig()` can be overridden for another allow list.
+  Set it with `fh_conf('FH_EDITOR_ALLOW_STYLE', true)` before the first form, or override
+  `isStyleAllowed()` in a subclass. `Editor::getSanitizerConfig()` can be overridden for
+  another allow list.
 - New dependency: `symfony/html-sanitizer` (`^7.4 || ^8.0`).
 
 ### Fixed
