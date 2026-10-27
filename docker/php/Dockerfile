@@ -1,4 +1,6 @@
-FROM php:8.2-cli
+# PHP version of the container: FH_PHP_VERSION=8.4 docker compose build php
+ARG PHP_VERSION=8.2
+FROM php:${PHP_VERSION}-cli
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

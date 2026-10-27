@@ -18,6 +18,11 @@ and the project follows [Semantic Versioning](https://semver.org/).
   reports an invalid date with `E_USER_WARNING` instead of `E_USER_ERROR` and returns
   `null`. The value can come from the user, so it no longer stops the script.
 
+### Added
+
+- GitHub Actions runs the tests on PHP 8.2, 8.3 and 8.4.
+- The PHP version of the Docker container can be chosen with `FH_PHP_VERSION`.
+
 ## [4.0.0] - 2026-10-23
 
 FormHandler now uses [Doctrine DBAL](https://www.doctrine-project.org/projects/dbal.html)
