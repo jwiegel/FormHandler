@@ -21,6 +21,11 @@ and the project follows [Semantic Versioning](https://semver.org/).
     path check (only a session variable `login`), and its trash icon in the file list.
   - `editor()` only links the file manager when it gets a `$path`.
 
+### Fixed
+
+- The file manager connector printed a PHP warning (`path_info`) into its XML answer
+  on Apache with PHP 8, so the file manager could not read it.
+
 ## [4.4.0] - 2026-10-27
 
 ### Security
