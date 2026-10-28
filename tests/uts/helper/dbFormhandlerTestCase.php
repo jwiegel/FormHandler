@@ -73,7 +73,8 @@ abstract class dbFormhandlerTestCase extends FormhandlerTestCase
                 saveInFieldString VARCHAR(10) NULL,
                 textNullable VARCHAR(255) NULL,
                 textNotNullable VARCHAR(255) NOT NULL DEFAULT '',
-                pass VARCHAR(255) NOT NULL DEFAULT ''
+                pass VARCHAR(255) NOT NULL DEFAULT '',
+                dateNullable DATE NULL
             )"
         );
         $this->_connection->executeStatement(

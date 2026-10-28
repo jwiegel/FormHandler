@@ -391,7 +391,7 @@ class DateField extends Field
             ($d != '00' && $d != '') &&
             ($m != '00' && $m != '') &&
             ($y != '0000' && $y != '') &&
-            !checkdate($m, $d, $y)
+            !checkdate((int) $m, (int) $d, (int) $y)
         )
         {
             $this->_sError = $this->_oForm->_text(13);
@@ -540,9 +540,9 @@ class DateField extends Field
         // is the given value a timestamp ?
         elseif (strlen($sValue) >= 8 && Validator::IsDigit($sValue))
         {
-            $d = date('d', $sValue);
-            $m = date('m', $sValue);
-            $y = date('Y', $sValue);
+            $d = date('d', (int) $sValue);
+            $m = date('m', (int) $sValue);
+            $y = date('Y', (int) $sValue);
         }
 
         // save the dates for the fields

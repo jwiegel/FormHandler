@@ -18,7 +18,8 @@
     ],
     "require": {
         "php": ">=8.2",
-        "doctrine/dbal": "^4.2"
+        "doctrine/dbal": "^4.2",
+        "symfony/html-sanitizer": "^7.4 || ^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5",
@@ -26,12 +27,14 @@
     },
     "autoload": {
         "files": [
-            "src/class.FormHandler.php",
-            "src/class.dbFormHandler.php",
-            "src/includes/class.ImageConverter.php"
+            "src/class.FormHandler.php"
         ],
         "classmap": [
-            "src/db/"
+            "src/class.dbFormHandler.php",
+            "src/buttons/",
+            "src/db/",
+            "src/fields/",
+            "src/includes/"
         ]
     },
     "autoload-dev": {
@@ -39,9 +42,17 @@
             "tests/uts/helper"
         ]
     },
+    "scripts": {
+        "sync-vendor": "@php docker/php/sync-vendor.php",
+        "post-install-cmd": "@sync-vendor",
+        "post-update-cmd": "@sync-vendor"
+    },
+    "scripts-descriptions": {
+        "sync-vendor": "Mirror vendor/ from the Docker volume to the host for the IDE (only in the php container)"
+    },
     "extra": {
         "branch-alias": {
-            "dev-master": "4.0.x-dev"
+            "dev-master": "4.x-dev"
         }
     },
     "config": {

@@ -68,9 +68,31 @@ final class formhandler_EditorTest extends FormhandlerTestCase
             'FHTML/ckeditor/ckeditor.js',
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
+            '"language":"en","width":720,"height":400,"skin":"moono-lisa","filebrowserBrowseUrl"',
             'thisisthepath","filebrowserUploadUrl"',
-            'thisisthepath","language":"en","width":720,"height":400,"skin":"moono-lisa"}'
+            'thisisthepath"}'
         ]);
+    }
+
+    public function test_new_noFileBrowser(): void
+    {
+        $form = new FormHandler();
+
+        // without a path the editor does not link the file manager, which has no login
+        $form->editor("Editor", "editor");
+
+        static::assertStringNotContainsString('filebrowser', (string) $form->flush(true));
+    }
+
+    public function test_path_false(): void
+    {
+        $form = new FormHandler();
+
+        // false turns the file browser of the editor off
+        $form->editor("Editor", "editor", null, false);
+
+        $html = static::assertFormFlushContains($form, ['CKEDITOR.replace( \'editor\', {"toolbar":"Default","language":"en"']);
+        static::assertStringNotContainsString('filebrowser', $html);
     }
 
     public function test_toolbar(): void

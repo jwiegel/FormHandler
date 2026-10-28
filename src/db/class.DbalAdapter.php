@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception as DbalException;
@@ -64,9 +66,8 @@ class DbalAdapter implements DatabaseAdapter
         }
         else
         {
-            trigger_error(
-                'Error, DbalAdapter needs a Doctrine\DBAL\Connection!',
-                E_USER_ERROR
+            throw new FormHandlerException(
+                'Error, DbalAdapter needs a Doctrine\DBAL\Connection!'
             );
         }
     }
@@ -78,7 +79,8 @@ class DbalAdapter implements DatabaseAdapter
      *
      * @param string $database the database name, or the file for sqlite
      * @param string $type a Yadal database type (mysql, postgresql, mssql, sqlite) or a DBAL driver name
-     * @return bool false when the type is not supported
+     * @return bool always true
+     * @throws FormHandlerException when the type is not supported
      */
     public function setDatabase($database, $type)
     {
@@ -96,9 +98,8 @@ class DbalAdapter implements DatabaseAdapter
         else
         {
             $this->_driver = null;
-            trigger_error(
-                'Error, database type "' . $type . '" not supported!',
-                E_USER_ERROR
+            throw new FormHandlerException(
+                'Error, database type "' . $type . '" not supported!'
             );
         }
 
@@ -223,7 +224,7 @@ class DbalAdapter implements DatabaseAdapter
     /**
      * DbalAdapter::result()
      *
-     * @param DbalResult $sql the result to read from
+     * @param mixed $sql the DbalResult to read from (anything else has no records)
      * @param int $row the row to read
      * @param string|null $field the field to read, or null for the first field
      * @return mixed the value or false when it does not exist
@@ -260,7 +261,7 @@ class DbalAdapter implements DatabaseAdapter
     /**
      * DbalAdapter::recordCount()
      *
-     * @param DbalResult $sql
+     * @param mixed $sql a DbalResult of query() (anything else counts 0 records)
      * @return int
      */
     public function recordCount($sql)
@@ -271,7 +272,7 @@ class DbalAdapter implements DatabaseAdapter
     /**
      * DbalAdapter::getRecord()
      *
-     * @param DbalResult $sql
+     * @param mixed $sql a DbalResult of query() (anything else has no records)
      * @return array|false the next record in assoc mode or false when there are no records left
      */
     public function getRecord($sql)

@@ -36,8 +36,10 @@ final class dbFormhandler_TextFieldTest extends dbFormhandlerTestCase
         static::assertTrue($form->edit);
         static::assertFalse($form->isPosted());
 
+        $this->expectException(FormHandlerException::class);
+        $this->expectExceptionMessage("Try to edit a none existing record!");
+
         $this->setConnectedTable($form, "test");
-        $this->assertTriggertError("Try to edit a none existing record!", E_USER_ERROR);
     }
 
     public function test_edit(): void

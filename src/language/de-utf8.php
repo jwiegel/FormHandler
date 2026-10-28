@@ -49,6 +49,7 @@ $fh_lang = array(
   40 => 'Sie dürfen nicht mehr als %d Zeichen eingeben! Sie haben %d Zeichen eingegeben. Bitte entfernen sie %d Zeichen',
   41 => 'Hilfe',
   42 => 'Heute',
-  43 => "'S','M','D','M','D','F','S'"
+  43 => "'S','M','D','M','D','F','S'",
+  44 => 'Das Formular ist abgelaufen oder wurde nicht von dieser Seite gesendet. Bitte erneut absenden.'
 );
 ?>

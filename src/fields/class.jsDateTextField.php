@@ -108,8 +108,8 @@ class jsDateTextField extends DateTextField
                 "   cal_" . $this->_sName . ".showYearNavigationInput();\n" .
                 (FH_JSCALENDARPOPUP_USE_DROPDOWN ? "   cal_" . $this->_sName . ".showNavigationDropdowns();\n" : "") .
                 "}\n",
-            0,
-            0
+            false,
+            false
         );
 
         $html .=

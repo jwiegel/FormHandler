@@ -318,6 +318,11 @@ fh_conf('FH_DATEFIELD_DEFAULT_REQUIRED', true);
 // Y = year (four digits)
 fh_conf('FH_DATETEXTFIELD_DEFAULT_DISPLAY', 'd-m-Y');
 
+// Keep the style attribute in the HTML of editor() (colors, font sizes, alignment)?
+// Off by default: the HTML is sanitized on the server and style is not needed for
+// safe content. A style with url(), expression(), javascript: etc. is always removed.
+fh_conf('FH_EDITOR_ALLOW_STYLE', false);
+
 // Use dropdown in jsCalendarPopup
 fh_conf('FH_JSCALENDARPOPUP_USE_DROPDOWN', false);
 
@@ -334,6 +339,11 @@ fh_conf('FH_DEFAULT_GLUE_MASK', "%field%<br />\n");
 
 // The chmod which is used when a dir is created
 fh_conf('FH_DEFAULT_CHMOD', 0777);
+
+// Protect every form against cross-site request forgery (CSRF): a hidden field with a
+// token of the PHP session; a posted form with another token is not processed.
+// Can be turned off per form with setCsrfProtection(false).
+fh_conf('FH_CSRF_PROTECTION', true);
 
 // Display errors of FormHandler (PHP errors, NOT field validation errors!)
 fh_conf('FH_DISPLAY_ERRORS', true);

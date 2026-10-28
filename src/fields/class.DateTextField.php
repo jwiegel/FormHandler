@@ -65,7 +65,7 @@ class DateTextField extends TextField
             || strtolower($data[1]) == strtolower($data[4])
             || strtolower($data[3]) == strtolower($data[4])
         )
-            trigger_error("Invalid mask ['{$sMask}']. Useable chars: d, D, m, M, y, Y, ., -, /", E_USER_ERROR);
+            throw new FormHandlerException("Invalid mask ['{$sMask}']. Useable chars: d, D, m, M, y, Y, ., -, /");
 
         // set postion of day, month and year
         for ($i = 1; $i < 5; $i++)
@@ -117,7 +117,7 @@ class DateTextField extends TextField
     /**
      * Get the date value as an array: array(y,m,d)
      *
-     * @return array
+     * @return array|null null (and a warning) when the value is not a valid date
      * @access public
      * @author Thomas Branius
      * @since 16-03-2010
@@ -130,8 +130,9 @@ class DateTextField extends TextField
         }
         if (preg_match($this->_sValParseRegExpr, $this->getValue(), $data) == 0)
         {
-            trigger_error("Value is not a valid date [" . $this->getValue() . "]", E_USER_ERROR);
-            return null; // @phpstan-ignore-line (Value is intentionally returned for runtime error-handler flow in legacy API.)
+            // the value can come from the user, so no exception here
+            trigger_error("Value is not a valid date [" . $this->getValue() . "]", E_USER_WARNING);
+            return null;
         }
         if ($data[$this->_iYearPos] <= 50)
             $data[$this->_iYearPos] = $data[$this->_iYearPos] + 2000;
@@ -188,7 +189,7 @@ class DateTextField extends TextField
         }
         else if (preg_match($regex, $mValue, $data))
         {
-            $timestamp = mktime(0, 0, 0, $data[2], $data[3], $data[1]);
+            $timestamp = mktime(0, 0, 0, (int) $data[2], (int) $data[3], (int) $data[1]);
             $this->_mValue = date($this->_sDateMask, $timestamp);
         }
         else
@@ -228,7 +229,7 @@ class DateTextField extends TextField
             $day = $data[1];
             $month = $data[3];
 
-            $timestamp = mktime(0, 0, 0, $month, $day, $year);
+            $timestamp = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
             $this->_mValue = date($this->_sDateMask, $timestamp);
             return date($this->_sDateMask, $timestamp);
         }
@@ -251,7 +252,7 @@ class DateTextField extends TextField
             $day = $data[5];
             $month = $data[4];
 
-            $timestamp = mktime(0, 0, 0, $month, $day, $year);
+            $timestamp = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
             $this->_mValue = date($this->_sDateMask, $timestamp);
             return date($this->_sDateMask, $timestamp);
         }

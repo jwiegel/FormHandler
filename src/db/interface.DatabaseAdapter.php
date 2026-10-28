@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * interface DatabaseAdapter
  *
@@ -17,6 +19,11 @@ interface DatabaseAdapter
     public function close();
 
     // queries and results
+
+    /**
+     * @param string $query the query to execute
+     * @return mixed the result (passed to recordCount(), getRecord() and result()) or false on an error
+     */
     public function query($query);
     public function getInsertId();
     public function result($sql, $row = 0, $field = null);

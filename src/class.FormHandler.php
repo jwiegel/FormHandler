@@ -66,12 +66,8 @@ define(
 
 // include needed files
 define('FH_INCLUDE_DIR', str_replace('\\', '/', dirname(__FILE__)) . '/');
-require_once(FH_INCLUDE_DIR . 'fields/class.Field.php');
-require_once(FH_INCLUDE_DIR . 'buttons/class.Button.php');
 require_once(FH_INCLUDE_DIR . 'includes/config.inc.php');
 require_once(FH_INCLUDE_DIR . 'includes/error.inc.php');
-require_once(FH_INCLUDE_DIR . 'includes/class.Validator.php');
-require_once(FH_INCLUDE_DIR . 'includes/class.MaskLoader.php');
 
 /**
  * class FormHandler
@@ -114,6 +110,8 @@ class FormHandler
     protected $_tableSettings;    // array: array with all table settings
     protected $_ajaxValidator;    // boolean: if Ajax validation must be used or not.
     protected $_ajaxValidatorScript;    // boolean: if Ajax validation must include library or not.
+    protected $_csrfToken = null;        // string|null: the CSRF token of the session, null when the protection is off
+    protected $_csrfFailed = false;      // boolean: the posted CSRF token was wrong
     private $_unittestmode = false; // boolean: only for unittesting (can only be set by reflection of uniitest)
 
     /**
@@ -223,6 +221,12 @@ class FormHandler
         // make a hidden field so we can identify the form
         $this->hiddenField($this->_name . '_submit', '1');
 
+        // protection against cross-site request forgery
+        if (FH_CSRF_PROTECTION) // @phpstan-ignore-line (If condition is always false: the constant is configurable.)
+        {
+            $this->setCsrfProtection(true);
+        }
+
         // get the current page
         $this->_curPage = isset($_POST[$this->_name . '_page']) ? $_POST[$this->_name . '_page'] : 1;
 
@@ -230,7 +234,8 @@ class FormHandler
         if (FH_DISPLAY_ERRORS) // @phpstan-ignore-line (If condition is always false.)
         {
             error_reporting(E_ALL);
-            set_error_handler('catchErrors');
+            // catchErrors() also returns the collected errors, PHP accepts any return value of a handler
+            set_error_handler('catchErrors'); // @phpstan-ignore argument.type
         }
 
         // set the language...
@@ -288,9 +293,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.BrowserField.php');
-        require_once(FH_INCLUDE_DIR . 'buttons/class.Button.php');
-
         // create the field
         $fld = new BrowserField($this, $name, $path);
         if (!empty($validator)) $fld->setValidator($validator);
@@ -325,8 +327,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-
         // create the field
         $fld = new TextField($this, $name);
         if (!empty($validator)) $fld->setValidator($validator);
@@ -365,7 +365,6 @@ class FormHandler
         if ($bCaptcha)
         {
             $bCaptcha = false;
-            require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
 
             // create the field
             $fld = new TextField($this, $name);
@@ -377,7 +376,7 @@ class FormHandler
             if (!empty($maxlength)) $fld->setMaxlength($maxlength);
             if (!empty($extra))     $fld->setExtra($extra);
 
-            $this->ImageButton(FH_FHTML_DIR . 'securimage/securimage_show.php?sid=' . md5(uniqid(time())), null, 'onclick="return false;" style="cursor:default;"');
+            $this->ImageButton(FH_FHTML_DIR . 'securimage/securimage_show.php?sid=' . md5(uniqid((string) time())), null, 'onclick="return false;" style="cursor:default;"');
 
             // register the field
             $this->_registerField($name, $fld, $title);
@@ -422,9 +421,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextSelectField.php');
-
         // create the field
         $fld = new TextSelectField($this, $name, $aOptions);
         if (!empty($validator)) $fld->setValidator($validator);
@@ -460,9 +456,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.PassField.php');
-
         // create the field
         $fld = new PassField($this, $name);
 
@@ -495,8 +488,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.HiddenField.php');
-
         // create new hidden field
         $fld = new HiddenField($this, $name);
 
@@ -534,8 +525,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextArea.php');
-
         // create new textarea
         $fld = new TextArea($this, $name);
 
@@ -576,8 +565,6 @@ class FormHandler
         $extra              = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-
         // options has to be an array
         if (!is_array($options))
         {
@@ -638,8 +625,6 @@ class FormHandler
         $mask               = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.CheckBox.php');
-
         // create a new checkbox
         $fld = new CheckBox($this, $name, $value);
 
@@ -678,8 +663,6 @@ class FormHandler
         $mask               = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.RadioButton.php');
-
         // value has to be an array
         if (!is_array($options))
         {
@@ -712,7 +695,7 @@ class FormHandler
      * @param array $config: The configuration used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
-     * @param string $alertOverwrite: Do we have to alert the user when he/she is going to overwrite a file?
+     * @param boolean $alertOverwrite: Do we have to alert the user when he/she is going to overwrite a file?
      * @return void
      * @access public
      * @author Teye Heimans
@@ -726,8 +709,6 @@ class FormHandler
         $alertOverwrite = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.UploadField.php');
-
         // create a new uploadfield
         $fld = new UploadField($this, $name, $config);
 
@@ -756,7 +737,7 @@ class FormHandler
      * @param boolean $useArrayKeyAsValue: If the array key's are the values for the options in the field
      * @param int $size: The size of the field (how many options are displayed)
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
-     * @param string $verticalMode: Verticalmode
+     * @param boolean $verticalMode: Verticalmode
      * @return void
      * @access public
      * @author Teye Heimans
@@ -774,9 +755,6 @@ class FormHandler
         $verticalMode       = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.ListField.php');
-
         // options has to be an array
         if (!is_array($options))
         {
@@ -809,7 +787,8 @@ class FormHandler
      * @param string $title: The title of the field
      * @param string $name: The name of the field
      * @param string $validator: The validator which should be used to validate the value of the field
-     * @param string $path: Path on the server where we have to upload the files
+     * @param string $path: Path on the server where we have to upload the files. Only with a path the
+     *                      editor links the file manager, which needs FH_FILEMANAGER_ENABLED=1 (see README)
      * @param string $toolbar: The toolbar we have to use
      * @param string $skin: The skin to use
      * @param int $width: The width of the field
@@ -831,9 +810,6 @@ class FormHandler
         $config    = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextArea.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.Editor.php');
-
 
         // create a new editor
         $fld = new Editor($this, $name);
@@ -876,10 +852,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.DateField.php');
-
         // create a new datefield
         $fld = new DateField(
             $this,
@@ -927,11 +899,6 @@ class FormHandler
         $bIncludeJS = true
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.DateField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.jsDateField.php');
-
         // create a new datefield
         $fld = new jsDateField($this, $name, $mask, $required, $interval, $bIncludeJS);
 
@@ -968,9 +935,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TimeField.php');
-
         // create a new timefield
         $fld = new TimeField($this, $name);
 
@@ -1008,8 +972,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.ColorPicker.php');
-
         // create the field
         $fld = new ColorPicker($this, $name);
         if (!empty($validator)) $fld->setValidator($validator);
@@ -1048,9 +1010,6 @@ class FormHandler
         $extra     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.DateTextField.php');
-
         // create a new datetextfield
         $fld = new DateTextField(
             $this,
@@ -1097,10 +1056,6 @@ class FormHandler
         $bIncludeJS = true
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.DateTextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.jsDateTextField.php');
-
         // create a new datetextfield
         $fld = new jsDateTextField(
             $this,
@@ -1108,6 +1063,47 @@ class FormHandler
             !empty($mask) ? $mask : null,
             $bParseOtherPresentations,
             $bIncludeJS
+        );
+
+        if (!empty($validator))  $fld->setValidator($validator);
+        if (!empty($extra))      $fld->setExtra($extra);
+
+        /// register the field
+        $this->_registerField($name, $fld, $title);
+
+        // save the field in the datefields array (special treatment! :)
+        $this->_date[] = $name;
+    }
+
+    /**
+     * FormHandler::html5DateField()
+     *
+     * Create a date field rendered as HTML5 <input type="date"> on the form.
+     * The browser shows its own date picker, the value is always yyyy-mm-dd.
+     *
+     * @param string $title: The title of the field
+     * @param string $name: The name of the field
+     * @param string $validator: The validator which should be used to validate the value of the field
+     * @param string $mask: How to display the date in view mode. These can be used: d, D, m, M, y and Y
+     * @param boolean $setCurDate: Set the current date when a new form is shown
+     * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
+     * @return void
+     * @access public
+     */
+    public function html5DateField(
+        $title,
+        $name,
+        $validator  = null,
+        $mask       = null,
+        $setCurDate = false,
+        $extra      = null
+    )
+    {
+        $fld = new Html5DateField(
+            $this,
+            $name,
+            !empty($mask) ? $mask : null,
+            (bool) $setCurDate
         );
 
         if (!empty($validator))  $fld->setValidator($validator);
@@ -1172,8 +1168,6 @@ class FormHandler
      */
     public function submitButton($caption = null, $name = null, $extra = null, $disableOnSubmit = null)
     {
-        require_once(FH_INCLUDE_DIR . 'buttons/class.SubmitButton.php');
-
         // get new button name if none is given
         if (empty($name))
         {
@@ -1205,8 +1199,6 @@ class FormHandler
      */
     public function imageButton($image, $name = null, $extra = null)
     {
-        require_once(FH_INCLUDE_DIR . 'buttons/class.ImageButton.php');
-
         // get new button name if none is given
         if (empty($name))
         {
@@ -1236,8 +1228,6 @@ class FormHandler
      */
     public function resetButton($caption = null, $name = null, $extra = null)
     {
-        require_once(FH_INCLUDE_DIR . 'buttons/class.ResetButton.php');
-
         // get new button name if none given
         if (empty($name))
         {
@@ -2007,10 +1997,9 @@ class FormHandler
             // language file does not exists
             else
             {
-                trigger_error(
+                throw new FormHandlerException(
                     'Unknown language: ' . $sLanguage . '. Could not find ' .
-                        'file ' . FH_INCLUDE_DIR . 'language/' . $sLanguage . '.php!',
-                    E_USER_ERROR
+                        'file ' . FH_INCLUDE_DIR . 'language/' . $sLanguage . '.php!'
                 );
             }
         }
@@ -2384,7 +2373,7 @@ class FormHandler
      * Set the value of the spicified field
      *
      * @param string $sField: The field which value we have to set
-     * @param string $sValue: The value we have to set
+     * @param mixed $sValue: The value we have to set
      * @param boolean $bOverwriteCurrentValue: Do we have to overwrite the current value of the field (posted value)
      * @return void
      * @access public
@@ -2456,9 +2445,8 @@ class FormHandler
             // the given callback function does not exists
             else
             {
-                trigger_error(
-                    'Error, the onCorrect function "' . $callback . '" does not exists!',
-                    E_USER_ERROR
+                throw new FormHandlerException(
+                    'Error, the onCorrect function "' . $callback . '" does not exists!'
                 );
             }
         }
@@ -2473,10 +2461,9 @@ class FormHandler
             // the method does not exists
             else
             {
-                trigger_error(
+                throw new FormHandlerException(
                     'Error, the onCorrect method "' . $callback[1] . '" does not exists in the given object' .
-                        (is_object($callback[0]) ? ' "' . get_class($callback[0]) . '"!' : '!'),
-                    E_USER_ERROR
+                        (is_object($callback[0]) ? ' "' . get_class($callback[0]) . '"!' : '!')
                 );
             }
         }
@@ -2810,7 +2797,7 @@ class FormHandler
 
             $jsAfter = substr($jsAfter, 0, -2) . "));\n\n";
 
-            $this->_setJS($jsAfter, 0, 0);
+            $this->_setJS($jsAfter, false, false);
         }
 
         // set the js..
@@ -2830,7 +2817,6 @@ class FormHandler
      */
     public function setDynamicOptions($options, $useArrayKeyAsValue = true)
     {
-
         $output = 'var options = Array(' . " \n";
 
         // generate a javascript array from the given array
@@ -2997,7 +2983,7 @@ class FormHandler
         foreach ($this->_fields as $name => $fld)
         {
             // only use it in the mail if it has a view value (the fields)
-            if (is_object($fld[1]) && method_exists($fld[1], 'getViewValue') && $name != $this->_name . '_submit')
+            if (is_object($fld[1]) && method_exists($fld[1], 'getViewValue') && !$this->_isInternalField($name))
             {
                 // search and replace the %field% %value% items
                 $loader->setSearch(array('/%field%/', '/%value%/'));
@@ -3053,8 +3039,6 @@ class FormHandler
      */
     public function resizeImage($field, $saveAs = null, $maxWidth = null, $maxHeight = null, $quality = null, $constrainProportions = true)
     {
-        require_once(FH_INCLUDE_DIR . 'includes/class.ImageConverter.php');
-
         // is gd enabled ?
         if (!ImageConverter::GDVersion())
         {
@@ -3088,8 +3072,6 @@ class FormHandler
      */
     public function mergeImage($field, $merge, $align = 'center', $valign = 'bottom', $transparantColor = null)
     {
-        require_once(FH_INCLUDE_DIR . 'includes/class.ImageConverter.php');
-
         // is gd enabled ?
         if (!ImageConverter::GDVersion())
         {
@@ -3163,6 +3145,135 @@ class FormHandler
     }
 
     /**
+     * FormHandler::setCsrfProtection()
+     *
+     * Turn the protection against cross-site request forgery (CSRF) on or off.
+     * It is on by default (FH_CSRF_PROTECTION): the form gets a hidden field with a
+     * token of the session, and a posted form with another token is not processed.
+     * It needs a PHP session; FormHandler starts it when no output was sent yet.
+     *
+     * @param bool $enabled
+     * @return void
+     * @access public
+     */
+    public function setCsrfProtection($enabled)
+    {
+        $field = $this->_name . '_csrf';
+
+        if (!$enabled)
+        {
+            $this->_csrfToken = null;
+            unset($this->_fields[$field]);
+            return;
+        }
+
+        $this->_csrfToken = $this->_getCsrfSessionToken();
+        if ($this->_csrfToken === null)
+        {
+            trigger_error(
+                'FormHandler: there is no PHP session, so the form is not protected against CSRF. ' .
+                    'Start the session before any output, or turn the protection off with setCsrfProtection(false).',
+                E_USER_WARNING
+            );
+            return;
+        }
+
+        if (!$this->fieldExists($field))
+        {
+            $this->hiddenField($field, $this->_csrfToken);
+        }
+
+        // always the token of the session, never the posted one
+        $this->setValue($field, $this->_csrfToken, true);
+    }
+
+    /**
+     * FormHandler::getCsrfToken()
+     *
+     * The CSRF token of this form, e.g. to send it with an own AJAX request as the
+     * POST value "<form name>_csrf". Null when the protection is off.
+     *
+     * @return string|null
+     * @access public
+     */
+    public function getCsrfToken()
+    {
+        return $this->_csrfToken;
+    }
+
+    /**
+     * FormHandler::_getCsrfSessionToken()
+     *
+     * @return string|null the token of the session, null without a session
+     * @access private
+     */
+    private function _getCsrfSessionToken()
+    {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent())
+        {
+            session_start();
+        }
+
+        if (session_status() !== PHP_SESSION_ACTIVE)
+        {
+            return null;
+        }
+
+        if (empty($_SESSION['FH_CSRF_TOKEN']) || !is_string($_SESSION['FH_CSRF_TOKEN']))
+        {
+            $_SESSION['FH_CSRF_TOKEN'] = bin2hex(random_bytes(32));
+        }
+
+        return $_SESSION['FH_CSRF_TOKEN'];
+    }
+
+    /**
+     * FormHandler::_isCsrfTokenValid()
+     *
+     * Check the posted CSRF token; a wrong token marks the token field invalid.
+     *
+     * @return bool
+     * @access private
+     */
+    private function _isCsrfTokenValid()
+    {
+        if (!$this->_posted || $this->_csrfToken === null)
+        {
+            return true;
+        }
+
+        $field = $this->_name . '_csrf';
+        $posted = isset($_POST[$field]) ? $_POST[$field] : '';
+
+        if (is_string($posted) && hash_equals($this->_csrfToken, $posted))
+        {
+            return true;
+        }
+
+        if (!$this->_csrfFailed)
+        {
+            $this->_csrfFailed = true;
+            $this->setError($field, $this->_text(44));
+        }
+
+        return false;
+    }
+
+    /**
+     * FormHandler::_isInternalField()
+     *
+     * Fields of FormHandler itself, which are not part of the submitted data
+     *
+     * @param string $name
+     * @return bool
+     * @access protected
+     */
+    protected function _isInternalField($name)
+    {
+        return $name == $this->_name . '_submit' || $name == $this->_name . '_csrf';
+    }
+
+    /**
      * FormHandler::isCorrect()
      *
      * Return if the form is filled correctly (for the fields which are set!)
@@ -3173,7 +3284,7 @@ class FormHandler
      */
     public function isCorrect()
     {
-        $result = true;
+        $result = $this->_isCsrfTokenValid();
 
         foreach ($this->_fields as $id => $data)
         {
@@ -3211,9 +3322,8 @@ class FormHandler
     {
         if ($this->_ajaxValidator === true)
         {
-            require_once(FH_INCLUDE_DIR . 'includes/class.AjaxValidator.php');
             $oAjaxValidator = new AjaxValidator($this->_ajaxValidatorScript);
-            $oAjaxValidator->CreateObservers($this);
+            $oAjaxValidator->CreateObservers($this, $this->_fields, $this->_customMsg);
         }
 
         // when the form is not posted or the form is not valid
@@ -3256,7 +3366,7 @@ class FormHandler
             $data = array();
             foreach ($this->_fields as $name => $fld)
             {
-                if (is_object($fld[1]) && method_exists($fld[1], 'getValue') && $name != $this->_name . '_submit')
+                if (is_object($fld[1]) && method_exists($fld[1], 'getValue') && !$this->_isInternalField($name))
                 {
                     $data[$name] = $fld[1]->getValue();
                 }
@@ -3389,11 +3499,10 @@ class FormHandler
      */
     public function _text($iIndex)
     {
-
         // is a language set?
         if (!isset($this->_text) || !is_array($this->_text))
         {
-            trigger_error('No language file set!', E_USER_ERROR);
+            throw new FormHandlerException('No language file set!');
         }
 
         // does the index exists in the language file ?
@@ -3967,8 +4076,8 @@ class FormHandler
                     "      elem.focus();\n" .
                     "    } catch(e) {}\n" .
                     "}\n",
-                0,
-                0
+                false,
+                false
             );
         }
 

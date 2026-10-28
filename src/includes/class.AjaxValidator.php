@@ -20,7 +20,7 @@ class AjaxValidator
         self::$bScript = $bScript;
     }
 
-    public function CreateObservers($oForm)
+    public function CreateObservers($oForm, $aFields, $aCustomMsg)
     {
         static $bSetJS = false;
 
@@ -43,13 +43,13 @@ class AjaxValidator
             $sScript2 = "";
             /*@var $oForm FormHandler*/
 
-            foreach ($oForm->_fields as $sField => $aField)
+            foreach ($aFields as $sField => $aField)
             {
                 if (is_object($aField[1]) && method_exists($aField[1], 'getValidator'))
                 {
-                    if (isset($oForm->_customMsg[$sField][0]) and $oForm->_customMsg[$sField][0] != '')
+                    if (isset($aCustomMsg[$sField][0]) and $aCustomMsg[$sField][0] != '')
                     {
-                        $sMsg = addslashes($oForm->_customMsg[$sField][0]);
+                        $sMsg = addslashes($aCustomMsg[$sField][0]);
                     }
                     else
                     {

@@ -249,10 +249,9 @@ class Field
                 }
                 else
                 {
-                    trigger_error(
+                    throw new FormHandlerException(
                         "Error, the validator method '" . $this->_sValidator[1] . "' does not exists " .
-                            "in object '" . get_class($this->_sValidator[0]) . "'!",
-                        E_USER_ERROR
+                            "in object '" . get_class($this->_sValidator[0]) . "'!"
                     );
                 }
             }
@@ -289,7 +288,7 @@ class Field
      * If you want to use a method to validate the value use it like this:
      * array(&$obj, 'NameOfTheMethod')
      *
-     * @param string $sValidator: the name of the validator
+     * @param string|array|null $sValidator: the name of the validator, null for none
      * @return void
      * @access public
      * @author Teye Heimans
@@ -302,7 +301,6 @@ class Field
         if( $this->_oForm->_ajaxValidator === true )
         {
         echo 'JAJA';
-        require_once( FH_INCLUDE_DIR . 'includes/class.AjaxValidator.php' );
         $oAjaxValidator = new AjaxValidator( $this );
         $oAjaxValidator->AjaxValidator( $this );
         }

@@ -133,9 +133,6 @@ class dbFormHandler extends FormHandler
         $sMask      = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.CheckBox.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbCheckBox.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -184,10 +181,6 @@ class dbFormHandler extends FormHandler
         $extra      = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.TextSelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbTextSelectField.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -238,9 +231,6 @@ class dbFormHandler extends FormHandler
         $sMask      = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.RadioButton.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbRadioButton.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -294,9 +284,6 @@ class dbFormHandler extends FormHandler
         $mergeArray = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbSelectField.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -343,7 +330,7 @@ class dbFormHandler extends FormHandler
      * @param string $offTitle: The title used above the OFF section of the field
      * @param int $size: The size of the field (how many options are displayed)
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
-     * @param string $verticalMode: Verticale mode
+     * @param boolean $verticalMode: Verticale mode
      * @return void
      * @access public
      * @author Teye Heimans
@@ -362,10 +349,6 @@ class dbFormHandler extends FormHandler
         $verticalMode     = null
     )
     {
-        require_once(FH_INCLUDE_DIR . 'fields/class.SelectField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.ListField.php');
-        require_once(FH_INCLUDE_DIR . 'fields/class.dbListField.php');
-
         if (!is_object($this->_db))
         {
             trigger_error(
@@ -507,7 +490,7 @@ class dbFormHandler extends FormHandler
      * Set the value of the specified field
      *
      * @param string $sField: The field which value we have to set
-     * @param string|array $sValue: The value we have to set
+     * @param mixed $sValue: The value we have to set
      * @param boolean $bOverwriteCurrentValue: Do we have to overwrite the current value of the field (posted or db-loaded values)
      * @return void
      * @access public
@@ -617,9 +600,8 @@ class dbFormHandler extends FormHandler
     {
         if (!($db instanceof DatabaseAdapter))
         {
-            trigger_error(
-                'Error, database adapter must implement the DatabaseAdapter interface!',
-                E_USER_ERROR
+            throw new FormHandlerException(
+                'Error, database adapter must implement the DatabaseAdapter interface!'
             );
         }
 
@@ -748,10 +730,9 @@ class dbFormHandler extends FormHandler
         }
         else
         {
-            trigger_error(
+            throw new FormHandlerException(
                 'Error, setConnectionResource() needs a Doctrine\DBAL\Connection! ' .
-                    'Use dbInfo() and dbConnect() to let FormHandler open the connection.',
-                E_USER_ERROR
+                    'Use dbInfo() and dbConnect() to let FormHandler open the connection.'
             );
         }
     }
@@ -779,9 +760,8 @@ class dbFormHandler extends FormHandler
             // the given callback function does not exists
             else
             {
-                trigger_error(
-                    'Error, the onSaved function "' . $callback . '" does not exists!',
-                    E_USER_ERROR
+                throw new FormHandlerException(
+                    'Error, the onSaved function "' . $callback . '" does not exists!'
                 );
             }
         }
@@ -796,10 +776,9 @@ class dbFormHandler extends FormHandler
             // the method does not exists
             else
             {
-                trigger_error(
+                throw new FormHandlerException(
                     'Error, the onSaved method "' . $callback[1] . '" does not exists in the given object' .
-                        (is_object($callback[0]) ? ' "' . get_class($callback[0]) . '"!' : '!'),
-                    E_USER_ERROR
+                        (is_object($callback[0]) ? ' "' . get_class($callback[0]) . '"!' : '!')
                 );
             }
         }
@@ -845,9 +824,8 @@ class dbFormHandler extends FormHandler
     {
         if ($this->_ajaxValidator === true)
         {
-            require_once(FH_INCLUDE_DIR . 'includes/class.AjaxValidator.php');
             $oAjaxValidator = new AjaxValidator($this->_ajaxValidatorScript);
-            $oAjaxValidator->CreateObservers($this);
+            $oAjaxValidator->CreateObservers($this, $this->_fields, $this->_customMsg);
         }
 
         // when the form is not posted or the form is not valid
@@ -885,7 +863,7 @@ class dbFormHandler extends FormHandler
             $data = array();
             foreach ($this->_fields as $name => $fld)
             {
-                if (is_object($fld[1]) &&  method_exists($fld[1], 'getValue') && $name != $this->_name . '_submit')
+                if (is_object($fld[1]) &&  method_exists($fld[1], 'getValue') && !$this->_isInternalField($name))
                 {
                     $data[$name] = $fld[1]->getValue();
                 }
@@ -1116,7 +1094,7 @@ class dbFormHandler extends FormHandler
                             // is it an number and do we have to quote it ?
                             else if (preg_match("/^-?([0-9]*\.?[0-9]+)$/", $value))
                             {
-                                if ($db->_quoteNumbers)
+                                if ($db->quoteNumbers())
                                 {
                                     $value = "'" . $value . "'";
                                 }
@@ -1194,7 +1172,6 @@ class dbFormHandler extends FormHandler
                                 // no field in the form (propably added with addValue)
                                 else
                                 {
-
                                     // get the error message
                                     $error =
                                         sizeof($unique[$index]) == 1 ?
@@ -1351,7 +1328,7 @@ class dbFormHandler extends FormHandler
             // trigger error message
             else
             {
-                trigger_error('Try to edit a none existing record!', E_USER_ERROR);
+                throw new FormHandlerException('Try to edit a none existing record!');
             }
         }
         else

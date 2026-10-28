@@ -1,7 +1,7 @@
 # FormHandler – Development setup
 
 FormHandler is developed and tested with **PHP 8.2 in a Docker container**. You do
-not need a local PHP installation. GitHub Actions uses the same PHP version.
+not need a local PHP installation. GitHub Actions runs the tests on PHP 8.2, 8.3 and 8.4.
 
 ## Requirements
 
@@ -17,14 +17,26 @@ docker compose build
 docker compose run --rm php composer install
 ```
 
-The packages are installed into the Docker volume `formhandler_vendor`, not into the
-project's `vendor/` folder on the host (see the notes below). To give your IDE the
-current packages for autocompletion, copy them to the host after `composer install`
-or `composer update`:
+Another PHP version for the `php` container, e.g. to run the tests on PHP 8.4:
 
 ```sh
-docker compose run --rm php bash -c "find /host-vendor -mindepth 1 -delete && cp -a vendor/. /host-vendor/"
+FH_PHP_VERSION=8.4 docker compose build php
 ```
+
+The container keeps that version until it is built again (`docker compose build php`
+for PHP 8.2).
+
+The packages are installed into the Docker volume `formhandler_vendor`, not into the
+project's `vendor/` folder on the host (see the notes below). After `composer install`
+and `composer update`, Composer mirrors them to the host's `vendor/` for your IDE
+(`docker/php/sync-vendor.php`, with rsync: only changed files are copied, removed ones
+are deleted). To mirror them by hand:
+
+```sh
+docker compose run --rm php composer sync-vendor
+```
+
+The host's `vendor/` is only a copy for the IDE; PHP in the containers uses the volume.
 
 ## Tests and static analysis
 
@@ -58,7 +70,8 @@ docker compose up -d web
 Then open <http://localhost:8088/examples/>. Another port: `FH_WEB_PORT=8090 docker compose up -d web`.
 
 - The server is only reachable from this computer. It serves the whole project, and the
-  file manager in `src/FHTML/filemanager` has no login.
+  file manager in `src/FHTML/filemanager` has no login; it is enabled here with
+  `FH_FILEMANAGER_ENABLED=1` (`docker-compose.yml`) for `examples/browserfield.php`.
 - The database examples use an SQLite file in the container's temp folder, which is
   kept in memory (`tmpfs`): `docker compose restart web` starts them with fresh data.
 - `php tests/examples/smoke.php http://host.docker.internal:8088/examples/` (in the `php`
@@ -71,7 +84,7 @@ Then open <http://localhost:8088/examples/>. Another port: `FH_WEB_PORT=8090 doc
 
 | Workflow | File | Runs |
 |---|---|---|
-| PHPUnit | `.github/workflows/phpunit.yml` | tests with coverage on PHP 8.2 |
+| PHPUnit | `.github/workflows/phpunit.yml` | tests with coverage on PHP 8.2, 8.3 and 8.4 |
 | PHPStan | `.github/workflows/phpstan.yml` | static analysis on PHP 8.2 |
 | Examples | `.github/workflows/examples.yml` | requests every example page on the PHP built-in server |
 

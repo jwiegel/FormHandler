@@ -610,4 +610,18 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
         static::assertCount(0, $form->getFileInfo('upload'));
         $this->assertTriggertError('Error, the field "upload" is not an uploadfield!', E_USER_NOTICE);
     }
+
+    public function test_forceDir_createsParentDirs(): void
+    {
+        $form = new FormHandler();
+        $form->uploadField("Uploadfield", "uploadfield");
+
+        $field = $this->getPrivateProperty($form, "_fields")["uploadfield"][1];
+        $path = $this->_tempPath . "/a/b/c";
+
+        // _forceDir() passed the path instead of the mode when it created the parent dirs
+        $method = new ReflectionMethod(UploadField::class, '_forceDir');
+        static::assertTrue($method->invoke($field, $path, 0777));
+        static::assertDirectoryExists($path);
+    }
 };
