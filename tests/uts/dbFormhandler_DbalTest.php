@@ -146,4 +146,21 @@ final class dbFormhandler_DbalTest extends FormhandlerTestCase
         static::assertNull($this->_savedId);
         static::assertEquals(1, $this->_conn->fetchOne('SELECT COUNT(*) FROM test'));
     }
+
+    public function test_insert_uniqueViolation_number(): void
+    {
+        // a number in a unique field: the check asked the adapter for an undefined
+        // property _quoteNumbers (warning) instead of calling quoteNumbers()
+        $_POST['FormHandler_submit'] = '1';
+        $_POST['name'] = '42';
+        $_POST['email'] = 'bert@example.org';
+        $this->_conn->executeStatement('CREATE UNIQUE INDEX test_name ON test (name)');
+        $this->_conn->executeStatement("INSERT INTO test (name, email) VALUES ('42', 'other@example.org')");
+
+        $html = $this->createForm()->flush(true);
+
+        static::assertNotEmpty($html, 'form must be shown again with an error');
+        static::assertNull($this->_savedId);
+        static::assertEquals(2, $this->_conn->fetchOne('SELECT COUNT(*) FROM test'));
+    }
 }

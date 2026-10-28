@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- The unique check of `dbFormHandler` read the undefined property `_quoteNumbers` of the
+  database adapter (a Yadal leftover) instead of calling `quoteNumbers()`: a PHP warning
+  for every number in a unique field.
+
 ## [4.6.0] - 2026-10-28
 
 ### Security

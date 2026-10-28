@@ -1094,7 +1094,7 @@ class dbFormHandler extends FormHandler
                             // is it an number and do we have to quote it ?
                             else if (preg_match("/^-?([0-9]*\.?[0-9]+)$/", $value))
                             {
-                                if ($db->_quoteNumbers)
+                                if ($db->quoteNumbers())
                                 {
                                     $value = "'" . $value . "'";
                                 }
