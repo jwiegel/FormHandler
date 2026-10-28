@@ -12,13 +12,14 @@ declare(strict_types=1);
  */
 class DbalResult
 {
-    private $_rows;
-    private $_position = 0;
+    /** @var array<int, array<string, mixed>> */
+    private array $_rows;
+    private int $_position = 0;
 
     /**
      * DbalResult::__construct()
      *
-     * @param array $rows the fetched records in assoc mode
+     * @param array<int, array<string, mixed>> $rows the fetched records in assoc mode
      */
     public function __construct(array $rows)
     {
@@ -46,7 +47,7 @@ class DbalResult
     /**
      * DbalResult::fetch()
      *
-     * @return array|false the next record or false when there are no records left
+     * @return array<string, mixed>|false the next record or false when there are no records left
      */
     public function fetch()
     {
