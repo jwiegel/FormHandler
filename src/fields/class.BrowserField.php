@@ -11,8 +11,11 @@
  */
 class BrowserField extends Field
 {
-    private $_iSize;    // int: the size of the field
-    private $_form;     // object: form
+    /** @var int|null the size of the field */
+    private $_iSize;
+    /** @var FormHandler form */
+    private $_form;
+    /** @var string */
     private $_path;
 
     /**

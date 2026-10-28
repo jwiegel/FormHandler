@@ -11,14 +11,22 @@
  */
 class ListField extends Field
 {
-    private $_aOptions;             // Array: the options of the selectfield
-    private $_oHidden;              // HiddenField: the fielf where the value is saved in
-    private $_oOn;                  // SelectField: the field where the items are displayed which are "on"
-    private $_oOff;                 // SelectField: the field where the items are displayed which are "off"
-    private $_sOnTitle;             // String: the title used for the on section
-    private $_sOffTitle;            // String: the title used for the off section
-    private $_bUseArrayKeyAsValue;  // Boolean: if the keys of the array should be used as values
-    private $_bVerticalMode;        // Boolean: if field is stacked horizontal or vertical
+    /** @var array<int|string, mixed> the options of the selectfield */
+    private $_aOptions;
+    /** @var HiddenField the fielf where the value is saved in */
+    private $_oHidden;
+    /** @var SelectField the field where the items are displayed which are "on" */
+    private $_oOn;
+    /** @var SelectField the field where the items are displayed which are "off" */
+    private $_oOff;
+    /** @var string|null the title used for the on section */
+    private $_sOnTitle;
+    /** @var string|null the title used for the off section */
+    private $_sOffTitle;
+    /** @var bool|null if the keys of the array should be used as values */
+    private $_bUseArrayKeyAsValue;
+    /** @var bool|null if field is stacked horizontal or vertical */
+    private $_bVerticalMode;
     /**
      * ListField::ListField()
      *
@@ -26,7 +34,7 @@ class ListField extends Field
      *
      * @param object &$oForm: The form where this field is located on
      * @param string $sName: The name of the field
-     * @param array  $aOptions: The options of the field
+     * @param array<int|string, mixed> $aOptions: The options of the field
      * @return ListField
      * @access public
      * @author Teye Heimans
@@ -71,6 +79,7 @@ class ListField extends Field
      * @access public
      * @author Rick de Haan
      * @since 20-03-2008 added by Johan Wiegel
+     * @return void
      */
 
     public function setVerticalMode($bVerticalMode)
@@ -83,7 +92,7 @@ class ListField extends Field
      *
      * Set the value of the field
      *
-     * @param array|string $aValue: The new value of the field
+     * @param array<int|string, mixed>|string|null $aValue: The new value of the field
      * @return void
      * @access public
      * @author Teye Heimans

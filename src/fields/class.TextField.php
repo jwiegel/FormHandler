@@ -11,8 +11,10 @@
  */
 class TextField extends Field
 {
-    protected $_iSize;         // int: the size of the field
-    protected $_iMaxlength;    // int: the maxlength of the field
+    /** @var int|string|null the size of the field */
+    protected $_iSize;
+    /** @var int|string|null the maxlength of the field */
+    protected $_iMaxlength;
 
     /**
      * TextField::TextField()

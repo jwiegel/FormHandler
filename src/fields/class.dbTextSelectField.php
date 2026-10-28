@@ -13,6 +13,7 @@
 
 class dbTextSelectField extends TextSelectField
 {
+    /** @var array<int|string, mixed> */
     private $_aOptions;
 
     /**

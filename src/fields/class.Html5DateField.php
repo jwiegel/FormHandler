@@ -12,8 +12,10 @@
  */
 class Html5DateField extends TextField
 {
-    private $_sDateMask;    // string: date() format for the view mode
-    private $_bSetCurDate;  // bool: set the current date in a new, empty form
+    /** @var string date() format for the view mode */
+    private $_sDateMask;
+    /** @var bool set the current date in a new, empty form */
+    private $_bSetCurDate;
 
     /**
      * Constructor: create a new Html5DateField object
@@ -90,7 +92,7 @@ class Html5DateField extends TextField
      *
      * Get the date value as an array: array(y,m,d)
      *
-     * @return array|null null (and a warning) when the value is not a valid date
+     * @return array<int, string>|null null (and a warning) when the value is not a valid date
      * @access public
      */
     public function getAsArray()

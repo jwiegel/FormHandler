@@ -11,10 +11,15 @@
  */
 class SelectField extends Field
 {
-    public $_aOptions;              // array: the options of the selectfield
-    public $_bUseArrayKeyAsValue;   // boolean: if the keys of the array should be used as values
-    private $_iSize;                // integer: set the size of the field
-    private $_bMultiple;            // boolean: can multiple items be selected or not?
+    /** @var array<int|string, mixed> the options of the selectfield */
+    public $_aOptions;
+    /** @var bool|null if the keys of the array should be used as values */
+    public $_bUseArrayKeyAsValue;
+    /** @var int|null set the size of the field */
+    private $_iSize;
+    /** @var bool|null can multiple items be selected or not? */
+    private $_bMultiple;
+    /** @var array<int|string, mixed>|null */
     private $_classOpt;
     /**
      * SelectField::SelectField()
@@ -186,7 +191,7 @@ class SelectField extends Field
      *
      * Set the options of the field
      *
-     * @param array $aOptions: the options for the field
+     * @param array<int|string, mixed> $aOptions: the options for the field
      * @return void
      * @access public
      * @author Teye Heimans
@@ -197,6 +202,10 @@ class SelectField extends Field
     }
 
     // added by sid benachenhou for handling styles
+    /**
+     * @param array<int|string, mixed> $_classOpt
+     * @return void
+     */
     public function setCOptions($_classOpt)
     {
         $this->_classOpt = $_classOpt;

@@ -12,7 +12,8 @@
  */
 class jsDateTextField extends DateTextField
 {
-    var $_sJsMask; // string: how to display the fields (d-m-y) or other
+    /** @var string|null how to display the fields (d-m-y) or other */
+    var $_sJsMask;
 
     /**
      * Constructor: create a new jsDateTextField object
@@ -21,6 +22,7 @@ class jsDateTextField extends DateTextField
      * @param string $sName: the name of the datefield
      * @param string $sMask: the mask which is used to display the fields
      * @param bool $bParseOtherPresentations: try to parse other presentations of dateformat
+     * @param bool $bIncludeJS
      * @return jsDateTextField
      * @access public
      * @author Thomas Branius

@@ -11,10 +11,14 @@
  */
 class TimeField extends Field
 {
-    private $_iFormat;  // integer: hour format: {12, 24}
-    public $_oHour;     // SelectField: object of the hour selectfield
-    public $_oMinute;   // SelectField: object of the minute selectfield
-    public $_bRequired; // boolean: if the field is required or if we have to give the option to leave this field empty
+    /** @var int hour format: {12, 24} */
+    private $_iFormat;
+    /** @var SelectField object of the hour selectfield */
+    public $_oHour;
+    /** @var SelectField object of the minute selectfield */
+    public $_oMinute;
+    /** @var bool|null if the field is required or if we have to give the option to leave this field empty */
+    public $_bRequired;
 
     /**
      * TimeField::TimeField()

@@ -12,12 +12,18 @@
 
 class DateField extends Field
 {
-    private $_sMask;     // string: how to display the fields (d-m-y) or other
-    private $_oDay;      // SelectField or TextField: object of the day selectfield
-    private $_oMonth;    // SelectField or TextField: object of the month selectfield
-    private $_oYear;     // SelectField or TextField: object of the year selectfield
-    private $_sInterval; // string: interval of the year
-    private $_bRequired; // boolean: if the field is required or if we have to give the option to leave this field empty
+    /** @var string how to display the fields (d-m-y) or other */
+    private $_sMask;
+    /** @var SelectField|TextField|null object of the day selectfield */
+    private $_oDay;
+    /** @var SelectField|TextField|null object of the month selectfield */
+    private $_oMonth;
+    /** @var SelectField|TextField|null object of the year selectfield */
+    private $_oYear;
+    /** @var string|null interval of the year */
+    private $_sInterval;
+    /** @var bool|null if the field is required or if we have to give the option to leave this field empty */
+    private $_bRequired;
 
     /**
      * DateField::DateField()
@@ -27,6 +33,8 @@ class DateField extends Field
      * @param object &$oForm: the form where the datefield is located on
      * @param string $sName: the name of the datefield
      * @param string $sMask: the mask which is used to display the fields
+     * @param bool|null $bRequired
+     * @param string|null $sInterval
      * @return DateField
      * @access public
      * @author Teye Heimans
@@ -307,7 +315,7 @@ class DateField extends Field
      *
      * Get the date value as an array: array(y,m,d)
      *
-     * @return array
+     * @return array<int, mixed>
      * @access public
      * @author Teye Heimans
      * @since 25/11/2005
@@ -620,6 +628,7 @@ class DateField extends Field
      * @param string $d: The replacement for the "d"
      * @param string $m: The replacement for the "m"
      * @param string $y: The replacement for the "y"
+     * @param string $mask
      * @return string
      * @access protected
      * @author Teye Heimans
@@ -684,7 +693,7 @@ class DateField extends Field
      *
      * Get the year interval
      *
-     * @return array
+     * @return array<int, int>
      * @access protected
      * @author Teye Heimans
      */

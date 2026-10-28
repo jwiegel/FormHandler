@@ -12,6 +12,7 @@
  */
 class ColorPicker extends TextField
 {
+    /** @var string */
     public $sTitleAdd = "";
 
     /**

@@ -14,12 +14,18 @@
  */
 class DateTextField extends TextField
 {
-    var $_sDateMask;                // string: how to display the fields with mask
-    var $_sValParseRegExpr;         // string: how to parse the value
-    var $_iDayPos;                  // int: position of day in regular expression
-    var $_iMonthPos;                // int: position of month in regular expression
-    var $_iYearPos;                 // int: position of year in regular expression
-    var $_bParseOtherPresentations; // bool: try to parse other presentations of dateformat
+    /** @var string how to display the fields with mask */
+    var $_sDateMask;
+    /** @var string how to parse the value */
+    var $_sValParseRegExpr;
+    /** @var int position of day in regular expression */
+    var $_iDayPos;
+    /** @var int position of month in regular expression */
+    var $_iMonthPos;
+    /** @var int position of year in regular expression */
+    var $_iYearPos;
+    /** @var bool try to parse other presentations of dateformat */
+    var $_bParseOtherPresentations;
 
     /**
      * Constructor: create a new dateTextField object
@@ -117,7 +123,7 @@ class DateTextField extends TextField
     /**
      * Get the date value as an array: array(y,m,d)
      *
-     * @return array|null null (and a warning) when the value is not a valid date
+     * @return array<int, mixed>|null null (and a warning) when the value is not a valid date
      * @access public
      * @author Thomas Branius
      * @since 16-03-2010
@@ -201,6 +207,7 @@ class DateTextField extends TextField
     /**
      * try to parse other presentations of dateformat
      *
+     * @param mixed $sValue
      * @return mixed the value of the field
      * @access public
      * @author Thomas Branius

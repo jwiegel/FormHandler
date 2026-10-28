@@ -21,9 +21,15 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 class Editor extends TextArea
 {
+    /** @var \stdClass */
     private $_oEditor;
-    private $_oSanitizer = null; // HtmlSanitizer, created on first use
+    /** @var HtmlSanitizer|null HtmlSanitizer, created on first use */
+    private $_oSanitizer = null;
 
+    /**
+     * @param FormHandler $oForm
+     * @param string $sName
+     */
     public function __construct($oForm, $sName)
     {
         parent::__construct($oForm, $sName);
@@ -187,7 +193,7 @@ class Editor extends TextArea
      *
      * Set extra config options for the editor
      *
-     * @param array $config: The config array with extra config options to set for the fckeditor
+     * @param array<string, mixed> $config: The config array with extra config options to set for the fckeditor
      * @return void
      * @access public
      * @author Teye Heimans

@@ -12,7 +12,9 @@
  */
 class TextSelectField extends TextField
 {
-    protected $_iSize;         // int: the size of the field
+    /** @var int|string|null the size of the field */
+    protected $_iSize;
+    /** @var string|null */
     private $_sOptions;
 
     /**
@@ -22,6 +24,7 @@ class TextSelectField extends TextField
      *
      * @param object &$oForm: The form where this field is located on
      * @param string $sName: The name of the field
+     * @param array<int|string, mixed> $aOptions
      * @return TextField
      * @author Teye Heimans
      * @access public
