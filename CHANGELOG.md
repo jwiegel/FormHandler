@@ -8,9 +8,11 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- PHPStan checks on level 6. `FormHandler` has PHPDoc types for all properties, parameters
-  and return values, its private members native types. The level 6 findings of the other
-  files are in `phpstan-baseline.neon`, to be fixed file by file.
+- PHPStan checks on level 6. `FormHandler` and `dbFormHandler` have PHPDoc types for all
+  properties, parameters and return values, their private members native types. The level 6
+  findings of the other files are in `phpstan-baseline.neon`, to be fixed file by file.
+- `dbFormHandler` calls `getInsertId()` without the table name, as the `DatabaseAdapter`
+  interface defines it (the argument was a Yadal leftover and ignored).
 
 ## [4.6.4] - 2026-10-30
 
