@@ -11,6 +11,7 @@
  */
 class ImageButton extends Button
 {
+    /** @var string */
     private $_sImage;
 
     /**

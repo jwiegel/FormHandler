@@ -11,9 +11,13 @@
  */
 class Button
 {
+    /** @var string */
     protected $_sName;
+    /** @var string|null */
     protected $_sExtra;
+    /** @var string|null */
     protected $_sCaption;
+    /** @var int|string|null */
     protected $_iTabIndex;
 
     /**

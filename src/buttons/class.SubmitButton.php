@@ -11,6 +11,7 @@
  */
 class SubmitButton extends Button
 {
+    /** @var bool|null */
     private $_bDisableOnSubmit;
 
     /**
