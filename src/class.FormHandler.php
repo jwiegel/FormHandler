@@ -639,7 +639,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array<int|string, mixed>|string $value: The option(s) used for the field
+     * @param array<int|string, mixed>|string|int $value: The option(s) used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param boolean $useArrayKeyAsValue: If the array key's are the values for the options in the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
