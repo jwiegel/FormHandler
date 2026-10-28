@@ -370,6 +370,7 @@ fh_conf('FH_HTML_ENCODING', 'UTF-8');
  * Set the configuration defines if they are
  * not defined by the user yet.
  *
+ * @return void
  */
 function fh_conf()
 {

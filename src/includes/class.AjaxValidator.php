@@ -13,13 +13,23 @@
 
 class AjaxValidator
 {
+    /** @var bool */
     static $bScript = true;
 
+    /**
+     * @param bool $bScript
+     */
     public function __construct($bScript = true)
     {
         self::$bScript = $bScript;
     }
 
+    /**
+     * @param FormHandler $oForm
+     * @param array<int|string, array<int, mixed>> $aFields the fields of the form
+     * @param array<string, array{0: string, 1: mixed}> $aCustomMsg the custom messages of the fields
+     * @return void
+     */
     public function CreateObservers($oForm, $aFields, $aCustomMsg)
     {
         static $bSetJS = false;
@@ -110,6 +120,11 @@ class AjaxValidator
         }
     }
 
+    /**
+     * @param array<string, mixed> $aRequest
+     * @param object $oValidator
+     * @return string|void the javascript and message for the field
+     */
     public function Validate($aRequest, $oValidator)
     {
         foreach (array('validator', 'msg', 'msgbox', 'value') as $sKey)

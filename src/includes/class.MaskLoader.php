@@ -19,8 +19,11 @@
  */
 class MaskLoader
 {
+    /** @var string|null */
     private $_mask;
+    /** @var array<int, string>|string|null */
     private $_search;
+    /** @var string|null */
     private $_subject;
 
     /**
@@ -53,7 +56,8 @@ class MaskLoader
      * Fill the mask with the given replace values. When no argument
      * is given, a possible half filled mask will be returned
      *
-     * @param string|array $replace
+     * @param array<int, mixed>|string|null $replace
+     * @param int $limit
      * @return string
      * @author Teye Heimans
      * @access public
@@ -134,7 +138,7 @@ class MaskLoader
      *
      * Set the values where we should search for
      *
-     * @param string|array $search: An regex string or array with the values where we should search for
+     * @param array<int, string>|string $search: An regex string or array with the values where we should search for
      * @return void
      * @access public
      * @author Teye Heimans
