@@ -3323,7 +3323,7 @@ class FormHandler
         if ($this->_ajaxValidator === true)
         {
             $oAjaxValidator = new AjaxValidator($this->_ajaxValidatorScript);
-            $oAjaxValidator->CreateObservers($this);
+            $oAjaxValidator->CreateObservers($this, $this->_fields, $this->_customMsg);
         }
 
         // when the form is not posted or the form is not valid

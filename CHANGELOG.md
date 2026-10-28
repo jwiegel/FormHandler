@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- `enableAjaxValidator()` stopped every form with a fatal error since the conversion to
+  PHP 7: `AjaxValidator` read the protected properties `_fields` and `_customMsg` of the
+  form. `AjaxValidator::CreateObservers()` now gets them as parameters.
+
 ## [4.6.1] - 2026-10-28
 
 ### Fixed
