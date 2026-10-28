@@ -396,31 +396,9 @@ function fh_conf()
     }
 }
 
-// make sure that array_key_exists exists! :D
-if (!function_exists('array_key_exists'))
-{
-    function array_key_exists($sKey, $aArray)
-    {
-        return in_array($sKey, array_keys($aArray));
-    }
-}
-
 // making sure we dont get notices on this in PHP versions < 5.4
 if (!defined('ENT_HTML401'))
 {
     define('ENT_HTML401', '');
 }
 
-// For PHP version < 4.2.0 missing the array_fill function..
-if (!function_exists('array_fill'))
-{
-    function array_fill($iStart, $iLen, $vValue)
-    {
-        $aResult = array();
-        for ($iCount = $iStart; $iCount < $iLen + $iStart; $iCount++)
-        {
-            $aResult[$iCount] = $vValue;
-        }
-        return $aResult;
-    }
-}
