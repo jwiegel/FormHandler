@@ -12,11 +12,11 @@
 class BrowserField extends Field
 {
     /** @var int|null the size of the field */
-    private $_iSize;
+    private ?int $_iSize = null;
     /** @var FormHandler form */
-    private $_form;
+    private FormHandler $_form;
     /** @var string */
-    private $_path;
+    private string $_path;
 
     /**
      * TextField::BrowserField()

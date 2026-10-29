@@ -13,13 +13,13 @@ class TextArea extends Field
 {
 
     /** @var int|null number of colums which the textarea should get */
-    private $_iCols;
+    private ?int $_iCols = null;
     /** @var int|null number of rows which the textarea should get */
-    private $_iRows;
+    private ?int $_iRows = null;
     /** @var int|null the number of characters allowed */
-    private $_iMaxLength;
+    private ?int $_iMaxLength = null;
     /** @var bool|null should we display the limit message */
-    private $_bShowMessage;
+    private ?bool $_bShowMessage = null;
 
     /**
      * TextArea::TextArea()

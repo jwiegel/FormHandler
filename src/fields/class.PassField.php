@@ -12,7 +12,7 @@
 class PassField extends TextField
 {
     /** @var string|null */
-    private $_sPre;
+    private ?string $_sPre = null;
 
     /**
      * PassField::PassField()

@@ -15,7 +15,7 @@ class TextSelectField extends TextField
     /** @var int|string|null the size of the field */
     protected $_iSize;
     /** @var string|null */
-    private $_sOptions;
+    private ?string $_sOptions = null;
 
     /**
      * TextSelectField::TextSelectField()

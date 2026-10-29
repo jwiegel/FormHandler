@@ -13,11 +13,11 @@
 class UploadField extends Field
 {
     /** @var array<string, mixed> which contains the default upload config */
-    private $_aConfig;
+    private array $_aConfig;
     /** @var bool|null display a message when the file already exists */
-    private $_bAlertOverwrite;
+    private ?bool $_bAlertOverwrite = null;
     /** @var string|null filename of the file */
-    private $_sFilename;
+    private ?string $_sFilename = null;
 
     /**
      * UploadField::UploadField()

@@ -12,21 +12,21 @@
 class ListField extends Field
 {
     /** @var array<int|string, mixed> the options of the selectfield */
-    private $_aOptions;
+    private array $_aOptions;
     /** @var HiddenField the fielf where the value is saved in */
-    private $_oHidden;
+    private HiddenField $_oHidden;
     /** @var SelectField the field where the items are displayed which are "on" */
-    private $_oOn;
+    private SelectField $_oOn;
     /** @var SelectField the field where the items are displayed which are "off" */
-    private $_oOff;
+    private SelectField $_oOff;
     /** @var string|null the title used for the on section */
-    private $_sOnTitle;
+    private ?string $_sOnTitle = null;
     /** @var string|null the title used for the off section */
-    private $_sOffTitle;
+    private ?string $_sOffTitle = null;
     /** @var bool|null if the keys of the array should be used as values */
-    private $_bUseArrayKeyAsValue;
+    private ?bool $_bUseArrayKeyAsValue = null;
     /** @var bool|null if field is stacked horizontal or vertical */
-    private $_bVerticalMode;
+    private ?bool $_bVerticalMode = null;
     /**
      * ListField::ListField()
      *

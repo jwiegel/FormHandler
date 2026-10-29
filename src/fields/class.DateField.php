@@ -13,17 +13,17 @@
 class DateField extends Field
 {
     /** @var string how to display the fields (d-m-y) or other */
-    private $_sMask;
+    private string $_sMask;
     /** @var SelectField|TextField|null object of the day selectfield */
-    private $_oDay;
+    private SelectField|TextField|null $_oDay = null;
     /** @var SelectField|TextField|null object of the month selectfield */
-    private $_oMonth;
+    private SelectField|TextField|null $_oMonth = null;
     /** @var SelectField|TextField|null object of the year selectfield */
-    private $_oYear;
-    /** @var string|null interval of the year */
-    private $_sInterval;
+    private SelectField|TextField|null $_oYear = null;
+    /** @var int|string|null interval of the year */
+    private int|string|null $_sInterval = null;
     /** @var bool|null if the field is required or if we have to give the option to leave this field empty */
-    private $_bRequired;
+    private ?bool $_bRequired = null;
 
     /**
      * DateField::DateField()

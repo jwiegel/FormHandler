@@ -16,11 +16,11 @@ class CheckBox extends Field
     protected $_aOptions;
     // $this->_mValue contains the values which are selected!
     /** @var bool|null if the keys of the array should be used as values */
-    private $_bUseArrayKeyAsValue;
+    private ?bool $_bUseArrayKeyAsValue = null;
     /** @var string|null what kind of "glue" should be used to merge the checkboxes */
-    private $_sMask;
+    private ?string $_sMask = null;
     /** @var MaskLoader|null The maskLoader */
-    private $_oLoader;
+    private ?MaskLoader $_oLoader = null;
 
     /**
      * CheckBox::CheckBox()

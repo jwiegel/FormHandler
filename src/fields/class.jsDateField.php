@@ -12,7 +12,7 @@
 class jsDateField extends DateField
 {
     /** @var bool is the mask containing all 3 fields (so that the js calendar can be used) */
-    private $_isOk;
+    private bool $_isOk;
 
     /**
      * jsDateField::jsDateField()

@@ -22,9 +22,9 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 class Editor extends TextArea
 {
     /** @var \stdClass */
-    private $_oEditor;
+    private \stdClass $_oEditor;
     /** @var HtmlSanitizer|null HtmlSanitizer, created on first use */
-    private $_oSanitizer = null;
+    private ?HtmlSanitizer $_oSanitizer = null;
 
     /**
      * @param FormHandler $oForm

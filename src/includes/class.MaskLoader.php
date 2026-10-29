@@ -20,11 +20,11 @@
 class MaskLoader
 {
     /** @var string|null */
-    private $_mask;
+    private ?string $_mask = null;
     /** @var array<int, string>|string|null */
-    private $_search;
+    private array|string|null $_search = null;
     /** @var string|null */
-    private $_subject;
+    private ?string $_subject = null;
 
     /**
      * Constructor
@@ -68,7 +68,7 @@ class MaskLoader
         if ($replace === null)
         {
             // dont we have a subject?  return an empty string
-            if (!isset($this->_subject) || $this->_subject === null)
+            if (!isset($this->_subject))
             {
                 return '';
             }
@@ -92,7 +92,7 @@ class MaskLoader
 
         // get a fresh copy from the mask if the last
         // subject was completly filled..
-        if (!isset($this->_subject) || $this->_subject === null)
+        if (!isset($this->_subject))
         {
             $this->_subject = $this->_mask;
         }

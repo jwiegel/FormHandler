@@ -16,11 +16,11 @@ class SelectField extends Field
     /** @var bool|null if the keys of the array should be used as values */
     public $_bUseArrayKeyAsValue;
     /** @var int|null set the size of the field */
-    private $_iSize;
+    private ?int $_iSize = null;
     /** @var bool|null can multiple items be selected or not? */
-    private $_bMultiple;
+    private ?bool $_bMultiple = null;
     /** @var array<int|string, mixed>|null */
-    private $_classOpt;
+    private ?array $_classOpt = null;
     /**
      * SelectField::SelectField()
      *

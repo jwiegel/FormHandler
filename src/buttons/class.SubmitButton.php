@@ -12,7 +12,7 @@
 class SubmitButton extends Button
 {
     /** @var bool|null */
-    private $_bDisableOnSubmit;
+    private ?bool $_bDisableOnSubmit = null;
 
     /**
      * SubmitButton::SubmitButton()

@@ -11,8 +11,8 @@
  */
 class TimeField extends Field
 {
-    /** @var int hour format: {12, 24} */
-    private $_iFormat;
+    /** @var int|null hour format: {12, 24} */
+    private ?int $_iFormat = null;
     /** @var SelectField object of the hour selectfield */
     public $_oHour;
     /** @var SelectField object of the minute selectfield */

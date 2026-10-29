@@ -14,11 +14,11 @@ class RadioButton extends Field
     /** @var array<int|string, mixed>|string the value with is selected */
     public $_aOptions;
     /** @var bool|null if the keys of the array should be used as values */
-    private $_bUseArrayKeyAsValue;
+    private ?bool $_bUseArrayKeyAsValue = null;
     /** @var string|null what kind of "glue" should be used to merge the fields */
-    private $_sMask;
+    private ?string $_sMask = null;
     /** @var MaskLoader|null a maskloader object */
-    private $_oLoader;
+    private ?MaskLoader $_oLoader = null;
 
     /**
      * RadioButton::RadioButton()

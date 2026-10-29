@@ -13,9 +13,9 @@
 class Html5DateField extends TextField
 {
     /** @var string date() format for the view mode */
-    private $_sDateMask;
+    private string $_sDateMask;
     /** @var bool set the current date in a new, empty form */
-    private $_bSetCurDate;
+    private bool $_bSetCurDate;
 
     /**
      * Constructor: create a new Html5DateField object
