@@ -18,6 +18,9 @@ and the project follows [Semantic Versioning](https://semver.org/).
 ### Removed
 
 - The PHP 4 fallbacks for `array_key_exists()` and `array_fill()` in `config.inc.php`.
+- `FormHandler::isUnittestmode()` and the unit test mode of `UploadField`. The upload is in
+  the overridable methods `UploadField::_isUploadedFile()` and `_moveUploadedFile()`, the
+  unit tests replace them and so test the same code as a real upload.
 
 ### Fixed
 

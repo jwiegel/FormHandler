@@ -578,7 +578,7 @@ class UploadField extends Field
         // is a file uploaded ?
         if (!is_null($aFile['error']) && $aFile['error'] != 4)
         {
-            if (is_uploaded_file($aFile['tmp_name']))
+            if ($this->_isUploadedFile($aFile['tmp_name']))
             {
                 // make the dir if not exists
                 if (!is_dir($this->_aConfig['path']))
@@ -599,7 +599,7 @@ class UploadField extends Field
                 $sUpload   = $this->_aConfig['path'] . $sFilename;
 
                 // uploading
-                if (!move_uploaded_file($aFile['tmp_name'], $sUpload))
+                if (!$this->_moveUploadedFile($aFile['tmp_name'], $sUpload))
                 {
                     throw new FormHandlerException(
                         sprintf(
@@ -614,19 +614,6 @@ class UploadField extends Field
                 $this->_sFilename = $sFilename;
 
                 return $sUpload;
-            }
-            else if ($this->_oForm->isUnittestmode())
-            {
-                if (file_exists($this->_aConfig['path']))
-                {
-                    $sFilename = $this->_getFilename(false);
-                    $sUpload   = $this->_aConfig['path'] . $sFilename;
-
-                    if (copy($aFile['tmp_name'], $sUpload))
-                        return $sUpload;
-                }
-
-                return false;
             }
             else
             {
@@ -734,6 +721,36 @@ class UploadField extends Field
         {
             return $sFile . '.' . $sExt;
         }
+    }
+
+    /**
+     * UploadField::_isUploadedFile()
+     *
+     * Was the file uploaded with HTTP POST? (Overridden in the unit tests,
+     * which have no real upload.)
+     *
+     * @param string $sFile: the temporary file of the upload
+     * @return bool
+     * @access protected
+     */
+    protected function _isUploadedFile($sFile)
+    {
+        return is_uploaded_file($sFile);
+    }
+
+    /**
+     * UploadField::_moveUploadedFile()
+     *
+     * Move the uploaded file to its destination (overridden in the unit tests)
+     *
+     * @param string $sFrom: the temporary file of the upload
+     * @param string $sTo: the destination
+     * @return bool
+     * @access protected
+     */
+    protected function _moveUploadedFile($sFrom, $sTo)
+    {
+        return move_uploaded_file($sFrom, $sTo);
     }
 
     /**

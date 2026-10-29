@@ -144,8 +144,6 @@ class FormHandler
     protected $_csrfToken = null;
     /** @var bool the posted CSRF token was wrong */
     protected $_csrfFailed = false;
-    /** only for unittesting (can only be set by reflection of uniitest) */
-    private bool $_unittestmode = false;
 
     /**
      * FormHandler::FormHandler()
@@ -276,16 +274,6 @@ class FormHandler
 
         // set the default table settings
         $this->setTableSettings();
-    }
-
-    /**
-     * Getter
-     *
-     * @return boolean
-     */
-    public function isUnittestmode(): bool
-    {
-        return $this->_unittestmode;
     }
 
     /**
