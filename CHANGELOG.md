@@ -19,6 +19,11 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 - The PHP 4 fallbacks for `array_key_exists()` and `array_fill()` in `config.inc.php`.
 
+### Fixed
+
+- `getFileInfo()` and `isUploaded()` rejected subclasses of `UploadField` ("the field is not
+  an uploadfield"), they compared the class name.
+
 ## [4.6.4] - 2026-10-30
 
 ### Fixed

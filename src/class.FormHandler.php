@@ -2564,7 +2564,7 @@ class FormHandler
         {
             // is it an uploadfield ?
             $obj = &$this->_fields[$uploadfield][1];
-            if (strtolower(get_class($obj)) == 'uploadfield')
+            if ($obj instanceof UploadField)
             {
                 // check if there is an file uploaded
                 if ($obj->isUploaded())
@@ -2612,7 +2612,7 @@ class FormHandler
         {
             // is it an uploadfield ?
             $obj = &$this->_fields[$uploadfield][1];
-            if (strtolower(get_class($obj)) == 'uploadfield')
+            if ($obj instanceof UploadField)
             {
                 // check if there is an file uploaded
                 return $obj->isUploaded();
