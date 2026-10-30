@@ -24,12 +24,16 @@ and the project follows [Semantic Versioning](https://semver.org/).
   (`fetch()`), and `validate.php` answers JSON, which is shown as text. The second parameter
   of `enableAjaxValidator()` (include jQuery) is not used any more. Messages are put into
   the javascript with `json_encode()` instead of `addslashes()`.
+- `colorPicker()` uses the color input of the browser instead of jscolor 1.0.9: a color input
+  (without a name) next to the text field fills it. The value is unchanged (`FFCC00`, empty
+  when no color is chosen), so stored colors and validators keep working.
 
 ### Removed
 
 - The PHP 4 fallbacks for `array_key_exists()` and `array_fill()` in `config.inc.php`.
 - The bundled Securimage in `src/FHTML/securimage` (see `captchaField()` above).
 - The bundled jQuery 1.4.2 (2010, with known security issues); only the AJAX validator used it.
+- The bundled jscolor 1.0.9 and the unused images of an older color picker (`FHTML/images/ColorPicker`).
 - `FormHandler::isUnittestmode()` and the unit test mode of `UploadField`. The upload is in
   the overridable methods `UploadField::_isUploadedFile()` and `_moveUploadedFile()`, the
   unit tests replace them and so test the same code as a real upload.
