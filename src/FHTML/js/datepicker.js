@@ -62,10 +62,17 @@ FH_DatePicker.prototype.setReturnFunction = function( name )
  */
 FH_DatePicker.prototype.show = function( anchor, value )
 {
-	if ( !this.input.parentNode )
+	// the browser opens the picker at the date input: put it under the calendar icon
+	var rect = anchor.getBoundingClientRect();
+	this.input.style.left = ( rect.left + window.scrollX ) + 'px';
+	this.input.style.top = ( rect.bottom + window.scrollY ) + 'px';
+	if ( this.input.parentNode !== document.body )
 	{
-		anchor.parentNode.insertBefore( this.input, anchor.nextSibling );
+		document.body.appendChild( this.input );
 	}
+	// the position must be known before the picker opens (else the first one opens in a corner)
+	void this.input.getBoundingClientRect();
+
 	this.input.value = value || '';
 
 	try
