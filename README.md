@@ -138,6 +138,79 @@ this page".
   with `fh_conf('FH_CSRF_PROTECTION', false)` before the first form is created (the
   `fh_conf()` values become constants then).
 
+### Images and files in the editor
+
+The bundled file manager is removed (4.7): it had no login. Uploading or choosing files
+has to happen behind the login of your application, so link your own scripts with the
+`$config` of `editor()`. Both scripts must check the login themselves.
+
+**Upload images** (the simplest way). CKEditor uploads pasted or dropped images and the
+images of the "Upload" tab of the image dialog to your script:
+
+```php
+$form->editor('Text', 'text', config: [
+    'uploadUrl'            => '/admin/editor-upload.php',
+    'filebrowserUploadUrl' => '/admin/editor-upload.php?responseType=json',
+]);
+```
+
+```php
+<?php
+// /admin/editor-upload.php: the file comes in the field "upload", the answer is JSON
+session_start();
+header('Content-Type: application/json');
+if (empty($_SESSION['user'])) { // your own login check
+    exit(json_encode(['uploaded' => 0, 'error' => ['message' => 'Not logged in']]));
+}
+
+$file = $_FILES['upload'] ?? null;
+$types = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/gif' => 'gif', 'image/webp' => 'webp'];
+$type = $file && $file['error'] === UPLOAD_ERR_OK ? mime_content_type($file['tmp_name']) : '';
+if (!isset($types[$type])) {
+    exit(json_encode(['uploaded' => 0, 'error' => ['message' => 'Only images can be uploaded']]));
+}
+
+// an own file name: never use the name from the browser as path
+$name = bin2hex(random_bytes(8)) . '.' . $types[$type];
+move_uploaded_file($file['tmp_name'], __DIR__ . '/../images/editor/' . $name);
+
+echo json_encode(['uploaded' => 1, 'fileName' => $name, 'url' => '/images/editor/' . $name]);
+```
+
+**Browse files on the server.** A file manager such as
+[elFinder](https://github.com/Studio-42/elFinder) (`composer require studio-42/elfinder`,
+BSD license) can be opened by the "Browse Server" buttons of the image and link dialogs:
+
+```php
+$form->editor('Text', 'text', config: [
+    'filebrowserBrowseUrl' => '/admin/elfinder.html',
+]);
+```
+
+- `/admin/elfinder.html` shows elFinder (it needs jQuery and jQuery UI, only on this
+  page) and gives the chosen file back to the editor:
+
+  ```js
+  // the CKEditor dialog which opened the window
+  var funcNum = new URLSearchParams(location.search).get('CKEditorFuncNum');
+  $('#elfinder').elfinder({
+      url: '/admin/elfinder-connector.php',
+      getFileCallback: function (file) {
+          window.opener.CKEDITOR.tools.callFunction(funcNum, file.url);
+          window.close();
+      }
+  });
+  ```
+
+- `/admin/elfinder-connector.php` is the connector of elFinder (see its
+  `connector.minimal.php`): check the login first, then allow only one folder, e.g. with
+  the roots option `'path' => __DIR__ . '/../files/', 'URL' => '/files/'` and an
+  `uploadAllow` list of file types.
+
+A text field for a file (the former `browserField()`) works the same way: a
+`textField()` with your own button which opens the file manager and writes the chosen URL
+into the field.
+
 ### License
 
 FormHandler is licensed under the GNU Lesser General Public License Version 2.1 - see the `LICENSE` file for details
