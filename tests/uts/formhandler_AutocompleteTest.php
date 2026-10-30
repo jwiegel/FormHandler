@@ -14,11 +14,22 @@ final class formhandler_AutocompleteTest extends FormhandlerTestCase
 
         $form->setAutoComplete("textfield", $aOptions);
 
-        static::assertFormFlushContains($form, [
-            'FHTML/js/autocomplete.js',
-            'textfield_values = ["first", "second", "third"];',
-            'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20"   onkeypress=\'return FH_autocomplete(this, event, textfield_values);\'  />error_textfield'
+        // the suggestions of the browser (datalist), no javascript
+        $html = static::assertFormFlushContains($form, [
+            'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20"   list="textfield_list" />' .
+                '<datalist id="textfield_list"><option value="first"></option><option value="second"></option><option value="third"></option></datalist>error_textfield'
         ]);
+        static::assertStringNotContainsString('autocomplete.js', $html);
+    }
+
+    public function test_escaped(): void
+    {
+        $form = new FormHandler();
+
+        $form->textField("Textfield", "textfield");
+        $form->setAutoComplete("textfield", ["O'Hare \"x\" <b>"]);
+
+        static::assertFormFlushContains($form, ['<option value="O&#039;Hare &quot;x&quot; &lt;b&gt;"></option>']);
     }
 
     public function test_no_textfield(): void
@@ -53,10 +64,11 @@ final class formhandler_AutocompleteTest extends FormhandlerTestCase
 
         $form->setAutoCompleteAfter("textfield", "@", $aOptions);
 
+        // autocomplete.js fills the datalist with the text up to "@" and the options
         static::assertFormFlushContains($form, [
             'FHTML/js/autocomplete.js',
-            'textfield_values = ["first", "second", "third"];',
-            'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20"   onkeypress=\'return autocompleteafter(this, event,"@", textfield_values);\'  />error_textfield'
+            'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20"   list="textfield_list" />' .
+                '<datalist id="textfield_list" data-fh-after="@" data-fh-values="[&quot;first&quot;,&quot;second&quot;,&quot;third&quot;]"></datalist>error_textfield'
         ]);
     }
 

@@ -1771,8 +1771,6 @@ class FormHandler
      */
     public function setAutoComplete($field, $options)
     {
-        static $setJS = false;
-
         // check if the field exists and is a textfield
         if (!$this->fieldExists($field) || strtolower(get_class($this->_fields[$field][1])) != 'textfield')
         {
@@ -1792,25 +1790,13 @@ class FormHandler
             return;
         }
 
-        // add the javascript file if not done yet
-        if (!$setJS)
-        {
-            $setJS = true;
-            $this->_setJS(FH_FHTML_DIR . 'js/autocomplete.js', true);
-        }
-
-        // create the javascript array
-        $js = $field . '_values = [';
+        // the browser shows the options as suggestions, no javascript needed
+        $sList = '';
         foreach ($options as $option)
         {
-            $js .= '"' . htmlentities($option, encoding: FH_HTML_ENCODING) . '", ';
+            $sList .= '<option value="' . htmlspecialchars((string) $option, ENT_QUOTES, FH_HTML_ENCODING) . '"></option>';
         }
-        $this->_setJS(substr($js, 0, -2) . "];\n");
-
-        // add the javascript to the fields "extra" argument
-        $tmpExtra = $this->_fields[$field][1]->getExtra();
-        $tmpExtra .= " onkeypress='return FH_autocomplete(this, event, " . $field . "_values);' ";
-        $this->_fields[$field][1]->setExtra($tmpExtra);
+        $this->_addDatalist($field, '', $sList);
     }
 
     /**
@@ -1856,20 +1842,35 @@ class FormHandler
             $this->_setJS(FH_FHTML_DIR . 'js/autocomplete.js', true);
         }
 
-        // create the javascript array
-        $js = $field . '_values = [';
-        foreach ($options as $option)
-        {
-            $js .= '"' . htmlentities($option, encoding: FH_HTML_ENCODING) . '", ';
-        }
-        $this->_setJS(substr($js, 0, -2) . "];\n");
-
-        // add the javascript to the fields "extra" argument
-        $tmpExtra = $this->_fields[$field][1]->getExtra();
-        $tmpExtra .= " onkeypress='return autocompleteafter(this, event,\"" . $after . "\", " . $field . "_values);' ";
-        $this->_fields[$field][1]->setExtra($tmpExtra);
+        // the javascript fills the datalist while typing: the text up to $after and the options
+        $sValues = (string) json_encode(array_values(array_map('strval', $options)));
+        $this->_addDatalist(
+            $field,
+            ' data-fh-after="' . htmlspecialchars((string) $after, ENT_QUOTES, FH_HTML_ENCODING) . '"' .
+                ' data-fh-values="' . htmlspecialchars($sValues, ENT_QUOTES, FH_HTML_ENCODING) . '"',
+            ''
+        );
     }
-    /***/
+
+    /**
+     * FormHandler::_addDatalist()
+     *
+     * Put a datalist (the suggestions of the browser) after a text field
+     *
+     * @param string $field the name of the text field
+     * @param string $sAttributes more attributes of the datalist
+     * @param string $sOptions the option tags
+     * @return void
+     * @access private
+     */
+    private function _addDatalist(string $field, string $sAttributes, string $sOptions): void
+    {
+        $fld = $this->_fields[$field][1];
+        $sId = htmlspecialchars($field . '_list', ENT_QUOTES, FH_HTML_ENCODING);
+
+        $fld->setExtra($fld->getExtra() . ' list="' . $sId . '"');
+        $fld->setExtraAfter($fld->getExtraAfter() . '<datalist id="' . $sId . '"' . $sAttributes . '>' . $sOptions . '</datalist>');
+    }
 
     /**
      * FormHandler::newPage()
@@ -2756,7 +2757,7 @@ class FormHandler
                     // is this argument a field? Then load the "db" value
                     if ($this->fieldExists($item))
                     {
-                        $extra .= '&' . $item . '="+document.forms["' . $this->getFormName() . '"].elements["' . $item . '"].value+"';
+                        $extra .= '&' . $item . '="+encodeURIComponent(document.forms["' . $this->getFormName() . '"].elements["' . $item . '"].value)+"';
                     }
                     // just load the extra argument, it's a js string
                     else
@@ -2809,7 +2810,7 @@ class FormHandler
 
             // create the javascript for dynamic loading..
             $func  = $i < (func_num_args() - 2) ? 'attach' . $fld2 : 'null';
-            $param = isset($this->edit) && $this->edit ? '&value=' . $values[count($values) - 1] : '';
+            $param = isset($this->edit) && $this->edit && is_scalar($values[count($values) - 1]) ? '&value=' . rawurlencode((string) $values[count($values) - 1]) : '';
             $param .= $extra;
 
             $js .=
@@ -2818,12 +2819,12 @@ class FormHandler
                 '    load' . $fld2 . '( aArgs, sValue );' . "\n" .
                 '}' . "\n\n" .
                 'function load' . $fld2 . '( aArgs, sValue ) {' . "\n" .
-                '    value = GetElement("' . $fld1 . '").value;' . "\n" .
+                '    var value = GetElement("' . $fld1 . '").value;' . "\n" .
                 //'    value = document.forms["'.$this->getFormName().'"].elements["'.$fld1.'"].value;'."\n".
                 //'    //GetElement("'.$fld2.'").innerHTML = "loading";'."\n".
                 '    loadexternal(' . "\n" .
                 '      "' . $filename . '",' . "\n" .
-                '      "linkselect=true&filter="+value+"&field=' . $fld2 . $param . '",' . "\n" .
+                '      "linkselect=true&filter="+encodeURIComponent(value)+"&field=' . $fld2 . $param . '",' . "\n" .
                 '      "' . $fld2 . '",' . "\n" . //display
                 '      ' . $func . ",\n" .
                 '      aArgs,' . "\n" .

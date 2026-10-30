@@ -6,6 +6,12 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `Field::getExtraAfter()`, the counterpart of `setExtraAfter()`.
+- The scripts of `linkSelectFields()` may answer JSON (`[["1", "Text"], "Other"]`); the
+  javascript which sets `options` still works.
+
 ### Changed
 
 - PHPStan checks on level 6, without a baseline. All classes have PHPDoc types for their
@@ -38,6 +44,11 @@ and the project follows [Semantic Versioning](https://semver.org/).
   `FH_JSCALENDARPOPUP_USE_DROPDOWN` and `FH_JSCALENDARPOPUP_STARTDAY` are not used any more.
   `cal_<field>.setReturnFunction()`, `set<field>Values()` and `LZ()` still work. New forms
   should rather use `html5DateField()`.
+- `setAutoComplete()` uses the suggestions of the browser (an HTML5 `datalist`) instead of
+  javascript which completed the text while typing; `setAutoCompleteAfter()` fills such a
+  list with a small script. The options are escaped as HTML, no javascript array any more.
+- `linkSelectFields()` loads the options with `fetch()` instead of the old XMLHttpRequest
+  wrapper with Internet Explorer fallbacks, and encodes the values it sends.
 
 ### Deprecated
 

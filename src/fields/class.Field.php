@@ -332,6 +332,19 @@ class Field
     }
 
     /**
+     * Field::getExtraAfter()
+     *
+     * Return the HTML which is put after the field
+     *
+     * @return string|null
+     * @access public
+     */
+    public function getExtraAfter(): ?string
+    {
+        return $this->_sExtraAfter;
+    }
+
+    /**
      * Field::setExtraAfter()
      *
      * Set some extra HTML, JS or something like that (to use after the html tag)
