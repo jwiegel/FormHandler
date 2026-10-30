@@ -11,7 +11,7 @@
  */
 class RadioButton extends Field
 {
-    /** @var array<int|string, mixed>|string the value with is selected */
+    /** @var array<int|string, mixed>|string the options of the field (public only for older code, protected in 5.0: use getOptions()) */
     public $_aOptions;
     /** @var bool|null if the keys of the array should be used as values */
     private ?bool $_bUseArrayKeyAsValue = null;
@@ -40,6 +40,19 @@ class RadioButton extends Field
 
         $this->setMask(FH_DEFAULT_GLUE_MASK);
         $this->useArrayKeyAsValue(FH_DEFAULT_USEARRAYKEY);
+    }
+
+    /**
+     * RadioButton::getOptions()
+     *
+     * Return the options of the field
+     *
+     * @return array<int|string, mixed>|string value => text, or the value of a single radio button
+     * @access public
+     */
+    public function getOptions(): array|string
+    {
+        return $this->_aOptions;
     }
 
     /**

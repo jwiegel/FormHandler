@@ -15,17 +15,17 @@
 class DateTextField extends TextField
 {
     /** @var string how to display the fields with mask */
-    var $_sDateMask;
+    protected $_sDateMask;
     /** @var string how to parse the value */
-    var $_sValParseRegExpr;
+    protected $_sValParseRegExpr;
     /** @var int position of day in regular expression */
-    var $_iDayPos;
+    protected $_iDayPos;
     /** @var int position of month in regular expression */
-    var $_iMonthPos;
+    protected $_iMonthPos;
     /** @var int position of year in regular expression */
-    var $_iYearPos;
+    protected $_iYearPos;
     /** @var bool try to parse other presentations of dateformat */
-    var $_bParseOtherPresentations;
+    protected $_bParseOtherPresentations;
 
     /**
      * Constructor: create a new dateTextField object

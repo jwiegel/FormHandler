@@ -11,9 +11,9 @@
  */
 class SelectField extends Field
 {
-    /** @var array<int|string, mixed> the options of the selectfield */
+    /** @var array<int|string, mixed> the options of the selectfield (public only for older code, protected in 5.0: use getOptions() and setOptions()) */
     public $_aOptions;
-    /** @var bool|null if the keys of the array should be used as values */
+    /** @var bool|null if the keys of the array should be used as values (public only for older code, protected in 5.0: use useArrayKeyAsValue()) */
     public $_bUseArrayKeyAsValue;
     /** @var int|null set the size of the field */
     private ?int $_iSize = null;
@@ -184,6 +184,19 @@ class SelectField extends Field
             $sOptions,
             (isset($this->_sExtraAfter) ? $this->_sExtraAfter : '')
         );
+    }
+
+    /**
+     * SelectField::getOptions()
+     *
+     * Return the options of the field
+     *
+     * @return array<int|string, mixed> value => text
+     * @access public
+     */
+    public function getOptions(): array
+    {
+        return $this->_aOptions;
     }
 
     /**

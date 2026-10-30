@@ -8,6 +8,11 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `FormHandler::getField()` returns the object of a field, e.g. to use its getters. It
+  throws a `FormHandlerException` for an unknown field.
+- Getters for what was only reachable through public properties: `Field::getErrorMessage()`
+  (the error without `FH_ERROR_MASK`), `SelectField::getOptions()`, `RadioButton::getOptions()`,
+  `TimeField::getHourField()` and `getMinuteField()`.
 - `Field::getExtraAfter()`, the counterpart of `setExtraAfter()`.
 - The scripts of `linkSelectFields()` may answer JSON (`[["1", "Text"], "Other"]`); the
   javascript which sets `options` still works.
@@ -18,6 +23,8 @@ and the project follows [Semantic Versioning](https://semver.org/).
   PHPDoc types for their properties, parameters and return values, and all private
   properties and methods also native types; protected and public members keep PHPDoc types
   only, so existing subclasses which override them still work.
+- The internal properties of `DateTextField` and `jsDateTextField` (declared with `var`, so
+  public) are protected.
 - `dbFormHandler` calls `getInsertId()` without the table name, as the `DatabaseAdapter`
   interface defines it (the argument was a Yadal leftover and ignored).
 - `captchaField()` uses the package `gregwar/captcha` instead of the bundled Securimage 1.0
@@ -56,6 +63,9 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ### Deprecated
 
+- The public properties of the fields (`$_sError`, `$_viewMode`, `$_aOptions`,
+  `$_bUseArrayKeyAsValue`, `$_oHour`, `$_oMinute`, `$_bRequired`): use the getters and
+  setters; they become protected in 5.0. `ColorPicker::$sTitleAdd` is not used any more.
 - `browserField()` (`BrowserField`) and `Editor::setServerPath()`: the file manager behind
   them is removed (see below). `browserField()` is a plain text field now, the `$path`
   of `editor()` is not used any more.

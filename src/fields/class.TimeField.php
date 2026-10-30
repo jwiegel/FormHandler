@@ -13,11 +13,11 @@ class TimeField extends Field
 {
     /** @var int|null hour format: {12, 24} */
     private ?int $_iFormat = null;
-    /** @var SelectField object of the hour selectfield */
+    /** @var SelectField object of the hour selectfield (public only for older code, protected in 5.0: use getHourField()) */
     public $_oHour;
-    /** @var SelectField object of the minute selectfield */
+    /** @var SelectField object of the minute selectfield (public only for older code, protected in 5.0: use getMinuteField()) */
     public $_oMinute;
-    /** @var bool|null if the field is required or if we have to give the option to leave this field empty */
+    /** @var bool|null if the field is required or if we have to give the option to leave this field empty (public only for older code, protected in 5.0: use setRequired()) */
     public $_bRequired;
 
     /**
@@ -65,6 +65,32 @@ class TimeField extends Field
     {
         $this->_oHour->setExtra($sExtra);
         $this->_oMinute->setExtra($sExtra);
+    }
+
+    /**
+     * TimeField::getHourField()
+     *
+     * Return the select field of the hours
+     *
+     * @return SelectField
+     * @access public
+     */
+    public function getHourField(): SelectField
+    {
+        return $this->_oHour;
+    }
+
+    /**
+     * TimeField::getMinuteField()
+     *
+     * Return the select field of the minutes
+     *
+     * @return SelectField
+     * @access public
+     */
+    public function getMinuteField(): SelectField
+    {
+        return $this->_oMinute;
     }
 
     /**

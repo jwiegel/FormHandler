@@ -1031,7 +1031,7 @@ class FormHandler
         if (!empty($extra))     $fld->setExtra($extra);
 
         // register the field
-        $this->_registerField($name, $fld, $title . $fld->sTitleAdd);
+        $this->_registerField($name, $fld, $title);
     }
 
     /**
@@ -2975,6 +2975,26 @@ class FormHandler
     public function fieldExists($sField)
     {
         return array_key_exists($sField, $this->_fields);
+    }
+
+    /**
+     * FormHandler::getField()
+     *
+     * Return the object of a field (or button) of the form, e.g. to use its getters
+     *
+     * @param string $sField: The name of the field
+     * @return Field|Button
+     * @throws FormHandlerException when the form has no field with this name
+     * @access public
+     */
+    public function getField($sField)
+    {
+        if (!$this->fieldExists($sField) || !is_object($this->_fields[$sField][1]))
+        {
+            throw new FormHandlerException('The field "' . $sField . '" does not exist in the form');
+        }
+
+        return $this->_fields[$sField][1];
     }
 
     /**

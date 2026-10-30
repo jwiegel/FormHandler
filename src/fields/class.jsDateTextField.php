@@ -14,7 +14,7 @@
 class jsDateTextField extends DateTextField
 {
     /** @var string|null the mask for the CalendarPopup of FormHandler 4.6 and older (not used any more) */
-    var $_sJsMask;
+    protected $_sJsMask;
 
     /**
      * Constructor: create a new jsDateTextField object

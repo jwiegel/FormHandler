@@ -25,7 +25,7 @@ class Field
     protected $_sValidator;
     /** @var mixed the value of the field */
     protected $_mValue;
-    /** @var string|null if the field is not valid, this var contains the error message */
+    /** @var string|null if the field is not valid, this var contains the error message (public only for older code, protected in 5.0: use getErrorMessage() and setError()) */
     public $_sError;
     /** @var string|null extra data which should be added into the HTML tag (like CSS or JS) */
     protected $_sExtra;
@@ -33,7 +33,7 @@ class Field
     protected $_iTabIndex;
     /** @var string|null extra data which should be added AFTER the HTML tag */
     protected $_sExtraAfter;
-    /** @var bool|null should we only display the value instead of the field ? */
+    /** @var bool|null should we only display the value instead of the field ? (public only for older code, protected in 5.0: use getViewMode() and setViewMode()) */
     public $_viewMode;
     /** @var bool|null field is valid */
     protected $_isValid;
@@ -372,6 +372,19 @@ class Field
     public function setError($sError)
     {
         $this->_sError = $sError;
+    }
+
+    /**
+     * Field::getErrorMessage()
+     *
+     * Return the error message of the field, without the FH_ERROR_MASK of getError()
+     *
+     * @return string|null null when the field has no error
+     * @access public
+     */
+    public function getErrorMessage(): ?string
+    {
+        return $this->_sError;
     }
 
     /**

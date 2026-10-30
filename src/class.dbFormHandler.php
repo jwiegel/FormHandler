@@ -1181,7 +1181,7 @@ class dbFormHandler extends FormHandler
                                         );
 
                                     // set the error message
-                                    $this->_fields[$fieldInForm][1]->_sError = $error;
+                                    $this->_fields[$fieldInForm][1]->setError($error);
                                 }
                                 /* new since 21 aug 2006*/
                                 // no field in the form (propably added with addValue)

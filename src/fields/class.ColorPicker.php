@@ -13,7 +13,7 @@
  */
 class ColorPicker extends TextField
 {
-    /** @var string */
+    /** @var string not used any more (it was added to the title), removed in 5.0 */
     public $sTitleAdd = "";
 
     /**
