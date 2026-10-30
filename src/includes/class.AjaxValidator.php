@@ -85,10 +85,10 @@ class AjaxValidator
                         if ($sEvent != '')
                         {
 
-                            $sScript  .= "  jQuery('#" . $sField . "').live( '" . $sEvent . "', function(){FH_VALIDATE( '" . $aField[1]->getValidator() . "', '" . $sField . "', '" . $sField . "', '" . FH_FHTML_DIR . "', '" . FH_INCLUDE_DIR . "','" . $sMsg . "' )});\n";
+                            $sScript  .= "  jQuery('#" . $sField . "').live( '" . $sEvent . "', function(){FH_VALIDATE( '" . $aField[1]->getValidator() . "', '" . $sField . "', '" . $sField . "', '" . FH_FHTML_DIR . "', '','" . $sMsg . "' )});\n";
                             if ($aField[1]->getValidator() <> 'FH_CHECK_DOMAIN')
                             {
-                                $sScript2 .= "FH_VALIDATE( '" . $aField[1]->getValidator() . "', '" . $sField . "', '" . $sField . "', '" . FH_FHTML_DIR . "', '" . FH_INCLUDE_DIR . "','" . $sMsg . "' );";
+                                $sScript2 .= "FH_VALIDATE( '" . $aField[1]->getValidator() . "', '" . $sField . "', '" . $sField . "', '" . FH_FHTML_DIR . "', '','" . $sMsg . "' );";
                             }
                         }
                     }
@@ -112,8 +112,24 @@ class AjaxValidator
 
     public function Validate($aRequest, $oValidator)
     {
+        foreach (array('validator', 'msg', 'msgbox', 'value') as $sKey)
+        {
+            if (!isset($aRequest[$sKey]) || !is_string($aRequest[$sKey]))
+            {
+                return '';
+            }
+        }
+
+        // the request comes from the browser: the id of the message box goes into the
+        // javascript and the message into the HTML of the answer, so both are checked
+        if (!preg_match('/^error_[A-Za-z0-9_\-]+$/', $aRequest['msgbox']))
+        {
+            return '';
+        }
+        $aRequest['msg'] = htmlspecialchars(stripslashes($aRequest['msg']), ENT_QUOTES, 'UTF-8');
+
         // determin if there is more than one validator
-        if ($aRequest['validator'] != '' and $aRequest['msg'] != '' and isset($aRequest['value']))
+        if ($aRequest['validator'] != '' and $aRequest['msg'] != '')
         {
             if (strpos($aRequest['validator'], '|') > 0)
             {
@@ -138,7 +154,7 @@ class AjaxValidator
                         jQuery('#" . $aRequest['msgbox'] . "').removeClass( 'fh_mandatory' );												
                         jQuery('#" . $aRequest['msgbox'] . "').prev('input').addClass( 'error' );
                         //]]>-->
-                        </script>" . stripslashes($aRequest['msg']);
+                        </script>" . $aRequest['msg'];
                     }
                     elseif (empty($aRequest['value']))
                     {

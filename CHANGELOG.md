@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Security
+
+- `FHTML/ajax/validate.php` (the AJAX validator) is reachable without a form. It put the
+  parameters `msg` and `msgbox` of the request unescaped into its HTML and javascript
+  answer, so a prepared link could run javascript on the website (reflected XSS). The
+  message is escaped now and `msgbox` has to be the id of an error box.
+- It also included the classes from a path of the request (`includedir`); it uses its own
+  directory now. The form does not send the server path `FH_INCLUDE_DIR` to the browser
+  any more.
+
 ## [4.6.2] - 2026-10-28
 
 ### Fixed
