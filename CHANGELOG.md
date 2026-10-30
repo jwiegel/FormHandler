@@ -44,9 +44,10 @@ and the project follows [Semantic Versioning](https://semver.org/).
   `FH_JSCALENDARPOPUP_USE_DROPDOWN` and `FH_JSCALENDARPOPUP_STARTDAY` are not used any more.
   `cal_<field>.setReturnFunction()`, `set<field>Values()` and `LZ()` still work. New forms
   should rather use `html5DateField()`.
-- `setAutoComplete()` uses the suggestions of the browser (an HTML5 `datalist`) instead of
-  javascript which completed the text while typing; `setAutoCompleteAfter()` fills such a
-  list with a small script. The options are escaped as HTML, no javascript array any more.
+- `setAutoComplete()` and `setAutoCompleteAfter()` show a list of suggestions under the
+  field (in the font of the field, class `fh_autocomplete`; arrow keys, enter, escape and
+  the mouse) instead of completing the text while typing. The options are in an HTML5
+  `datalist`, escaped as HTML, which the browser shows when javascript is off.
 - `linkSelectFields()` loads the options with `fetch()` instead of the old XMLHttpRequest
   wrapper with Internet Explorer fallbacks, and encodes the values it sends.
 

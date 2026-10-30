@@ -14,12 +14,12 @@ final class formhandler_AutocompleteTest extends FormhandlerTestCase
 
         $form->setAutoComplete("textfield", $aOptions);
 
-        // the suggestions of the browser (datalist), no javascript
-        $html = static::assertFormFlushContains($form, [
+        // autocomplete.js shows the options of the datalist (without javascript: the browser)
+        static::assertFormFlushContains($form, [
+            'FHTML/js/autocomplete.js',
             'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20"   list="textfield_list" />' .
-                '<datalist id="textfield_list"><option value="first"></option><option value="second"></option><option value="third"></option></datalist>error_textfield'
+                '<datalist id="textfield_list" data-fh-autocomplete><option value="first"></option><option value="second"></option><option value="third"></option></datalist>error_textfield'
         ]);
-        static::assertStringNotContainsString('autocomplete.js', $html);
     }
 
     public function test_escaped(): void
@@ -64,11 +64,11 @@ final class formhandler_AutocompleteTest extends FormhandlerTestCase
 
         $form->setAutoCompleteAfter("textfield", "@", $aOptions);
 
-        // autocomplete.js fills the datalist with the text up to "@" and the options
+        // autocomplete.js suggests the text up to "@" followed by the options
         static::assertFormFlushContains($form, [
             'FHTML/js/autocomplete.js',
             'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20"   list="textfield_list" />' .
-                '<datalist id="textfield_list" data-fh-after="@" data-fh-values="[&quot;first&quot;,&quot;second&quot;,&quot;third&quot;]"></datalist>error_textfield'
+                '<datalist id="textfield_list" data-fh-autocomplete data-fh-after="@" data-fh-values="[&quot;first&quot;,&quot;second&quot;,&quot;third&quot;]"></datalist>error_textfield'
         ]);
     }
 

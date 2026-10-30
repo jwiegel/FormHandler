@@ -1771,6 +1771,8 @@ class FormHandler
      */
     public function setAutoComplete($field, $options)
     {
+        static $setJS = false;
+
         // check if the field exists and is a textfield
         if (!$this->fieldExists($field) || strtolower(get_class($this->_fields[$field][1])) != 'textfield')
         {
@@ -1790,7 +1792,14 @@ class FormHandler
             return;
         }
 
-        // the browser shows the options as suggestions, no javascript needed
+        // add the javascript file if not done yet (without javascript the browser shows the datalist)
+        if (!$setJS)
+        {
+            $setJS = true;
+            $this->_setJS(FH_FHTML_DIR . 'js/autocomplete.js', true);
+        }
+
+        // the options for the suggestions
         $sList = '';
         foreach ($options as $option)
         {
@@ -1842,7 +1851,7 @@ class FormHandler
             $this->_setJS(FH_FHTML_DIR . 'js/autocomplete.js', true);
         }
 
-        // the javascript fills the datalist while typing: the text up to $after and the options
+        // the javascript suggests the text up to $after followed by the options
         $sValues = (string) json_encode(array_values(array_map('strval', $options)));
         $this->_addDatalist(
             $field,
@@ -1855,7 +1864,8 @@ class FormHandler
     /**
      * FormHandler::_addDatalist()
      *
-     * Put a datalist (the suggestions of the browser) after a text field
+     * Put a datalist after a text field: the suggestions of autocomplete.js (data-fh-autocomplete),
+     * or of the browser without javascript
      *
      * @param string $field the name of the text field
      * @param string $sAttributes more attributes of the datalist
@@ -1869,7 +1879,7 @@ class FormHandler
         $sId = htmlspecialchars($field . '_list', ENT_QUOTES, FH_HTML_ENCODING);
 
         $fld->setExtra($fld->getExtra() . ' list="' . $sId . '"');
-        $fld->setExtraAfter($fld->getExtraAfter() . '<datalist id="' . $sId . '"' . $sAttributes . '>' . $sOptions . '</datalist>');
+        $fld->setExtraAfter($fld->getExtraAfter() . '<datalist id="' . $sId . '" data-fh-autocomplete' . $sAttributes . '>' . $sOptions . '</datalist>');
     }
 
     /**
