@@ -109,9 +109,21 @@ class StyledEditor extends Editor
 callback, invalid date mask, editing a record that does not exist, ...) throws a
 `FormHandlerException` instead of `trigger_error(..., E_USER_ERROR)`.
 
-**Captcha with gregwar/captcha.** `captchaField()` needs the package `gregwar/captcha`
+**Captcha with gregwar/captcha** (4.7). `captchaField()` needs the package `gregwar/captcha`
 (`composer require gregwar/captcha`), FormHandler does not install it for every project.
 The image is part of the form and its code is kept in the PHP session.
+
+**No bundled JavaScript libraries** (4.7). jQuery, overLIB, jscolor, CalendarPopup and the
+file manager are gone; small scripts without a library and the controls of the browser
+replace them (date picker, color input, suggestion list for `setAutoComplete()` and
+`textSelectField()`). The PHP API is unchanged. A project with its own `FH_HELP_MASK` that
+calls `overlib()` has to change it, and `browserField()` is a plain text field now (see
+"Images and files in the editor" below).
+
+**Getters for the fields** (4.7). `$form->getField('name')` returns the field object, and
+the fields have getters for what was only in public properties (`getErrorMessage()`,
+`getOptions()`, `getHourField()`, ...). The public properties are deprecated and become
+protected in 5.0.
 
 **Composer only** (4.3). All classes are loaded by Composer's autoloader, so you can extend
 e.g. `TextArea` in your own fields. Including `class.FormHandler.php` without Composer is
