@@ -14,11 +14,10 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- PHPStan checks on level 6, without a baseline. All classes have PHPDoc types for their
-  properties, parameters and return values. Private members of `FormHandler`, `dbFormHandler`,
-  `DbalAdapter` and `DbalResult` and the private properties of the fields, buttons and
-  `MaskLoader` also have native types; protected and public members keep PHPDoc types only,
-  so existing subclasses which override them still work.
+- PHPStan checks on level 6, without a baseline, now also `ImageConverter`. All classes have
+  PHPDoc types for their properties, parameters and return values, and all private
+  properties and methods also native types; protected and public members keep PHPDoc types
+  only, so existing subclasses which override them still work.
 - `dbFormHandler` calls `getInsertId()` without the table name, as the `DatabaseAdapter`
   interface defines it (the argument was a Yadal leftover and ignored).
 - `captchaField()` uses the package `gregwar/captcha` instead of the bundled Securimage 1.0

@@ -142,7 +142,7 @@ class RadioButton extends Field
      * @access Private
      * @author Teye Heimans
      */
-    private function _getRadioButton($sValue, $sTitle, $bUseMask = false)
+    private function _getRadioButton(mixed $sValue, mixed $sTitle, bool $bUseMask = false): string
     {
 
         static $counter = 1;

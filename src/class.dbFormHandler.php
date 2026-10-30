@@ -1236,7 +1236,7 @@ class dbFormHandler extends FormHandler
      * @author Remco van Arkelen
      * @since 01-03-2010
      */
-    private function deleteJunctionData($tableName, $keyField, $keyValue): mixed
+    private function deleteJunctionData(string $tableName, string $keyField, int|string $keyValue): mixed
     {
         $query =
             "DELETE FROM " . $this->_db->quote($tableName) .
@@ -1257,7 +1257,7 @@ class dbFormHandler extends FormHandler
      * @since 01-03-2010
      */
 
-    private function insertJunctionData($tableName, $keyField, $destinationField, $keyValue): void
+    private function insertJunctionData(string $tableName, string $keyField, string $destinationField, int|string $keyValue): void
     {
         /*@var $field Field*/
         $field = $this->_fields[$keyField][1];
@@ -1575,7 +1575,7 @@ class dbFormHandler extends FormHandler
      * @access private
      * @author Teye Heimans
      */
-    private function _getQuery($table, $data, $sqlFields, $edit, $keys = null): string|false
+    private function _getQuery(?string $table, array $data, array $sqlFields, bool $edit, ?array $keys = null): string|false
     {
         // get the field names from the table
         $fieldNames = $this->_db->getFieldNames($this->_table);

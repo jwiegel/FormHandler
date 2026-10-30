@@ -643,7 +643,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _forceDir($sPath, $iMode)
+    private function _forceDir(string $sPath, int $iMode): bool
     {
         if (strlen($sPath) == 0)
         {
@@ -675,7 +675,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getFilename($bIgnoreRename = false)
+    private function _getFilename(bool $bIgnoreRename = false): ?string
     {
         // easy name to work with
         $sFile = $this->_mValue['name'];
@@ -763,7 +763,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getExtension($sFilename)
+    private function _getExtension(string $sFilename): string|false
     {
         $pos = strrchr($sFilename, '.');
         if ($pos === false)
@@ -783,7 +783,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getMaxUploadSize()
+    private function _getMaxUploadSize(): int
     {
         static $iIniSize = false;
 
@@ -791,7 +791,7 @@ class UploadField extends Field
         {
             $iPost = intval($this->_iniSizeToBytes(ini_get('post_max_size')));
             $iUpl  = intval($this->_iniSizeToBytes(ini_get('upload_max_filesize')));
-            $iIniSize = floor(($iPost < $iUpl) ? $iPost : $iUpl);
+            $iIniSize = ($iPost < $iUpl) ? $iPost : $iUpl;
         }
         return $iIniSize;
     }
@@ -806,7 +806,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _iniSizeToBytes($sIniSize)
+    private function _iniSizeToBytes(string|false $sIniSize): int|false
     {
         $aIniParts = array();
         if (!is_string($sIniSize))

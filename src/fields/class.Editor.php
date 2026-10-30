@@ -146,7 +146,7 @@ class Editor extends TextArea
      * @return HtmlSanitizer
      * @access private
      */
-    private function _getSanitizer()
+    private function _getSanitizer(): HtmlSanitizer
     {
         if ($this->_oSanitizer === null)
         {

@@ -191,7 +191,7 @@ class CheckBox extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getCheckBox($sValue, $sTitle, $bUseMask = false)
+    private function _getCheckBox(mixed $sValue, mixed $sTitle, bool $bUseMask = false): string
     {
         static $iCounter = 1;
 

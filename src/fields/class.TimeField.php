@@ -245,7 +245,7 @@ class TimeField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getNearestMinute(&$minute)
+    private function _getNearestMinute(mixed &$minute): int
     {
         // get the nearest value at the minutes...
         for ($i = 0; $i < $minute; $i += FH_TIMEFIELD_MINUTE_STEPS);
