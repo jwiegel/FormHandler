@@ -206,41 +206,19 @@ class Editor extends TextArea
     /**
      * Editor::setServerPath()
      *
-     * Set the server path used for browsing and uploading images
+     * Not used any more: it linked the file manager of FormHandler for browsing and
+     * uploading images, which is removed since 4.7. A project can add an own file
+     * browser with setConfig(array('filebrowserBrowseUrl' => ...)) or a CKEditor plugin.
      *
      * @param string|false $sPath: The path
      * @return void
      * @access public
+     * @deprecated since 4.7
      * @author Teye Heimans
      */
     public function setServerPath($sPath)
     {
-        // false: no file browser in the editor
-        if ($sPath === false)
-        {
-            unset($this->_oEditor->config['filebrowserBrowseUrl'], $this->_oEditor->config['filebrowserUploadUrl']);
-            return;
-        }
-
-        // get the dir where the script is located in
-        $sSelfPath = $_SERVER['PHP_SELF'];
-        $sSelfPath = substr($sSelfPath, 0, strrpos($sSelfPath, '/'));
-
-        // get the dir where the user want's to upload the dir in
-        $sPath = $this->_getServerPath($sPath, $sSelfPath);
-        // path (URL) to the FCKeditor...
-        $char = substr(FH_FHTML_DIR, 0, 1);
-        $pre  = ($char != '/' && $char != '\\' && strtolower(substr(FH_FHTML_DIR, 0, 4)) != 'http') ? str_replace('//', '/', dirname($_SERVER['PHP_SELF']) . '/') : '';
-
-        $sURL =
-            $pre . FH_FHTML_DIR .
-            'filemanager/browser/default/browser.html?' .
-            'Type=%s&Connector=../../connectors/php/connector.php?ServerPath=' . $sPath;
-
-        $this->_oEditor->config['filebrowserBrowseUrl']  = (sprintf($sURL, 'File', $sPath));
-        $this->_oEditor->config['filebrowserUploadUrl']  = (sprintf($sURL, 'File', $sPath));
     }
-
 
     /**
      * Editor::setSkin()
@@ -256,67 +234,6 @@ class Editor extends TextArea
     {
         // CKEditor 4.22 no longer ships "moono", its successor is "moono-lisa"
         $this->_oEditor->config['skin'] = $sSkin == 'moono' ? 'moono-lisa' : $sSkin;
-    }
-
-    /**
-     * Editor::_getServerPath()
-     *
-     * Get the dir which should be used for browsing...
-     *
-     * @param string $sDir: The dir given by the user
-     * @param string $sServerPath: The dir where the script is located on the server
-     * @return string
-     * @access private
-     * @author Teye Heimans
-     */
-    private function _getServerPath($sDir, $sServerPath)
-    {
-        // remove ending slash at the server path
-        if (substr($sServerPath, -1) == '/')
-        {
-            $sServerPath = substr($sServerPath, 0, -1);
-        }
-        // when no dir is given, just return the path where the script is located
-        if ($sDir == '')
-        {
-            return $sServerPath;
-        }
-
-        // dir starting with a /? Then start at the root...
-        if ($sDir[0] == '/')
-        {
-            return $sDir;
-        }
-        // dir starting with ./? Then relative from the dir where the script is located
-        else if (substr($sDir, 0, 2) == './')
-        {
-            return $sServerPath . '/' . substr($sDir, 2);
-        }
-        // if we are at the root of the server, return the dir..
-        else if ($sServerPath == '/' || $sServerPath == '')
-        {
-            if ($sDir[0] != '.' && $sDir[0] != '/')
-            {
-                $sDir = '/' . $sDir;
-            }
-            return $sDir;
-        }
-        // go a dir lower...
-        else if (substr($sDir, 0, 3) == '../')
-        {
-            $sServerPath = substr($sServerPath, 0, -strlen(strrchr($sServerPath, "/")));
-
-            return $this->_getServerPath(substr($sDir, 3), $sServerPath);
-        }
-        // none of the above, then return the dir!
-        else
-        {
-            if ($sDir[0] == '/')
-            {
-                $sDir = substr($sDir, 1);
-            }
-            return $sServerPath . '/' . $sDir;
-        }
     }
 
     /**

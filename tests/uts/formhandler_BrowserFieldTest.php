@@ -10,11 +10,11 @@ final class formhandler_BrowserFieldTest extends FormhandlerTestCase
 
         $form->browserField("BrowserField", "browserfield", "a/path");
 
-        static::assertFormFlushContains($form, [
-            'BrowserField:<input type="text" name="browserfield" id="browserfield" value="" size="20" /> <input type="button" name="Bladeren" id="Bladeren" value="Bladeren"',
-            'onclick="window.open(',
-            'FHTML/filemanager/browser/default/browser.html?Type=File&naam=browserfield&Connector=../../connectors/php/connector.php?ServerPath=a/path\',\'\',\'modal=yes,width=650,height=400\');" /> error_browserfield'
+        // since 4.7 a text field: the file manager behind the button is removed
+        $html = static::assertFormFlushContains($form, [
+            'BrowserField:<input type="text" name="browserfield" id="browserfield" value="" size="20" />error_browserfield'
         ]);
+        static::assertStringNotContainsString('filemanager', $html);
     }
 
     public function test_viewmode(): void

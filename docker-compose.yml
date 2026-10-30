@@ -27,16 +27,11 @@ services:
       context: .
       dockerfile: docker/web/Dockerfile
     ports:
-      # only reachable from this computer: the whole project, including the
-      # file manager in src/FHTML, is served
+      # only reachable from this computer: the whole project is served
       - "127.0.0.1:${FH_WEB_PORT:-8088}:80"
     volumes:
       - .:/var/www/html
       - vendor:/var/www/html/vendor
-    # the file manager of src/FHTML (examples/browserfield.php) has no login, so it is
-    # off by default; this server is only reachable from this computer
-    environment:
-      FH_FILEMANAGER_ENABLED: "1"
     # SQLite file of the database examples and sessions: empty again after a restart
     tmpfs:
       - /tmp

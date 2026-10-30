@@ -69,9 +69,7 @@ docker compose up -d web
 
 Then open <http://localhost:8088/examples/>. Another port: `FH_WEB_PORT=8090 docker compose up -d web`.
 
-- The server is only reachable from this computer. It serves the whole project, and the
-  file manager in `src/FHTML/filemanager` has no login; it is enabled here with
-  `FH_FILEMANAGER_ENABLED=1` (`docker-compose.yml`) for `examples/browserfield.php`.
+- The server is only reachable from this computer. It serves the whole project.
 - The database examples use an SQLite file in the container's temp folder, which is
   kept in memory (`tmpfs`): `docker compose restart web` starts them with fresh data.
 - `php tests/examples/smoke.php http://host.docker.internal:8088/examples/` (in the `php`

@@ -22,7 +22,6 @@ return array(
         'jsdatetextfield.php' => array('jsDateTextField', '111/jsDateTextField.html'),
         'html5datefield.php'  => array('html5DateField (new in 4.2, not in the manual)', null),
         'timefield.php'       => array('TimeField', '35/TimeField.html'),
-        'browserfield.php'    => array('BrowserField', '97/BrowserField.html'),
         'colorpicker.php'     => array('ColorPicker', '100/ColorPicker.html'),
         'textselectfield.php' => array('TextSelectField', '101/TextSelectField.html'),
         'captchafield.php'    => array('CaptchaField', '103/CaptchaField.html'),

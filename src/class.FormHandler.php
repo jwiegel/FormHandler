@@ -293,16 +293,18 @@ class FormHandler
     /**
      * FormHandler::browserField()
      *
-     * Creates a browserfield on the form
+     * Creates a browserfield on the form: since 4.7 a text field without the button of
+     * the file manager (the file manager is removed)
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param string $path: The path to browse
+     * @param string $path: not used any more (it was the path of the file manager)
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param int $size: The size of the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
      * @return void
      * @access public
+     * @deprecated since 4.7, use textField() (or uploadField())
      * @author Johan Wiegel
      */
     public function browserField(
@@ -835,8 +837,8 @@ class FormHandler
      * @param string $title: The title of the field
      * @param string $name: The name of the field
      * @param string $validator: The validator which should be used to validate the value of the field
-     * @param string $path: Path on the server where we have to upload the files. Only with a path the
-     *                      editor links the file manager, which needs FH_FILEMANAGER_ENABLED=1 (see README)
+     * @param string $path: not used any more (it linked the file manager, removed since 4.7). For own
+     *                      image browsing use $config (filebrowserBrowseUrl) or a CKEditor plugin.
      * @param string $toolbar: The toolbar we have to use
      * @param string $skin: The skin to use
      * @param int $width: The width of the field
@@ -863,7 +865,6 @@ class FormHandler
         $fld = new Editor($this, $name);
 
         if (!empty($validator)) $fld->setValidator($validator);
-        if (!is_null($path))    $fld->setServerPath($path);
         if (!empty($toolbar))   $fld->setToolbar($toolbar);
         if (!empty($skin))      $fld->setSkin($skin);
         if (!empty($width))     $fld->setWidth($width);
