@@ -23,22 +23,22 @@ final class formhandler_TextSelectFieldTest extends FormhandlerTestCase
 
         static::assertEmpty($form->getValue("textselectfield"));
 
-        static::assertFormFlushContains($form, [
-            "<script type=\"text/javascript\">\n" .
-                "function FH_CLOSE_TEXTSELECT( id )\n" .
-                "{\n" .
-                "  setTimeout( 'document.getElementById(\"'+id+'\").style.display=\"none\"', 110 );\n" .
-                "}\n" .
-                "\n" .
-                "function FH_SET_TEXTSELECT( id, waarde )\n" .
-                "{\n" .
-                "  document.getElementById(id).value=waarde;\n" .
-                "  FH_CLOSE_TEXTSELECT( 'FHSpan_'+id );return false;\n" .
-                "}\n" .
-                "\n" .
-                "</script>\n",
+        // the list comes from autocomplete.js; the old functions only for old own masks
+        $html = static::assertFormFlushContains($form, [
+            'FHTML/js/autocomplete.js',
             'Textselectfield:textselectfield--20---textselectfield-Option1textselectfield-Option2textselectfield-Option3error_textselectfield'
         ]);
+        static::assertStringNotContainsString('FH_SET_TEXTSELECT', $html);
+    }
+
+    public function test_escaped(): void
+    {
+        $form = new FormHandler();
+
+        // the options (e.g. from the database) are escaped as HTML
+        $form->textSelectField("Textselectfield", "textselectfield", array("<b>\"x\"</b>"));
+
+        static::assertFormFlushContains($form, ['textselectfield-&lt;b&gt;&quot;x&quot;&lt;/b&gt;error_textselectfield']);
     }
 
     public function test_posted(): void

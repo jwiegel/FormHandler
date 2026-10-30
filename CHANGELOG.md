@@ -48,6 +48,10 @@ and the project follows [Semantic Versioning](https://semver.org/).
   field (in the font of the field, class `fh_autocomplete`; arrow keys, enter, escape and
   the mouse) instead of completing the text while typing. The options are in an HTML5
   `datalist`, escaped as HTML, which the browser shows when javascript is off.
+- `textSelectField()` and `dbTextSelectField()` use the same list: a click shows all
+  options, typing filters them. The default `FH_TEXTSELECT_MASK` and
+  `FH_TEXTSELECT_OPTION_MASK` put the options into a `datalist`; own masks which call
+  `FH_SET_TEXTSELECT()` still get these functions.
 - `linkSelectFields()` loads the options with `fetch()` instead of the old XMLHttpRequest
   wrapper with Internet Explorer fallbacks, and encodes the values it sends.
 
@@ -76,6 +80,8 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- The options of `textSelectField()` and `dbTextSelectField()` were not escaped: a value
+  with HTML (e.g. from the database) was put into the page as HTML.
 - The AJAX validator only checked the first validator of a field (`"IsString|IsDigit"`).
 - `getFileInfo()` and `isUploaded()` rejected subclasses of `UploadField` ("the field is not
   an uploadfield"), they compared the class name.

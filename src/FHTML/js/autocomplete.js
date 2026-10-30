@@ -29,6 +29,8 @@
 			? JSON.parse( list.getAttribute( 'data-fh-values' ) )
 			: Array.prototype.map.call( list.options, function( option ) { return option.value; } );
 		var after = list.getAttribute( 'data-fh-after' );
+		// textSelectField(): a click shows all values, typing filters them
+		var showAll = list.hasAttribute( 'data-fh-show-all' );
 
 		var menu = document.createElement( 'ul' );
 		menu.className = 'fh_autocomplete';
@@ -49,8 +51,14 @@
 		var active = -1;
 
 		// the values for the text: first those which start with it, then those which contain it
-		function find( all )
+		// (everything: all values, whatever is typed)
+		function find( all, everything )
 		{
+			if ( everything )
+			{
+				return values.slice( 0 ).map( function( value ) { return { value: value, mark: 0, length: 0 }; } );
+			}
+
 			var text = input.value;
 			var prefix = '';
 			if ( after !== null )
@@ -84,17 +92,17 @@
 				}
 			} );
 
-			return start.concat( inside ).slice( 0, MAX_ITEMS );
+			return start.concat( inside ).slice( 0, showAll ? values.length : MAX_ITEMS );
 		}
 
-		function open( all )
+		function open( all, everything )
 		{
-			items = find( all );
+			items = find( all || showAll, everything );
 			active = -1;
 			menu.textContent = '';
 
 			// nothing to suggest, or the text is already the only suggestion
-			if ( items.length === 0 || ( items.length === 1 && items[0].value === input.value ) )
+			if ( items.length === 0 || ( !everything && items.length === 1 && items[0].value === input.value ) )
 			{
 				close();
 				return;
@@ -168,6 +176,10 @@
 
 		input.addEventListener( 'input', function() { open( false ); } );
 		input.addEventListener( 'blur', close );
+		if ( showAll )
+		{
+			input.addEventListener( 'click', function() { if ( menu.hidden ) open( true, true ); } );
+		}
 		input.addEventListener( 'keydown', function( event )
 		{
 			if ( menu.hidden )
@@ -175,7 +187,7 @@
 				if ( event.key === 'ArrowDown' )
 				{
 					event.preventDefault();
-					open( true );
+					open( true, showAll );
 				}
 				return;
 			}
