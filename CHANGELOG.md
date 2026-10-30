@@ -39,6 +39,12 @@ and the project follows [Semantic Versioning](https://semver.org/).
   `cal_<field>.setReturnFunction()`, `set<field>Values()` and `LZ()` still work. New forms
   should rather use `html5DateField()`.
 
+### Deprecated
+
+- `browserField()` (`BrowserField`) and `Editor::setServerPath()`: the file manager behind
+  them is removed (see below). `browserField()` is a plain text field now, the `$path`
+  of `editor()` is not used any more.
+
 ### Removed
 
 - The PHP 4 fallbacks for `array_key_exists()` and `array_fill()` in `config.inc.php`.
@@ -47,6 +53,11 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - The bundled jscolor 1.0.9 and the unused images of an older color picker (`FHTML/images/ColorPicker`).
 - The bundled overLIB 4.21 with its Internet Explorer workaround `overlib_hideform.js`.
 - The bundled CalendarPopup (`calendar_popup.js`, `calendar_hideselect.js`).
+- **The file manager `FHTML/filemanager`** (FCKeditor 2, up to 2010). It had no login and was
+  off since 4.5 unless the web server set `FH_FILEMANAGER_ENABLED=1`. `browserField()` has
+  no button any more, and `editor()` with a `$path` no longer shows "Browse server" and
+  "Upload". A project which needs them can link its own file browser behind its login,
+  e.g. with `editor(..., $config)` and `filebrowserBrowseUrl`.
 - `FormHandler::isUnittestmode()` and the unit test mode of `UploadField`. The upload is in
   the overridable methods `UploadField::_isUploadedFile()` and `_moveUploadedFile()`, the
   unit tests replace them and so test the same code as a real upload.
