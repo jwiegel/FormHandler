@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- The texts of most languages showed broken characters on UTF-8 pages (the default
+  `FH_HTML_ENCODING`), e.g. "ung�ltig" in German: 11 language files were saved in old
+  encodings (ISO-8859-1/-2/-9, Windows-1256, GB2312, Big5). All language files are UTF-8
+  now, and FormHandler converts the texts when a page uses another `FH_HTML_ENCODING`.
+- Characters lost by an old conversion are restored in the Czech, Serbian and Chinese
+  language files (they had "?" or replacement characters instead of e.g. "č", "с", "九").
+
 ## [4.6.3] - 2026-10-30
 
 ### Security

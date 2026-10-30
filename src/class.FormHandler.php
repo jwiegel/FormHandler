@@ -1991,6 +1991,19 @@ class FormHandler
                 // load the array from the text file
                 $this->_text = $fh_lang; // @phpstan-ignore-line (Undefined variable: $fh_lang)
 
+                // the language files are UTF-8: convert the texts for pages in another encoding
+                if (strtoupper(str_replace('_', '-', FH_HTML_ENCODING)) !== 'UTF-8' && function_exists('mb_convert_encoding'))
+                {
+                    try
+                    {
+                        $this->_text = mb_convert_encoding($this->_text, FH_HTML_ENCODING, 'UTF-8');
+                    }
+                    catch (ValueError $e)
+                    {
+                        // an encoding mbstring does not know: keep UTF-8
+                    }
+                }
+
                 // save the language
                 $this->_lang = $sLanguage;
             }
