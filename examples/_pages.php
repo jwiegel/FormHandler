@@ -34,6 +34,7 @@ return array(
         'border.php'          => array('BorderStart, AddLine, AddHTML', '47/BorderStart.html'),
         'mask.php'            => array('SetMask, UseTable', '50/SetMask.html'),
         'autocomplete.php'    => array('SetAutoComplete', '52/SetAutoComplete.html'),
+        'linkselect.php'      => array('LinkSelectFields', null),
         'newpage.php'         => array('NewPage', '53/NewPage_%2A.html'),
         'viewmode.php'        => array('EnableViewMode, SetFieldViewMode', '58/EnableViewMode.html'),
         'language.php'        => array('SetLanguage, SetFocus, SetTabIndex', '55/SetLanguage.html'),
