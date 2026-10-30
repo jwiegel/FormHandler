@@ -13,13 +13,26 @@
 
 class AjaxValidator
 {
+    /** @var bool not used any more: the javascript needs no library since 4.7 */
     static $bScript = true;
 
+    /**
+     * @param bool $bScript not used any more (it included jQuery)
+     */
     public function __construct($bScript = true)
     {
         self::$bScript = $bScript;
     }
 
+    /**
+     * Add the javascript which validates the fields with a validator when they lose
+     * the focus (select fields: when they change)
+     *
+     * @param FormHandler $oForm
+     * @param array<int|string, array<int, mixed>> $aFields the fields of the form
+     * @param array<string, array{0: string, 1: mixed}> $aCustomMsg the custom messages of the fields
+     * @return void
+     */
     public function CreateObservers($oForm, $aFields, $aCustomMsg)
     {
         static $bSetJS = false;
@@ -29,80 +42,59 @@ class AjaxValidator
         {
             $bSetJS = true;
 
-            // add the needed javascript
-            // only include library when bScript is treu
-            if (self::$bScript === true)
-            {
-                $oForm->_setJS(FH_FHTML_DIR . "js/jquery-1.4.2.min.js", true);
-            }
-
             $oForm->_setJS(FH_FHTML_DIR . "js/ajax_validator.js", true, false);
 
             // create observers for all fields with a validator
             $sScript = "";
             $sScript2 = "";
-            /*@var $oForm FormHandler*/
 
             foreach ($aFields as $sField => $aField)
             {
-                if (is_object($aField[1]) && method_exists($aField[1], 'getValidator'))
+                // only the validators of the Validator class, not own callbacks
+                if (!is_object($aField[1]) || !method_exists($aField[1], 'getValidator') || !is_string($aField[1]->getValidator()) || $aField[1]->getValidator() == '')
                 {
-                    if (isset($aCustomMsg[$sField][0]) and $aCustomMsg[$sField][0] != '')
-                    {
-                        $sMsg = addslashes($aCustomMsg[$sField][0]);
-                    }
-                    else
-                    {
-                        $sMsg = $oForm->_text(14);
-                    }
+                    continue;
+                }
 
-                    // only when a validator is defined for this field
-                    if ($aField[1]->getValidator() != '')
-                    {
-                        if (is_a($aField[1], 'selectField'))
-                        {
-                            $sEvent = 'change';
-                        }
-                        elseif (is_a($aField[1], 'timeField'))
-                        {
-                            $sField .= "_hour";
-                            $sEvent = 'blur';
-                        }
-                        elseif (is_a($aField[1], 'checkBox'))
-                        {
-                            // no on the fly checking yet
-                            $sEvent = '';
-                        }
-                        elseif (is_a($aField[1], 'radioButton'))
-                        {
-                            // no on the fly checking yet
-                            $sEvent = '';
-                        }
-                        else
-                        {
-                            $sEvent = 'blur';
-                        }
-                        if ($sEvent != '')
-                        {
+                if (isset($aCustomMsg[$sField][0]) and $aCustomMsg[$sField][0] != '')
+                {
+                    $sMsg = $aCustomMsg[$sField][0];
+                }
+                else
+                {
+                    $sMsg = $oForm->_text(14);
+                }
 
-                            $sScript  .= "  jQuery('#" . $sField . "').live( '" . $sEvent . "', function(){FH_VALIDATE( '" . $aField[1]->getValidator() . "', '" . $sField . "', '" . $sField . "', '" . FH_FHTML_DIR . "', '" . FH_INCLUDE_DIR . "','" . $sMsg . "' )});\n";
-                            if ($aField[1]->getValidator() <> 'FH_CHECK_DOMAIN')
-                            {
-                                $sScript2 .= "FH_VALIDATE( '" . $aField[1]->getValidator() . "', '" . $sField . "', '" . $sField . "', '" . FH_FHTML_DIR . "', '" . FH_INCLUDE_DIR . "','" . $sMsg . "' );";
-                            }
-                        }
-                    }
+                if (is_a($aField[1], 'selectField'))
+                {
+                    $sEvent = 'change';
+                }
+                elseif (is_a($aField[1], 'timeField'))
+                {
+                    $sField .= "_hour";
+                    $sEvent = 'blur';
+                }
+                elseif (is_a($aField[1], 'checkBox') || is_a($aField[1], 'radioButton'))
+                {
+                    // no on the fly checking yet
+                    continue;
+                }
+                else
+                {
+                    $sEvent = 'blur';
+                }
+
+                $sArgs = implode(', ', array_map(array($this, '_js'), array($aField[1]->getValidator(), (string) $sField, FH_FHTML_DIR, $sMsg)));
+                $sScript .= "FH_OBSERVE(" . $this->_js($sEvent) . ", " . $sArgs . ");\n";
+                if ($aField[1]->getValidator() <> 'FH_CHECK_DOMAIN')
+                {
+                    $sScript2 .= "FH_CHECK(" . $sArgs . ");\n";
                 }
             }
 
-            $oForm->_setJS('$(function(){' . $sScript . '})', false, true);
-            //na een post ook de AJAX validators aanroepen om de classes te switchen
-            /**
-             * very alpha, we vinden dat het anders moet, maar weten nog niet hoe, nog niet documenteren en/of publiceren
-             * 
-             * @author Johan Wiegel
-             * @since 02-09-2009
-             */
+            $oForm->_setJS($sScript, false, false);
+
+            // after a post the fields are checked at once, to show their state
             if ($oForm->isPosted())
             {
                 $oForm->_setJS($sScript2, false, false);
@@ -110,62 +102,55 @@ class AjaxValidator
         }
     }
 
+    /**
+     * A value as javascript string, safe inside a script tag
+     *
+     * @param string $sValue
+     * @return string
+     */
+    private function _js(string $sValue): string
+    {
+        return (string) json_encode($sValue, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+    }
+
+    /**
+     * Validate a value for ajax_validator.js (src/FHTML/ajax/validate.php)
+     *
+     * @param array<string, mixed> $aRequest the request: validator ("|" between more), value and msg
+     * @param object $oValidator
+     * @return string JSON {"status": "error"|"mandatory"|"ok", "msg": message}, or "" for a wrong request
+     */
     public function Validate($aRequest, $oValidator)
     {
-        // determin if there is more than one validator
-        if ($aRequest['validator'] != '' and $aRequest['msg'] != '' and isset($aRequest['value']))
+        foreach (array('validator', 'msg', 'value') as $sKey)
         {
-            if (strpos($aRequest['validator'], '|') > 0)
+            if (!isset($aRequest[$sKey]) || !is_string($aRequest[$sKey]))
             {
-                $aValidators = explode('|', $aRequest['validator']);
-            }
-            else
-            {
-                $aValidators = array($aRequest['validator']);
-            }
-
-            // loop through validators
-            foreach ($aValidators as $iKey => $sValidator)
-            {
-                if (is_object($oValidator) && method_exists($oValidator, $sValidator) and $sValidator != 'FH_CAPTCHA')  // CAPTCHA can not be validated by AJAX
-                {
-                    if ($oValidator->$sValidator($aRequest['value']) == false)
-                    {
-                        return "<script type=\"text/javascript\">
-                        <!--//<![CDATA[	
-                        jQuery('#" . $aRequest['msgbox'] . "').addClass( 'fh_error' );
-                        jQuery('#" . $aRequest['msgbox'] . "').removeClass( 'fh_ok' );												
-                        jQuery('#" . $aRequest['msgbox'] . "').removeClass( 'fh_mandatory' );												
-                        jQuery('#" . $aRequest['msgbox'] . "').prev('input').addClass( 'error' );
-                        //]]>-->
-                        </script>" . stripslashes($aRequest['msg']);
-                    }
-                    elseif (empty($aRequest['value']))
-                    {
-                        return "<script type=\"text/javascript\">
-                        <!--//<![CDATA[	
-                        jQuery('#" . $aRequest['msgbox'] . "').prev('input').removeClass( 'error' );
-                        jQuery('#" . $aRequest['msgbox'] . "').removeClass( 'fh_error' );
-                        jQuery('#" . $aRequest['msgbox'] . "').removeClass( 'fh_ok' );
-                        jQuery('#" . $aRequest['msgbox'] . "').addClass( 'fh_mandatory' );	
-                        //]]>-->											
-                        </script>";
-                    }
-                    else
-                    {
-                        return "
-                        <script type=\"text/javascript\">	
-                        <!--//<![CDATA[	
-                        jQuery('#" . $aRequest['msgbox'] . "').html('&nbsp;');
-                        jQuery('#" . $aRequest['msgbox'] . "').removeClass( 'fh_mandatory' );	
-                        jQuery('#" . $aRequest['msgbox'] . "').removeClass( 'fh_error' );
-                        jQuery('#" . $aRequest['msgbox'] . "').addClass( 'fh_ok' );		
-                        jQuery('#" . $aRequest['msgbox'] . "').prev('input').removeClass( 'error' );
-                        //]]>-->
-                        </script>";
-                    }
-                }
+                return '';
             }
         }
+
+        $bChecked = false;
+        foreach (explode('|', $aRequest['validator']) as $sValidator)
+        {
+            // CAPTCHA can not be validated by AJAX
+            if ($sValidator == '' || $sValidator == 'FH_CAPTCHA' || !method_exists($oValidator, $sValidator))
+            {
+                continue;
+            }
+
+            $bChecked = true;
+            if ($oValidator->$sValidator($aRequest['value']) == false)
+            {
+                return (string) json_encode(array('status' => 'error', 'msg' => $aRequest['msg']));
+            }
+        }
+
+        if (!$bChecked)
+        {
+            return '';
+        }
+
+        return (string) json_encode(array('status' => $aRequest['value'] === '' ? 'mandatory' : 'ok', 'msg' => ''));
     }
 }

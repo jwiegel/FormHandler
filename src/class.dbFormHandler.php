@@ -17,20 +17,32 @@
  */
 class dbFormHandler extends FormHandler
 {
-    private $_onSaved;      // string: the callback function when the form is saved
-    protected $_sql;        // array: contains the names of the added values which are sql functions
-    public $_dontSave;      // array: dont save these fields
-    protected $_db;         // object: contains the database object if the option is used
-    protected $_id;         // array: the id(s) which we are editing
-    public $_dbData;        // array: the database data
-    protected $_table;      // string: the table name where we should save the data in
-    private $_editName;     // name of the primary key to edit
+    /** @var string|array<int, mixed>|null the callback function when the form is saved */
+    private string|array|null $_onSaved = null;
+    /** @var array<int, string> contains the names of the added values which are sql functions */
+    protected $_sql;
+    /** @var array<int, string> dont save these fields */
+    public $_dontSave;
+    /** @var DatabaseAdapter|null contains the database object if the option is used */
+    protected $_db;
+    /** @var array<int, mixed> the id(s) which we are editing */
+    protected $_id;
+    /** @var array<string, mixed> the database data */
+    public $_dbData;
+    /** @var string|null the table name where we should save the data in */
+    protected $_table;
+    /** name of the primary key to edit (set by setEditName() in the constructor) */
+    private string $_editName = '';
 
     // public
-    public $insert;            // boolean: if the form is an insert-form
-    public $edit;              // boolean: if the form is an edit-form
-    private $dieOnQuery;        // boolean: debugging option... show query which is going to be executed
+    /** @var bool if the form is an insert-form */
+    public $insert;
+    /** @var bool if the form is an edit-form */
+    public $edit;
+    /** debugging option... show query which is going to be executed */
+    private bool $dieOnQuery = false;
 
+    /** @var array<string, mixed> */
     protected $_tableConfig = array();
 
     /**
@@ -62,7 +74,7 @@ class dbFormHandler extends FormHandler
      * Initialize the editName
      *
      */
-    private function initFHEditName()
+    private function initFHEditName(): void
     {
         // initialisation
         $this->insert = !isset($_GET[$this->_editName]);
@@ -83,6 +95,7 @@ class dbFormHandler extends FormHandler
      * Set the id which we are watching in the URL of the form is an edit form
      *
      * @param string $sEditName
+     * @return void
      * 
      * @author Remco van Arkelen & Johan Wiegel
      * @since 01-03-2010
@@ -266,7 +279,7 @@ class dbFormHandler extends FormHandler
      * @param boolean $multiple: Should it be possible to select multiple options ? (Default: false)
      * @param int $size: The size of the field (how many options are displayed)
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
-     * @param array $mergeArray: Default value(s) for the field
+     * @param array<int|string, mixed> $mergeArray: Default value(s) for the field
      * @return void
      * @access public
      * @author Teye Heimans
@@ -325,6 +338,7 @@ class dbFormHandler extends FormHandler
      * @param string $name: The name of the field
      * @param string $table: The table where the records are retrieved from
      * @param mixed $fields: String or array with the field(s) which are retrieved from the table and put into the select field
+     * @param string $extraSQL: Extra SQL
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param string $onTitle: The title used above the ON section of the field
      * @param string $offTitle: The title used above the OFF section of the field
@@ -651,6 +665,7 @@ class dbFormHandler extends FormHandler
      *
      * Connect to the database
      *
+     * @param string|null $host: the host of the database server
      * @param string $username: the username used to login
      * @param string $password: the password used to login
      * @return void
@@ -742,7 +757,7 @@ class dbFormHandler extends FormHandler
      *
      * Set the function  which has to be called when the form data is saved in the database
      *
-     * @param string|array $callback: The name of the function
+     * @param string|array<int, mixed> $callback: The name of the function
      * @return void
      * @access public
      * @author Teye Heimans
@@ -991,7 +1006,7 @@ class dbFormHandler extends FormHandler
      * @access private
      * @author Teye Heimans
      */
-    private function _checkUniqueFields()
+    private function _checkUniqueFields(): bool
     {
         // only check for unique fields if the rest of the field is correct and
         // the database option is used...
@@ -1166,7 +1181,7 @@ class dbFormHandler extends FormHandler
                                         );
 
                                     // set the error message
-                                    $this->_fields[$fieldInForm][1]->_sError = $error;
+                                    $this->_fields[$fieldInForm][1]->setError($error);
                                 }
                                 /* new since 21 aug 2006*/
                                 // no field in the form (propably added with addValue)
@@ -1221,7 +1236,7 @@ class dbFormHandler extends FormHandler
      * @author Remco van Arkelen
      * @since 01-03-2010
      */
-    private function deleteJunctionData($tableName, $keyField, $keyValue)
+    private function deleteJunctionData(string $tableName, string $keyField, int|string $keyValue): mixed
     {
         $query =
             "DELETE FROM " . $this->_db->quote($tableName) .
@@ -1236,12 +1251,13 @@ class dbFormHandler extends FormHandler
      * @param string $keyField
      * @param string $destinationField
      * @param string $keyValue
+     * @return void
      * 
      * @author Remco van Arkelen
      * @since 01-03-2010
      */
 
-    private function insertJunctionData($tableName, $keyField, $destinationField, $keyValue)
+    private function insertJunctionData(string $tableName, string $keyField, string $destinationField, int|string $keyValue): void
     {
         /*@var $field Field*/
         $field = $this->_fields[$keyField][1];
@@ -1348,7 +1364,7 @@ class dbFormHandler extends FormHandler
      *
      * Save the data into the database
      *
-     * @param array $data: associative array with the fields => values which should be saved
+     * @param array<string, mixed> $data: associative array with the fields => values which should be saved
      * @return int the id which was used to save the record
      * @access private
      * @author Teye Heimans
@@ -1453,7 +1469,7 @@ class dbFormHandler extends FormHandler
 
         // for debugging.. die when we got the query
         //$this->dieOnQuery = true;
-        if (isset($this->dieOnQuery) && $this->dieOnQuery)
+        if ($this->dieOnQuery)
         {
             echo "<pre>";
             echo $query;
@@ -1493,7 +1509,7 @@ class dbFormHandler extends FormHandler
             else
             {
                 // get the inserted id
-                $id = $this->_db->getInsertId($this->_table);
+                $id = $this->_db->getInsertId();
 
                 // got an id ?
                 if ($id)
@@ -1551,15 +1567,15 @@ class dbFormHandler extends FormHandler
      * Generate a query from the given data and return it
      *
      * @param string $table: The table name
-     * @param array $data: array of field => value  which should be saved
-     * @param array $sqlFields: array of field which value is an SQL function (so it should not be quoted)
+     * @param array<string, mixed> $data: array of field => value  which should be saved
+     * @param array<int, string> $sqlFields: array of field which value is an SQL function (so it should not be quoted)
      * @param boolean $edit: do we have to generate an edit or insert query
-     * @param array $keys: the primary key values
+     * @param array<int, mixed>|null $keys: the primary key values
      * @return string|false the query
      * @access private
      * @author Teye Heimans
      */
-    private function _getQuery($table, $data, $sqlFields, $edit, $keys = null)
+    private function _getQuery(?string $table, array $data, array $sqlFields, bool $edit, ?array $keys = null): string|false
     {
         // get the field names from the table
         $fieldNames = $this->_db->getFieldNames($this->_table);
@@ -1669,13 +1685,13 @@ class dbFormHandler extends FormHandler
      * Get the where clause for a query
      *
      * @param string $operator The operator used for the primary key's and their values
-     * @param array $extra: extra where clause arguments
+     * @param array<string, mixed> $extra: extra where clause arguments
      * @param string $extraOperator: operator used for the extra arguments
      * @return string
      * @access public
      * @author Teye Heimans
      */
-    private function _getWhereClause($operator = '=', $extra = array(), $extraOperator = '=')
+    private function _getWhereClause(string $operator = '=', array $extra = array(), string $extraOperator = '='): string
     {
         // get the primary key fields from the table
         $keys = $this->_db->getPrKeys($this->_table);

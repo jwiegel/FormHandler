@@ -80,39 +80,70 @@ require_once(FH_INCLUDE_DIR . 'includes/error.inc.php');
 class FormHandler
 {
     // protected !!
-    protected $_fields;           // array: contains all the fields
-    protected $_posted;           // boolean: if the form is posted or not
-    protected $_name;             // string: the name of the form
-    protected $_action;           // string: the action of the form
-    protected $_displayErrors;    // boolean: if we have to display the errors in the form
-    protected $_mask;             // string: the mask which should be used
-    protected $_upload;           // array: contains the names of the uploadfields
-    protected $_date;             // array: contains the names of the datefields
-    protected $_onCorrect;        // string: the callback function when the form is correct
-    protected $_add;              // array: contains the data which was added by the user
-    protected $_focus;            // string: the field which should get the focus
-    protected $_convert;          // array: fields which should be converted (eg. resizeimage or mergeimage)
-    public $_buffer;              // array: buffer of set values (used when the field does not exists yet)
-    protected $_text;             // array: the language array we are using to display the messages etc
-    protected $_lang;             // string: the language used
-    protected $_setTable;         // boolean: set a html table arround the fields or has the user done that in the mask ?
-    protected $_extra;            // string: extra tag information for the <form> tag (like CSS or javascript)
-    protected $_pageCounter;      // int: how many pages has this form
-    protected $_curPage;          // int: current page
-    protected $_mail;             // array: contains the mailing data
-    protected $_tabindexes;       // array: tab indexes of the fields...
-    protected $_customMsg;        // array: custom messages of the fields...
-    protected $_js;               // array: contains all the needed javascript for the form
-    protected $_help;             // array: contains the help text for the fields
-    protected $_helpIcon;         // string: the path to the help image
-    protected $_cache;            // array: save the values of the field in this array after the flush is called (then the objects are deleted!)
-    protected $_viewMode;         // boolean: is view mode enabled or not
-    protected $_tableSettings;    // array: array with all table settings
-    protected $_ajaxValidator;    // boolean: if Ajax validation must be used or not.
-    protected $_ajaxValidatorScript;    // boolean: if Ajax validation must include library or not.
-    protected $_csrfToken = null;        // string|null: the CSRF token of the session, null when the protection is off
-    protected $_csrfFailed = false;      // boolean: the posted CSRF token was wrong
-    private $_unittestmode = false; // boolean: only for unittesting (can only be set by reflection of uniitest)
+    /** @var array<int|string, array<int, mixed>> contains all the fields */
+    protected $_fields;
+    /** @var bool if the form is posted or not */
+    protected $_posted;
+    /** @var string the name of the form */
+    protected $_name;
+    /** @var string the action of the form */
+    protected $_action;
+    /** @var bool if we have to display the errors in the form */
+    protected $_displayErrors;
+    /** @var string|null the mask which should be used */
+    protected $_mask;
+    /** @var array<int, string> contains the names of the uploadfields */
+    protected $_upload;
+    /** @var array<int, string> contains the names of the datefields */
+    protected $_date;
+    /** @var string|array<int, mixed>|null the callback function when the form is correct */
+    protected $_onCorrect;
+    /** @var array<string, mixed> contains the data which was added by the user */
+    protected $_add;
+    /** @var string|bool|null the field which should get the focus */
+    protected $_focus;
+    /** @var array<string, array<string, array<int, array<int, mixed>>>> fields which should be converted (eg. resizeimage or mergeimage) */
+    protected $_convert;
+    /** @var array<string, array{0: bool, 1: mixed}> buffer of set values (used when the field does not exists yet) */
+    public $_buffer;
+    /** @var array<int, string>|null the language array we are using to display the messages etc */
+    protected $_text;
+    /** @var string the language used */
+    protected $_lang;
+    /** @var bool set a html table arround the fields or has the user done that in the mask ? */
+    protected $_setTable;
+    /** @var string|null extra tag information for the <form> tag (like CSS or javascript) */
+    protected $_extra;
+    /** @var int how many pages has this form */
+    protected $_pageCounter;
+    /** @var int|string current page */
+    protected $_curPage;
+    /** @var array<mixed> contains the mailing data */
+    protected $_mail;
+    /** @var array<int, string> tab indexes of the fields... */
+    protected $_tabindexes;
+    /** @var array<string, array{0: string, 1: mixed}> custom messages of the fields... */
+    protected $_customMsg;
+    /** @var array<int, array<string, array<int, string>>> contains all the needed javascript for the form */
+    protected $_js;
+    /** @var array<string, array{0: string, 1: string}> contains the help text for the fields */
+    protected $_help;
+    /** @var string the path to the help image */
+    protected $_helpIcon;
+    /** @var array<string, mixed> save the values of the field in this array after the flush is called (then the objects are deleted!) */
+    protected $_cache;
+    /** @var bool is view mode enabled or not */
+    protected $_viewMode;
+    /** @var array<string, mixed> array with all table settings */
+    protected $_tableSettings;
+    /** @var bool if Ajax validation must be used or not. */
+    protected $_ajaxValidator;
+    /** @var bool if Ajax validation must include library or not. */
+    protected $_ajaxValidatorScript;
+    /** @var string|null the CSRF token of the session, null when the protection is off */
+    protected $_csrfToken = null;
+    /** @var bool the posted CSRF token was wrong */
+    protected $_csrfFailed = false;
 
     /**
      * FormHandler::FormHandler()
@@ -246,16 +277,6 @@ class FormHandler
     }
 
     /**
-     * Getter
-     *
-     * @return boolean
-     */
-    public function isUnittestmode(): bool
-    {
-        return $this->_unittestmode;
-    }
-
-    /**
      * Get Name Form
      *
      * @return string
@@ -272,16 +293,18 @@ class FormHandler
     /**
      * FormHandler::browserField()
      *
-     * Creates a browserfield on the form
+     * Creates a browserfield on the form: since 4.7 a text field without the button of
+     * the file manager (the file manager is removed)
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param string $path: The path to browse
+     * @param string $path: not used any more (it was the path of the file manager)
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param int $size: The size of the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
      * @return void
      * @access public
+     * @deprecated since 4.7, use textField() (or uploadField())
      * @author Johan Wiegel
      */
     public function browserField(
@@ -341,7 +364,10 @@ class FormHandler
     /**
      * FormHandler::captchaField()
      *
-     * Creates a captchafield on the form using Securimage - A PHP class for creating and managing form CAPTCHA images
+     * Creates a captchafield on the form: an image with a code (made by the package
+     * gregwar/captcha, which the project has to require) and a field to enter it.
+     * The image is part of the form (a data URI), its code is kept in the PHP session.
+     * Every request gets a new image, so a code can only be used once.
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
@@ -349,6 +375,7 @@ class FormHandler
      * @param int $maxlength: The allowed max input of the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
      * @return void
+     * @throws FormHandlerException when gregwar/captcha is not installed
      * @access public
      * @author Johan Wiegel
      * @since 27-11-2007
@@ -361,10 +388,33 @@ class FormHandler
         $extra     = null
     )
     {
+        if (!class_exists(\Gregwar\Captcha\CaptchaBuilder::class))
+        {
+            throw new FormHandlerException(
+                'captchaField() needs the package gregwar/captcha: composer require gregwar/captcha'
+            );
+        }
+
         static $bCaptcha = true;
         if ($bCaptcha)
         {
             $bCaptcha = false;
+
+            if (!$this->_startSession())
+            {
+                trigger_error(
+                    'FormHandler: captchaField() needs a PHP session. Start the session before any output.',
+                    E_USER_WARNING
+                );
+            }
+
+            // the code of the image which was shown with the posted form (checked by
+            // Validator::FH_CAPTCHA), then a new image: a code works only once
+            $_SESSION['FH_CAPTCHA_POSTED'] = $this->isPosted() && isset($_SESSION['FH_CAPTCHA']) ? $_SESSION['FH_CAPTCHA'] : null;
+
+            $oCaptcha = new \Gregwar\Captcha\CaptchaBuilder(null, new \Gregwar\Captcha\PhraseBuilder((int) FH_CAPTCHA_LENGTH));
+            $oCaptcha->build((int) FH_CAPTCHA_WIDTH, (int) round(FH_CAPTCHA_WIDTH * 4 / 15));
+            $_SESSION['FH_CAPTCHA'] = $oCaptcha->getPhrase();
 
             // create the field
             $fld = new TextField($this, $name);
@@ -376,7 +426,7 @@ class FormHandler
             if (!empty($maxlength)) $fld->setMaxlength($maxlength);
             if (!empty($extra))     $fld->setExtra($extra);
 
-            $this->ImageButton(FH_FHTML_DIR . 'securimage/securimage_show.php?sid=' . md5(uniqid((string) time())), null, 'onclick="return false;" style="cursor:default;"');
+            $this->ImageButton($oCaptcha->inline(), null, 'onclick="return false;" style="cursor:default;"');
 
             // register the field
             $this->_registerField($name, $fld, $title);
@@ -401,7 +451,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $aOptions : the options for the select part
+     * @param array<int|string, mixed> $aOptions : the options for the select part
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param int $size: The size of the field
      * @param int $maxlength: The allowed max input of the field
@@ -544,7 +594,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $options: The options used for the field
+     * @param array<int|string, mixed> $options: The options used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param boolean $useArrayKeyAsValue: If the array key's are the values for the options in the field
      * @param boolean $multiple: Should it be possible to select multiple options ? (Default: false)
@@ -606,7 +656,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array|string $value: The option(s) used for the field
+     * @param array<int|string, mixed>|string|int $value: The option(s) used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param boolean $useArrayKeyAsValue: If the array key's are the values for the options in the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
@@ -644,7 +694,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $options: The options used for the field
+     * @param array<int|string, mixed> $options: The options used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param boolean $useArrayKeyAsValue: If the array key's are the values for the options in the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
@@ -692,7 +742,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $config: The configuration used for the field
+     * @param array<string, mixed> $config: The configuration used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
      * @param boolean $alertOverwrite: Do we have to alert the user when he/she is going to overwrite a file?
@@ -730,7 +780,7 @@ class FormHandler
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
-     * @param array $options: The options used for the field
+     * @param array<int|string, mixed> $options: The options used for the field
      * @param string $validator: The validator which should be used to validate the value of the field
      * @param string $onTitle: The title used above the ON section of the field
      * @param string $offTitle: The title used above the OFF section of the field
@@ -787,13 +837,13 @@ class FormHandler
      * @param string $title: The title of the field
      * @param string $name: The name of the field
      * @param string $validator: The validator which should be used to validate the value of the field
-     * @param string $path: Path on the server where we have to upload the files. Only with a path the
-     *                      editor links the file manager, which needs FH_FILEMANAGER_ENABLED=1 (see README)
+     * @param string $path: not used any more (it linked the file manager, removed since 4.7). For own
+     *                      image browsing use $config (filebrowserBrowseUrl) or a CKEditor plugin.
      * @param string $toolbar: The toolbar we have to use
      * @param string $skin: The skin to use
      * @param int $width: The width of the field
      * @param int $height: The height of the field
-     * @param array $config additional config
+     * @param array<string, mixed>|null $config additional config
      * @return void
      * @access public
      * @author Teye Heimans
@@ -815,7 +865,6 @@ class FormHandler
         $fld = new Editor($this, $name);
 
         if (!empty($validator)) $fld->setValidator($validator);
-        if (!is_null($path))    $fld->setServerPath($path);
         if (!empty($toolbar))   $fld->setToolbar($toolbar);
         if (!empty($skin))      $fld->setSkin($skin);
         if (!empty($width))     $fld->setWidth($width);
@@ -874,7 +923,8 @@ class FormHandler
     /**
      * FormHandler::jsDateField()
      *
-     * Create a dateField with a jscalendar popup on the form
+     * Create a dateField with a calendar (the date picker of the browser) on the form.
+     * New forms should rather use html5DateField(): one date input, the value is yyyy-mm-dd.
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
@@ -920,6 +970,7 @@ class FormHandler
      * @param string $title: The title of the field
      * @param string $name: The name of the field
      * @param string $validator: The validator which should be used to validate the value of the field
+     * @param boolean|null $required: Is the field required
      * @param int $format: 12 or 24. Which should we use?
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
      * @return void
@@ -980,7 +1031,7 @@ class FormHandler
         if (!empty($extra))     $fld->setExtra($extra);
 
         // register the field
-        $this->_registerField($name, $fld, $title . $fld->sTitleAdd);
+        $this->_registerField($name, $fld, $title);
     }
 
     /**
@@ -1031,11 +1082,13 @@ class FormHandler
     /**
      * FormHandler::jsdateTextField()
      *
-     * Create a dateTextField on the form
+     * Create a dateTextField with a calendar (the date picker of the browser) on the form.
+     * New forms should rather use html5DateField().
      * Validator added by Johan Wiegel
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
+     * @param string|null $validator: The validator which should be used to validate the value of the field
      * @param string $mask: How do we have to display the fields? These can be used: d, m and y. (Only for DB-Field with Type 'Date')
      * @param bool $bParseOtherPresentations: try to parse other presentations of dateformat
      * @param boolean $bIncludeJS: Should we include the js file (only needed once on a page)
@@ -1497,23 +1550,17 @@ class FormHandler
             $setJS = true;
         }
 
-        // make sure that the overlib js file is included
+        // make sure that the javascript is included
         if (!$setJS)
         {
             $setJS = true;
-            $this->_setJS(FH_FHTML_DIR . 'overlib/overlib.js', true);
-            $this->_setJS(FH_FHTML_DIR . 'overlib/overlib_hideform.js', true);
+            $this->_setJS(FH_FHTML_DIR . 'js/helptext.js', true);
         }
 
-        // escape the values from dangerous characters
-        $helpTitle = is_null($helpTitle) ? "%title% - " . $this->_text(41) : htmlentities($helpTitle, encoding: FH_HTML_ENCODING);
-        $helpTitle = preg_replace("/\r?\n/", "\\n", addslashes($helpTitle));
-        $helpText  = preg_replace("/\r?\n/", "\\n", addslashes($helpText));
-
-        // set the help text
+        // the help text is HTML, the title text; both are escaped when the form is shown
         $this->_help[$field] = array(
-            htmlentities($helpText, encoding: FH_HTML_ENCODING),
-            $helpTitle
+            (string) $helpText,
+            is_null($helpTitle) ? "%title% - " . $this->_text(41) : (string) $helpTitle
         );
     }
 
@@ -1701,6 +1748,7 @@ class FormHandler
      *
      * @param string $field: The field to set the message for
      * @param string $message: The message to use when the fields value is invalid
+     * @param boolean $useStyle: Use the default error mask around the message
      * @return void
      * @access public
      * @author Teye Heimans
@@ -1716,7 +1764,7 @@ class FormHandler
      * Set a list of items for auto complete
      *
      * @param string $field: The field which should be auto complete
-     * @param array $options: The list of options for the uto complete
+     * @param array<int|string, string> $options: The list of options for the uto complete
      * @return void
      * @access public
      * @author Teye Heimans
@@ -1744,25 +1792,20 @@ class FormHandler
             return;
         }
 
-        // add the javascript file if not done yet
+        // add the javascript file if not done yet (without javascript the browser shows the datalist)
         if (!$setJS)
         {
             $setJS = true;
             $this->_setJS(FH_FHTML_DIR . 'js/autocomplete.js', true);
         }
 
-        // create the javascript array
-        $js = $field . '_values = [';
+        // the options for the suggestions
+        $sList = '';
         foreach ($options as $option)
         {
-            $js .= '"' . htmlentities($option, encoding: FH_HTML_ENCODING) . '", ';
+            $sList .= '<option value="' . htmlspecialchars((string) $option, ENT_QUOTES, FH_HTML_ENCODING) . '"></option>';
         }
-        $this->_setJS(substr($js, 0, -2) . "];\n");
-
-        // add the javascript to the fields "extra" argument
-        $tmpExtra = $this->_fields[$field][1]->getExtra();
-        $tmpExtra .= " onkeypress='return FH_autocomplete(this, event, " . $field . "_values);' ";
-        $this->_fields[$field][1]->setExtra($tmpExtra);
+        $this->_addDatalist($field, '', $sList);
     }
 
     /**
@@ -1772,7 +1815,7 @@ class FormHandler
      *
      * @param string $field: The field which should be auto complete
      * @param string $after: The character after wicht auto completion will start
-     * @param array $options: The list of options for the uto complete
+     * @param array<int|string, string> $options: The list of options for the uto complete
      * @return void
      * @access public
      * @author Rob Geerts
@@ -1808,20 +1851,36 @@ class FormHandler
             $this->_setJS(FH_FHTML_DIR . 'js/autocomplete.js', true);
         }
 
-        // create the javascript array
-        $js = $field . '_values = [';
-        foreach ($options as $option)
-        {
-            $js .= '"' . htmlentities($option, encoding: FH_HTML_ENCODING) . '", ';
-        }
-        $this->_setJS(substr($js, 0, -2) . "];\n");
-
-        // add the javascript to the fields "extra" argument
-        $tmpExtra = $this->_fields[$field][1]->getExtra();
-        $tmpExtra .= " onkeypress='return autocompleteafter(this, event,\"" . $after . "\", " . $field . "_values);' ";
-        $this->_fields[$field][1]->setExtra($tmpExtra);
+        // the javascript suggests the text up to $after followed by the options
+        $sValues = (string) json_encode(array_values(array_map('strval', $options)));
+        $this->_addDatalist(
+            $field,
+            ' data-fh-after="' . htmlspecialchars((string) $after, ENT_QUOTES, FH_HTML_ENCODING) . '"' .
+                ' data-fh-values="' . htmlspecialchars($sValues, ENT_QUOTES, FH_HTML_ENCODING) . '"',
+            ''
+        );
     }
-    /***/
+
+    /**
+     * FormHandler::_addDatalist()
+     *
+     * Put a datalist after a text field: the suggestions of autocomplete.js (data-fh-autocomplete),
+     * or of the browser without javascript
+     *
+     * @param string $field the name of the text field
+     * @param string $sAttributes more attributes of the datalist
+     * @param string $sOptions the option tags
+     * @return void
+     * @access private
+     */
+    private function _addDatalist(string $field, string $sAttributes, string $sOptions): void
+    {
+        $fld = $this->_fields[$field][1];
+        $sId = htmlspecialchars($field . '_list', ENT_QUOTES, FH_HTML_ENCODING);
+
+        $fld->setExtra($fld->getExtra() . ' list="' . $sId . '"');
+        $fld->setExtraAfter($fld->getExtraAfter() . '<datalist id="' . $sId . '" data-fh-autocomplete' . $sAttributes . '>' . $sOptions . '</datalist>');
+    }
 
     /**
      * FormHandler::newPage()
@@ -1991,6 +2050,19 @@ class FormHandler
                 // load the array from the text file
                 $this->_text = $fh_lang; // @phpstan-ignore-line (Undefined variable: $fh_lang)
 
+                // the language files are UTF-8: convert the texts for pages in another encoding
+                if (strtoupper(str_replace('_', '-', FH_HTML_ENCODING)) !== 'UTF-8' && function_exists('mb_convert_encoding'))
+                {
+                    try
+                    {
+                        $this->_text = mb_convert_encoding($this->_text, FH_HTML_ENCODING, 'UTF-8');
+                    }
+                    catch (ValueError $e)
+                    {
+                        // an encoding mbstring does not know: keep UTF-8
+                    }
+                }
+
                 // save the language
                 $this->_lang = $sLanguage;
             }
@@ -2011,7 +2083,7 @@ class FormHandler
      * Get the errors occoured in the form
      *
      * @param boolean $display: If we still have to display the errors in the form (default this is disabled)
-     * @return array of errors or an empty array if none occoured
+     * @return array<string, string> of errors or an empty array if none occoured
      * @access public
      * @author Teye Heimans
      */
@@ -2135,7 +2207,7 @@ class FormHandler
      * FormHandler::enableAjaxValidator
      *
      * @param boolean $mode: The new state of the AjaxValidator
-     * @param boolean $bScript: Should the library (jQuery) be included by FH
+     * @param boolean $bScript: not used any more (it included jQuery, the javascript needs no library since 4.7)
      * @return void
      * 
      * @since 03-12-2008
@@ -2290,7 +2362,7 @@ class FormHandler
      * Return the value of a datefield as an array: array(y,m,d)
      *
      * @param string $datefield: return the value of the datefield as an array
-     * @return array|false
+     * @return array<int, mixed>|false
      * @access public
      * @author Teye Heimans
      */
@@ -2427,7 +2499,7 @@ class FormHandler
      *
      * Set the function which has to be called when the form is correct
      *
-     * @param string|array $callback: The name of the function
+     * @param string|array<int, mixed> $callback: The name of the function
      * @return void
      * @access public
      * @author Teye Heimans
@@ -2504,7 +2576,7 @@ class FormHandler
      * Get the file info af an uploaded file
      *
      * @param string $uploadfield: the name of the uploadfield
-     * @return array file info
+     * @return array<string, mixed> file info
      * @access public
      * @author Teye Heimans
      */
@@ -2515,7 +2587,7 @@ class FormHandler
         {
             // is it an uploadfield ?
             $obj = &$this->_fields[$uploadfield][1];
-            if (strtolower(get_class($obj)) == 'uploadfield')
+            if ($obj instanceof UploadField)
             {
                 // check if there is an file uploaded
                 if ($obj->isUploaded())
@@ -2563,7 +2635,7 @@ class FormHandler
         {
             // is it an uploadfield ?
             $obj = &$this->_fields[$uploadfield][1];
-            if (strtolower(get_class($obj)) == 'uploadfield')
+            if ($obj instanceof UploadField)
             {
                 // check if there is an file uploaded
                 return $obj->isUploaded();
@@ -2695,7 +2767,7 @@ class FormHandler
                     // is this argument a field? Then load the "db" value
                     if ($this->fieldExists($item))
                     {
-                        $extra .= '&' . $item . '="+document.forms["' . $this->getFormName() . '"].elements["' . $item . '"].value+"';
+                        $extra .= '&' . $item . '="+encodeURIComponent(document.forms["' . $this->getFormName() . '"].elements["' . $item . '"].value)+"';
                     }
                     // just load the extra argument, it's a js string
                     else
@@ -2748,7 +2820,7 @@ class FormHandler
 
             // create the javascript for dynamic loading..
             $func  = $i < (func_num_args() - 2) ? 'attach' . $fld2 : 'null';
-            $param = isset($this->edit) && $this->edit ? '&value=' . $values[count($values) - 1] : '';
+            $param = isset($this->edit) && $this->edit && is_scalar($values[count($values) - 1]) ? '&value=' . rawurlencode((string) $values[count($values) - 1]) : '';
             $param .= $extra;
 
             $js .=
@@ -2757,12 +2829,12 @@ class FormHandler
                 '    load' . $fld2 . '( aArgs, sValue );' . "\n" .
                 '}' . "\n\n" .
                 'function load' . $fld2 . '( aArgs, sValue ) {' . "\n" .
-                '    value = GetElement("' . $fld1 . '").value;' . "\n" .
+                '    var value = GetElement("' . $fld1 . '").value;' . "\n" .
                 //'    value = document.forms["'.$this->getFormName().'"].elements["'.$fld1.'"].value;'."\n".
                 //'    //GetElement("'.$fld2.'").innerHTML = "loading";'."\n".
                 '    loadexternal(' . "\n" .
                 '      "' . $filename . '",' . "\n" .
-                '      "linkselect=true&filter="+value+"&field=' . $fld2 . $param . '",' . "\n" .
+                '      "linkselect=true&filter="+encodeURIComponent(value)+"&field=' . $fld2 . $param . '",' . "\n" .
                 '      "' . $fld2 . '",' . "\n" . //display
                 '      ' . $func . ",\n" .
                 '      aArgs,' . "\n" .
@@ -2810,7 +2882,8 @@ class FormHandler
      * Static: Make a javascript array of the given php array. This is
      * used for dynamic select fields
      *
-     * @param array $options: the new options for the select field
+     * @param array<int|string, string> $options: the new options for the select field
+     * @param boolean $useArrayKeyAsValue: use the keys of the array as values
      * @return void
      * @access public
      * @author Teye Heimans
@@ -2902,6 +2975,26 @@ class FormHandler
     public function fieldExists($sField)
     {
         return array_key_exists($sField, $this->_fields);
+    }
+
+    /**
+     * FormHandler::getField()
+     *
+     * Return the object of a field (or button) of the form, e.g. to use its getters
+     *
+     * @param string $sField: The name of the field
+     * @return Field|Button
+     * @throws FormHandlerException when the form has no field with this name
+     * @access public
+     */
+    public function getField(string $sField): Field|Button
+    {
+        if (!$this->fieldExists($sField) || !is_object($this->_fields[$sField][1]))
+        {
+            throw new FormHandlerException('The field "' . $sField . '" does not exist in the form');
+        }
+
+        return $this->_fields[$sField][1];
     }
 
     /**
@@ -3066,6 +3159,7 @@ class FormHandler
      * @param string $merge: The image which we should merge
      * @param string $align: The align of the merge image (eg: left, center, right)
      * @param string $valign: The vertical align of the merge image( eg: top, middle, bottom)
+     * @param array<int, int>|null $transparantColor: rgb color of the merge image which should be transparant
      * @return void
      * @access public
      * @author Teye Heimans
@@ -3207,14 +3301,9 @@ class FormHandler
      * @return string|null the token of the session, null without a session
      * @access private
      */
-    private function _getCsrfSessionToken()
+    private function _getCsrfSessionToken(): ?string
     {
-        if (session_status() === PHP_SESSION_NONE && !headers_sent())
-        {
-            session_start();
-        }
-
-        if (session_status() !== PHP_SESSION_ACTIVE)
+        if (!$this->_startSession())
         {
             return null;
         }
@@ -3228,6 +3317,24 @@ class FormHandler
     }
 
     /**
+     * FormHandler::_startSession()
+     *
+     * Start the PHP session if no output was sent yet
+     *
+     * @return bool is there an active session?
+     * @access private
+     */
+    private function _startSession(): bool
+    {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent())
+        {
+            session_start();
+        }
+
+        return session_status() === PHP_SESSION_ACTIVE;
+    }
+
+    /**
      * FormHandler::_isCsrfTokenValid()
      *
      * Check the posted CSRF token; a wrong token marks the token field invalid.
@@ -3235,7 +3342,7 @@ class FormHandler
      * @return bool
      * @access private
      */
-    private function _isCsrfTokenValid()
+    private function _isCsrfTokenValid(): bool
     {
         if (!$this->_posted || $this->_csrfToken === null)
         {
@@ -3314,6 +3421,7 @@ class FormHandler
      *
      * Prints or returns the form
      *
+     * @param boolean $return: return the form instead of printing it
      * @return string|null the form or null when the form should be printed
      * @access public
      * @author Teye Heimans
@@ -3463,7 +3571,7 @@ class FormHandler
      * @return string the new unique button name
      * @author Teye Heimans
      */
-    private function _getNewButtonName()
+    private function _getNewButtonName(): string
     {
         static $counter = 1;
 
@@ -3523,6 +3631,7 @@ class FormHandler
      *
      * @param string $name: The name of the field (or button)
      * @param object $field: The object of the field or button
+     * @param string|null $title: The title of the field, '__HIDDEN__' for hidden fields
      * @return Field
      * @access private
      * @author Teye Heimans
@@ -3689,6 +3798,7 @@ class FormHandler
      *
      * Private: get the form
      *
+     * @param int|string|null $iDisplayPage: the page to display, null for the current page
      * @return string the generated form
      * @access public
      * @author Teye Heimans
@@ -3956,18 +4066,19 @@ class FormHandler
                         $help = '';
                         if (array_key_exists($name, $this->_help) && !$this->isViewMode() && !$this->isFieldViewMode($name))
                         {
+                            // the values go into HTML attributes
+                            $aHelp = array(
+                                htmlspecialchars($this->_helpIcon, ENT_QUOTES, FH_HTML_ENCODING),
+                                htmlspecialchars($this->_help[$name][0], ENT_QUOTES, FH_HTML_ENCODING),
+                                htmlspecialchars(str_replace('%title%', (string) $title, $this->_help[$name][1]), ENT_QUOTES, FH_HTML_ENCODING)
+                            );
                             if (strpos(FH_HELP_MASK, '%s'))
                             {
-                                $help = sprintf(
-                                    FH_HELP_MASK,
-                                    $this->_helpIcon,
-                                    $this->_help[$name][0],
-                                    str_replace('%title%', addslashes(htmlentities($title, encoding: FH_HTML_ENCODING)), $this->_help[$name][1])
-                                );
+                                $help = sprintf(FH_HELP_MASK, ...$aHelp);
                             }
                             else
                             {
-                                $help = str_replace(array('%helpicon%', '%helptext%', '%helptitle%'), array($this->_helpIcon, $this->_help[$name][0], str_replace('%title%',    addslashes(htmlentities($title, encoding: FH_HTML_ENCODING)), $this->_help[$name][1])), FH_HELP_MASK);
+                                $help = str_replace(array('%helpicon%', '%helptext%', '%helptitle%'), $aHelp, FH_HELP_MASK);
                             }
                         }
 

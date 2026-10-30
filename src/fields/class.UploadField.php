@@ -12,9 +12,12 @@
  */
 class UploadField extends Field
 {
-    private $_aConfig;           // array: which contains the default upload config
-    private $_bAlertOverwrite;   // boolean: display a message when the file already exists
-    private $_sFilename;         // string: filename of the file
+    /** @var array<string, mixed> which contains the default upload config */
+    private array $_aConfig;
+    /** @var bool|null display a message when the file already exists */
+    private ?bool $_bAlertOverwrite = null;
+    /** @var string|null filename of the file */
+    private ?string $_sFilename = null;
 
     /**
      * UploadField::UploadField()
@@ -23,7 +26,7 @@ class UploadField extends Field
      *
      * @param FormHandler &$oForm: The form where this field is located on
      * @param string $sName: The name of the field
-     * @param array $aConfig: The config array
+     * @param array<string, mixed> $aConfig: The config array
      * @return UploadField
      * @access public
      * @author Teye Heimans
@@ -193,7 +196,7 @@ class UploadField extends Field
      *
      * Return the data of an uploaded file or an empty array when no file is uploaded
      *
-     * @return array
+     * @return array<string, mixed>
      * @access public
      * @author Teye Heimans
      */
@@ -575,7 +578,7 @@ class UploadField extends Field
         // is a file uploaded ?
         if (!is_null($aFile['error']) && $aFile['error'] != 4)
         {
-            if (is_uploaded_file($aFile['tmp_name']))
+            if ($this->_isUploadedFile($aFile['tmp_name']))
             {
                 // make the dir if not exists
                 if (!is_dir($this->_aConfig['path']))
@@ -596,7 +599,7 @@ class UploadField extends Field
                 $sUpload   = $this->_aConfig['path'] . $sFilename;
 
                 // uploading
-                if (!move_uploaded_file($aFile['tmp_name'], $sUpload))
+                if (!$this->_moveUploadedFile($aFile['tmp_name'], $sUpload))
                 {
                     throw new FormHandlerException(
                         sprintf(
@@ -611,19 +614,6 @@ class UploadField extends Field
                 $this->_sFilename = $sFilename;
 
                 return $sUpload;
-            }
-            else if ($this->_oForm->isUnittestmode())
-            {
-                if (file_exists($this->_aConfig['path']))
-                {
-                    $sFilename = $this->_getFilename(false);
-                    $sUpload   = $this->_aConfig['path'] . $sFilename;
-
-                    if (copy($aFile['tmp_name'], $sUpload))
-                        return $sUpload;
-                }
-
-                return false;
             }
             else
             {
@@ -653,7 +643,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _forceDir($sPath, $iMode)
+    private function _forceDir(string $sPath, int $iMode): bool
     {
         if (strlen($sPath) == 0)
         {
@@ -685,7 +675,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getFilename($bIgnoreRename = false)
+    private function _getFilename(bool $bIgnoreRename = false): ?string
     {
         // easy name to work with
         $sFile = $this->_mValue['name'];
@@ -734,6 +724,36 @@ class UploadField extends Field
     }
 
     /**
+     * UploadField::_isUploadedFile()
+     *
+     * Was the file uploaded with HTTP POST? (Overridden in the unit tests,
+     * which have no real upload.)
+     *
+     * @param string $sFile: the temporary file of the upload
+     * @return bool
+     * @access protected
+     */
+    protected function _isUploadedFile($sFile)
+    {
+        return is_uploaded_file($sFile);
+    }
+
+    /**
+     * UploadField::_moveUploadedFile()
+     *
+     * Move the uploaded file to its destination (overridden in the unit tests)
+     *
+     * @param string $sFrom: the temporary file of the upload
+     * @param string $sTo: the destination
+     * @return bool
+     * @access protected
+     */
+    protected function _moveUploadedFile($sFrom, $sTo)
+    {
+        return move_uploaded_file($sFrom, $sTo);
+    }
+
+    /**
      * UploadField::_getExtension()
      *
      * Retrieve the extension of the given filename
@@ -743,7 +763,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getExtension($sFilename)
+    private function _getExtension(string $sFilename): string|false
     {
         $pos = strrchr($sFilename, '.');
         if ($pos === false)
@@ -763,7 +783,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getMaxUploadSize()
+    private function _getMaxUploadSize(): int
     {
         static $iIniSize = false;
 
@@ -771,7 +791,7 @@ class UploadField extends Field
         {
             $iPost = intval($this->_iniSizeToBytes(ini_get('post_max_size')));
             $iUpl  = intval($this->_iniSizeToBytes(ini_get('upload_max_filesize')));
-            $iIniSize = floor(($iPost < $iUpl) ? $iPost : $iUpl);
+            $iIniSize = ($iPost < $iUpl) ? $iPost : $iUpl;
         }
         return $iIniSize;
     }
@@ -786,7 +806,7 @@ class UploadField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _iniSizeToBytes($sIniSize)
+    private function _iniSizeToBytes(string|false $sIniSize): int|false
     {
         $aIniParts = array();
         if (!is_string($sIniSize))

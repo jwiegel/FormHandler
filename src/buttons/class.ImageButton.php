@@ -11,7 +11,8 @@
  */
 class ImageButton extends Button
 {
-    private $_sImage;
+    /** @var string */
+    private string $_sImage;
 
     /**
      * ImageButton::ImageButton()

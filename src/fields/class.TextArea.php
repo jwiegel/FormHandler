@@ -12,10 +12,14 @@
 class TextArea extends Field
 {
 
-    private $_iCols;        // int: number of colums which the textarea should get
-    private $_iRows;        // int: number of rows which the textarea should get
-    private $_iMaxLength;   // int: the number of characters allowed
-    private $_bShowMessage; // boolean: should we display the limit message
+    /** @var int|null number of colums which the textarea should get */
+    private ?int $_iCols = null;
+    /** @var int|null number of rows which the textarea should get */
+    private ?int $_iRows = null;
+    /** @var int|null the number of characters allowed */
+    private ?int $_iMaxLength = null;
+    /** @var bool|null should we display the limit message */
+    private ?bool $_bShowMessage = null;
 
     /**
      * TextArea::TextArea()
@@ -58,6 +62,7 @@ class TextArea extends Field
      * Set the max length of the input. Use false or 0 to disable the limit
      *
      * @param int $iMaxLength
+     * @param bool $bDisplay
      * @return void
      * @access public
      * @author Teye Heimans

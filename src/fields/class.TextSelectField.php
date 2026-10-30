@@ -12,8 +12,8 @@
  */
 class TextSelectField extends TextField
 {
-    protected $_iSize;         // int: the size of the field
-    private $_sOptions;
+    /** @var string|null */
+    private ?string $_sOptions = null;
 
     /**
      * TextSelectField::TextSelectField()
@@ -22,6 +22,7 @@ class TextSelectField extends TextField
      *
      * @param object &$oForm: The form where this field is located on
      * @param string $sName: The name of the field
+     * @param array<int|string, mixed> $aOptions
      * @return TextField
      * @author Teye Heimans
      * @access public
@@ -38,7 +39,15 @@ class TextSelectField extends TextField
         {
             $bSetJS = true;
 
-            // add the needed javascript
+            // the list of the options (FH_TEXTSELECT_MASK)
+            $oForm->_setJS(FH_FHTML_DIR . 'js/autocomplete.js', true);
+        }
+
+        // own masks of FormHandler 4.6 and older call these functions
+        static $bSetOldJS = false;
+        if (!$bSetOldJS && strpos(FH_TEXTSELECT_MASK . FH_TEXTSELECT_OPTION_MASK, '_TEXTSELECT(') !== false)
+        {
+            $bSetOldJS = true;
             $oForm->_setJS(
                 "function FH_CLOSE_TEXTSELECT( id )" . "\n" .
                     "{" . "\n" .
@@ -54,7 +63,7 @@ class TextSelectField extends TextField
 
         foreach ($aOptions as $key => $value)
         {
-            $this->_sOptions .= sprintf(FH_TEXTSELECT_OPTION_MASK, $sName, $value);
+            $this->_sOptions .= sprintf(FH_TEXTSELECT_OPTION_MASK, $sName, htmlspecialchars((string) $value, ENT_QUOTES, FH_HTML_ENCODING));
         }
 
         $this->setSize(20);

@@ -26,8 +26,7 @@ final class dbFormhandler_dbOptionFieldsTest extends dbFormhandlerTestCase
             'Radios:<input type="radio" name="saveInField" id="saveInField_1" value="1" /><label for="saveInField_1" class="noStyle">foo</label>',
             '<input type="radio" name="saveInField" id="saveInField_2" value="2" /><label for="saveInField_2" class="noStyle">bar</label>',
             'Text:<input type="text" name="textNullable" id="textNullable" value=""',
-            '>bar</a>',
-            '>foo</a>',
+            '<datalist id="textNullable_list" data-fh-autocomplete data-fh-show-all><option value="bar"></option><option value="foo"></option></datalist>',
         ]);
     }
 

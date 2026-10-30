@@ -227,6 +227,10 @@ class Validator
     }
 
     // a valid variable name (letters, digits, underscore)
+    /**
+     * @param mixed $value
+     * @return bool a truthy value when the value is valid
+     */
     public static function IsVariabele($value)
     {
         if ($value == '_')
@@ -243,23 +247,39 @@ class Validator
         }
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsVariabele($value)
     {
         return StrLen($value) == 0 || Validator::IsVariabele($value);
     }
 
     // a valid password (alphanumberic + some other characters but no spaces. Only allow ASCII 33 - 126)
+    /**
+     * @param mixed $value
+     * @return int|false a truthy value when the value is valid
+     */
     public static function IsPassword($value)
     {
         return preg_match("/^[\41-\176]+$/", $value);
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsPassword($value)
     {
         return StrLen($value) == 0 || Validator::IsPassword($value);
     }
 
     // check for a valid url
+    /**
+     * @param mixed $value
+     * @return int|false a truthy value when the value is valid
+     */
     public static function IsURL($value)
     {
         $regex =
@@ -271,12 +291,20 @@ class Validator
         return preg_match($regex, $value);
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsURL($value)
     {
         return StrLen($value) == 0 || Validator::IsURL($value);
     }
 
     // a valid URL (http connection is used to check if url exists!)
+    /**
+     * @param mixed $href
+     * @return bool a truthy value when the value is valid
+     */
     public static function IsURLHost($href)
     {
         if (strlen($href) <= 3)
@@ -301,23 +329,39 @@ class Validator
         return false;
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsURLHost($value)
     {
         return StrLen($value) == 0 || Validator::IsURLHost($value);
     }
 
     // a valid email address (only checks for valid format: xxx@xxx.xxx)
+    /**
+     * @param mixed $value
+     * @return int|false a truthy value when the value is valid
+     */
     public static function IsEmail($value)
     {
         return preg_match("/^[a-z0-9_\.-]+@([a-z0-9]+([\-]+[a-z0-9]+)*\.)+[a-z]{2,7}$/i", $value);
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsEmail($value)
     {
         return StrLen($value) == 0 || Validator::IsEmail($value);
     }
 
     // like IsMail only with host check
+    /**
+     * @param mixed $value
+     * @return bool a truthy value when the value is valid
+     */
     public static function IsEmailHost($value)
     {
         $check = array();
@@ -343,35 +387,59 @@ class Validator
         return false;
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsEmailHost($value)
     {
         return StrLen($value) == 0 || Validator::IsEmailHost($value);
     }
 
     // like IsString, but newline characters and tabs are allowed
+    /**
+     * @param mixed $value
+     * @return int|false a truthy value when the value is valid
+     */
     public static function IsText($value)
     {
         return
             preg_match("/^([^\x-\x1F]|[\r\n\t])+$/", $value);
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsText($value)
     {
         return StrLen($value) == 0 || Validator::IsText($value);
     }
 
     // is a valid dutch postcode (eg. 9999 AA)
+    /**
+     * @param mixed $value
+     * @return int|false a truthy value when the value is valid
+     */
     public static function IsPostcode($value)
     {
         return preg_match('/^[1-9][0-9]{3} ?[a-zA-Z]{2}$/', $value);
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsPostcode($value)
     {
         return StrLen($value) == 0 || Validator::IsPostcode($value);
     }
 
     // is a valid dutch phone-number
+    /**
+     * @param mixed $value
+     * @return bool a truthy value when the value is valid
+     */
     public static function IsPhone($value)
     {
         $regex = '/^[0-9]{2,4}[-]?[0-9]{6,8}$/';
@@ -379,12 +447,20 @@ class Validator
         return (strLen($value) == 10 && preg_match($regex, $value));
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsPhone($value)
     {
         return StrLen($value) == 0 || Validator::IsPhone($value);
     }
 
     // check if the value is not empty
+    /**
+     * @param mixed $value
+     * @return bool a truthy value when the value is valid
+     */
     public static function notEmpty($value)
     {
         if (!is_array($value))
@@ -406,6 +482,10 @@ class Validator
     }
 
     // check if it's a valid ip adres
+    /**
+     * @param mixed $ip
+     * @return bool
+     */
     public static function IsIp($ip)
     {
         // four numbers from 0 to 255, optional port
@@ -416,42 +496,54 @@ class Validator
         return filter_var($match[1], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
     }
 
+    /**
+     * @param mixed $ip
+     * @return bool true when the value is empty or valid
+     */
     public static function _IsIp($ip)
     {
         return StrLen($ip) == 0 || Validator::IsIp($ip);
     }
 
     // check if the value does not contains any html
+    /**
+     * @param mixed $value
+     * @return bool a truthy value when the value is valid
+     */
     public static function NoHTML($value)
     {
         return strip_tags($value) == $value && strlen($value) > 0;
     }
 
+    /**
+     * @param mixed $value
+     * @return bool true when the value is empty or valid
+     */
     public static function _NoHTML($value)
     {
         return StrLen($value) == 0 || Validator::noHTML($value);
     }
 
     /**
-     * Check the capthcafield using Securimage
+     * Check the captchafield: the code of the image which was shown with the posted
+     * form (see FormHandler::captchaField()), not case sensitive
      *
-     * @param string $value
+     * @param mixed $value
      * @return boolean
      * @author Johan Wiegel
      * @since 27-11-2008
      */
     public static function FH_CAPTCHA($value)
     {
-        require(FH_FHTML_INCLUDE_DIR . 'securimage/securimage.php');
-        $img = new Securimage(); // @phpstan-ignore-line (Instantiated class Securimage not found.)
-        $valid = $img->check($value); // @phpstan-ignore-line (Call to method check() on an unknown class Securimage.)
-        if ($valid == true)
-        {
-            return true;
-        }
-        else
+        $sCode = isset($_SESSION['FH_CAPTCHA_POSTED']) ? $_SESSION['FH_CAPTCHA_POSTED'] : null;
+        if (!is_string($sCode) || $sCode === '' || !is_string($value))
         {
             return false;
         }
+
+        return hash_equals(
+            \Gregwar\Captcha\PhraseBuilder::doNiceize($sCode),
+            \Gregwar\Captcha\PhraseBuilder::doNiceize($value)
+        );
     }
 }

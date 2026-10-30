@@ -11,10 +11,14 @@
  */
 class TimeField extends Field
 {
-    private $_iFormat;  // integer: hour format: {12, 24}
-    public $_oHour;     // SelectField: object of the hour selectfield
-    public $_oMinute;   // SelectField: object of the minute selectfield
-    public $_bRequired; // boolean: if the field is required or if we have to give the option to leave this field empty
+    /** @var int|null hour format: {12, 24} */
+    private ?int $_iFormat = null;
+    /** @var SelectField object of the hour selectfield (public only for older code, protected in 5.0: use getHourField()) */
+    public $_oHour;
+    /** @var SelectField object of the minute selectfield (public only for older code, protected in 5.0: use getMinuteField()) */
+    public $_oMinute;
+    /** @var bool|null if the field is required or if we have to give the option to leave this field empty (public only for older code, protected in 5.0: use setRequired()) */
+    public $_bRequired;
 
     /**
      * TimeField::TimeField()
@@ -61,6 +65,32 @@ class TimeField extends Field
     {
         $this->_oHour->setExtra($sExtra);
         $this->_oMinute->setExtra($sExtra);
+    }
+
+    /**
+     * TimeField::getHourField()
+     *
+     * Return the select field of the hours
+     *
+     * @return SelectField
+     * @access public
+     */
+    public function getHourField(): SelectField
+    {
+        return $this->_oHour;
+    }
+
+    /**
+     * TimeField::getMinuteField()
+     *
+     * Return the select field of the minutes
+     *
+     * @return SelectField
+     * @access public
+     */
+    public function getMinuteField(): SelectField
+    {
+        return $this->_oMinute;
     }
 
     /**
@@ -241,7 +271,7 @@ class TimeField extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getNearestMinute(&$minute)
+    private function _getNearestMinute(mixed &$minute): int
     {
         // get the nearest value at the minutes...
         for ($i = 0; $i < $minute; $i += FH_TIMEFIELD_MINUTE_STEPS);

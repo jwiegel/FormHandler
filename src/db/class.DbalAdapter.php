@@ -30,13 +30,14 @@ class DbalAdapter implements DatabaseAdapter
         'sqlite'     => 'pdo_sqlite',
     );
 
-    private $_conn = null;      // Connection: the DBAL connection
-    private $_database = null;  // string: database name (or file for sqlite) for connect()
-    private $_driver = null;    // string: DBAL driver for connect()
-    private $_lastQuery = '';   // string: the last query executed
-    private $_error = '';       // string: message of the last error
-    private $_errorNo = 0;      // int: code of the last error
-    private $_tables = array(); // array: cache of introspected tables
+    private ?Connection $_conn = null;  // the DBAL connection
+    private ?string $_database = null;  // database name (or file for sqlite) for connect()
+    private ?string $_driver = null;    // DBAL driver for connect()
+    private string $_lastQuery = '';    // the last query executed
+    private string $_error = '';        // message of the last error
+    private int $_errorNo = 0;          // code of the last error
+    /** @var array<string, Table> cache of introspected tables */
+    private array $_tables = array();
 
     /**
      * DbalAdapter::__construct()
@@ -273,7 +274,7 @@ class DbalAdapter implements DatabaseAdapter
      * DbalAdapter::getRecord()
      *
      * @param mixed $sql a DbalResult of query() (anything else has no records)
-     * @return array|false the next record in assoc mode or false when there are no records left
+     * @return array<string, mixed>|false the next record in assoc mode or false when there are no records left
      */
     public function getRecord($sql)
     {
@@ -367,7 +368,7 @@ class DbalAdapter implements DatabaseAdapter
      * DbalAdapter::getFieldNames()
      *
      * @param string $table
-     * @return array
+     * @return array<int, string>
      */
     public function getFieldNames($table)
     {
@@ -378,7 +379,7 @@ class DbalAdapter implements DatabaseAdapter
      * DbalAdapter::getFieldTypes()
      *
      * @param string $table
-     * @return array field name => array(DBAL type name, length, default)
+     * @return array<string, array<int, mixed>> field name => array(DBAL type name, length, default)
      */
     public function getFieldTypes($table)
     {
@@ -399,7 +400,7 @@ class DbalAdapter implements DatabaseAdapter
      * DbalAdapter::getNotNullFields()
      *
      * @param string $table
-     * @return array
+     * @return array<int, string>
      */
     public function getNotNullFields($table)
     {
@@ -419,7 +420,7 @@ class DbalAdapter implements DatabaseAdapter
      * DbalAdapter::getPrKeys()
      *
      * @param string $table
-     * @return array
+     * @return array<int, string>
      */
     public function getPrKeys($table)
     {
@@ -436,7 +437,7 @@ class DbalAdapter implements DatabaseAdapter
      * DbalAdapter::getUniqueFields()
      *
      * @param string $table
-     * @return array index name => array of field names, for every unique index (including the primary key)
+     * @return array<string, array<int, string>> index name => array of field names, for every unique index (including the primary key)
      */
     public function getUniqueFields($table)
     {
@@ -477,7 +478,7 @@ class DbalAdapter implements DatabaseAdapter
      * @param string $table
      * @return Table the introspected table (cached)
      */
-    private function _getTable($table)
+    private function _getTable(string $table): Table
     {
         $t = strtolower($table);
         if (!isset($this->_tables[$t]))
@@ -494,7 +495,7 @@ class DbalAdapter implements DatabaseAdapter
      * @param mixed $name a DBAL name object
      * @return string the plain name
      */
-    private function _name($name)
+    private function _name(mixed $name): string
     {
         return $name instanceof UnqualifiedName ? $name->getIdentifier()->getValue() : $name->toString();
     }
@@ -505,7 +506,7 @@ class DbalAdapter implements DatabaseAdapter
      * @param DbalException $e
      * @return void
      */
-    private function _setError($e)
+    private function _setError(DbalException $e): void
     {
         $this->_error = $e->getMessage();
         $this->_errorNo = (int) $e->getCode();

@@ -11,12 +11,18 @@
 class ImageConverter
 {
     // private vars!
-    private $_sImage;
-    private $_sError;
-    private $_aSize;
-    private $_aNewSize;
-    private $_iQuality;
-    private $_bConstrainProportions;
+    /** @var string the image to work with */
+    private string $_sImage;
+    /** @var string the last error */
+    private string $_sError = '';
+    /** @var array<int|string, mixed>|false the size of the image (getimagesize()) */
+    private array|false $_aSize = false;
+    /** @var array<int|string, mixed>|false the new size of the image */
+    private array|false $_aNewSize = false;
+    /** @var int the quality of the new image */
+    private int $_iQuality = 80;
+    /** @var bool keep the proportions when resizing */
+    private bool $_bConstrainProportions = true;
 
     /**
      * ImageConverter::ImageConverter()
@@ -88,7 +94,7 @@ class ImageConverter
      */
     public function getError()
     {
-        return isset($this->_sError) ? $this->_sError : '';
+        return $this->_sError;
     }
 
     /**
@@ -208,7 +214,7 @@ class ImageConverter
      * @param string $sStamp: the stamp image
      * @param string $sAlign: the horizontal alignment of the stamp (give in percentage or as top, center, bottom)
      * @param string $sValign: the vertial alignment of the stamp (give in percentage or as top, middle, bottom)
-     * @param array $aTransparant: array of rgb color value which should be transparant
+     * @param array<int, int>|null $aTransparant: array of rgb color value which should be transparant
      * @return void
      * @access public
      * @author Teye Heimans
@@ -353,7 +359,7 @@ class ImageConverter
      * @access private
      * @author Teye Heimans
      */
-    private function _setSize($x, $y)
+    private function _setSize(?int $x, ?int $y): void
     {
         // if no errors occourd
         if ($this->_sError == '')
@@ -395,7 +401,7 @@ class ImageConverter
      * @access private
      * @author Teye Heimans
      */
-    private function _getPos($size, $stampSize, $where)
+    private function _getPos(int $size, int $stampSize, string $where): int
     {
         // percentage ?
         if (strpos($where, '%') !== false)
@@ -441,7 +447,7 @@ class ImageConverter
      * @access private
      * @author Teye Heimans
      */
-    private function _getNewSize(&$x, &$y, $max)
+    private function _getNewSize(int &$x, int &$y, ?int $max): void
     {
         $procent = $x / 100;
         $scale   = $max / $procent;
@@ -459,7 +465,7 @@ class ImageConverter
      * @access private
      * @author Teye Heimans
      */
-    private function _getExtension($sFile)
+    private function _getExtension(string $sFile): string
     {
         $fp = explode('.', $sFile);
         return StrToLower($fp[count($fp) - 1]);
@@ -475,7 +481,7 @@ class ImageConverter
      * @author Teye Heimans
      * @access private
      */
-    private function _imageCreate($sFile)
+    private function _imageCreate(string $sFile): GdImage|false
     {
         $sExt = $this->_getExtension($sFile);
 
@@ -505,14 +511,14 @@ class ImageConverter
      *
      * Function to save the new image
      *
-     * @param resource $rImage: the image to save
+     * @param GdImage $rImage: the image to save
      * @param string $sDestination: how to save the new image
      * @param int $iQuality: the quality of the new image
      * @return bool true of succes and false on failure
      * @access private
      * @author Teye Heimans
      */
-    private function _saveImage(&$rImage, $sDestination, $iQuality = null)
+    private function _saveImage(GdImage &$rImage, string $sDestination, ?int $iQuality = null): bool
     {
         $sExt = $this->_getExtension($sDestination);
 

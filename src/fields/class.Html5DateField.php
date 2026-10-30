@@ -12,8 +12,10 @@
  */
 class Html5DateField extends TextField
 {
-    private $_sDateMask;    // string: date() format for the view mode
-    private $_bSetCurDate;  // bool: set the current date in a new, empty form
+    /** @var string date() format for the view mode */
+    private string $_sDateMask;
+    /** @var bool set the current date in a new, empty form */
+    private bool $_bSetCurDate;
 
     /**
      * Constructor: create a new Html5DateField object
@@ -90,7 +92,7 @@ class Html5DateField extends TextField
      *
      * Get the date value as an array: array(y,m,d)
      *
-     * @return array|null null (and a warning) when the value is not a valid date
+     * @return array<int, string>|null null (and a warning) when the value is not a valid date
      * @access public
      */
     public function getAsArray()
@@ -173,7 +175,7 @@ class Html5DateField extends TextField
      * @return boolean
      * @access private
      */
-    private function _isDate($sValue)
+    private function _isDate(string $sValue): bool
     {
         return preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/', $sValue, $data) === 1
             && checkdate((int) $data[2], (int) $data[3], (int) $data[1]);

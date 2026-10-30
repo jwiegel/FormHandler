@@ -141,13 +141,15 @@ fh_conf(
         "  </table>"
 );
 
-// Should Overlib javascript be included for help messages?
+// Should the javascript for the help messages (FHTML/js/helptext.js) be included?
+// (The name is from the time this was the library overLIB.)
 fh_conf('FH_USE_OVERLIB', true);
 
-// The help mask used to surround the help messages
+// The help mask used to surround the help messages. helptext.js shows the box for every
+// element with a data-fh-help attribute (the help text is HTML, the title text).
 fh_conf(
     'FH_HELP_MASK',
-    '<img src="%helpicon%" border="0" onmouseover="return overlib(\'%helptext%\', DELAY, \'400\', FGCOLOR, \'#CCCCCC\', BGCOLOR, \'#666666\', TEXTCOLOR, \'#666666\', TEXTFONT, \'Verdana\', TEXTSIZE, \'12px\', CELLPAD, 8, BORDER, 1, CAPTION, \'&nbsp;%helptitle%\', CAPTIONSIZE, \'12px\');" onmouseout="return nd();" style="color:333333;cursor:help;" />'
+    '<img src="%helpicon%" alt="?" border="0" tabindex="0" data-fh-help="%helptext%" data-fh-help-title="%helptitle%" style="cursor:help;" />'
 );
 
 // Default table width. When "false", no width will be set
@@ -162,9 +164,9 @@ fh_conf('FH_DEFAULT_TABLE_CELLSPACING', 0);
 // The default cellpadding of the table where the form will be located in
 fh_conf('FH_DEFAULT_TABLE_CELLPADDING', 3);
 
-// The default number of caracters used in the captcha
+// The number of characters of the captcha code (captchaField() needs gregwar/captcha)
 fh_conf('FH_CAPTCHA_LENGTH', 6);
-// The width of a captcha image
+// The width of the captcha image in pixels
 fh_conf('FH_CAPTCHA_WIDTH', 200);
 
 
@@ -195,13 +197,15 @@ fh_conf('FH_FHTML_INCLUDE_DIR', FH_INCLUDE_DIR . 'FHTML/');
 // mask for a TextSelectField
 fh_conf(
     'FH_TEXTSELECT_MASK',
-    '<input type="text" name="%s" id="%1$s" value="%s" size="%d" %s onblur="FH_CLOSE_TEXTSELECT(\'FHSpan_%1$s\');" onkeyup="FH_CLOSE_TEXTSELECT(\'FHSpan_%1$s\');" onclick="document.getElementById(\'FHSpan_%1$s\').style.display=\'block\';" style="background: #FFF url(' . $__fh_root . 'FHTML/images/arrow_down.gif) no-repeat right;" />%s<br /><div style="position:absolute;height:70px;overflow-y:scroll; width:150px; display:none; background-color:#FFF;" id="FHSpan_%1$s">%s</div>' . "\n"
+    // the options are in a datalist, js/autocomplete.js shows them as a list under the field
+    '<input type="text" name="%s" id="%1$s" value="%s" size="%d" %s list="%1$s_list" style="background: #FFF url(' . $__fh_root . 'FHTML/images/arrow_down.gif) no-repeat right;" />%s<datalist id="%1$s_list" data-fh-autocomplete data-fh-show-all>%s</datalist>' . "\n"
 );
 
 // mask for the TextSelectField options
 fh_conf(
     'FH_TEXTSELECT_OPTION_MASK',
-    '<a style="display:block;padding-left:5px;margin:0px;width:auto;color:black;text-decoration:none;" href="#" onmouseover="this.style.background=\'#C0C0C0\';" onmouseout="this.style.background=\'#FFFFFF\';" onblur="FH_CLOSE_TEXTSELECT(\'FHSpan_%s\')" onfocus="FH_SET_TEXTSELECT( \'%1$s\', this.innerHTML );" onclick="FH_SET_TEXTSELECT( \'%1$s\',this.innerHTML );" >%s</a>' . "\n"
+    // %1$s: the name of the field, %2$s: the option (escaped as HTML)
+    '<option value="%2$s"></option>'
 );
 
 // The default database type which is used by dbInfo() when no one is given.
@@ -323,11 +327,10 @@ fh_conf('FH_DATETEXTFIELD_DEFAULT_DISPLAY', 'd-m-Y');
 // safe content. A style with url(), expression(), javascript: etc. is always removed.
 fh_conf('FH_EDITOR_ALLOW_STYLE', false);
 
-// Use dropdown in jsCalendarPopup
+// Not used any more: jsDateField() and jsDateTextField() use the date picker of the browser
 fh_conf('FH_JSCALENDARPOPUP_USE_DROPDOWN', false);
 
-// start day in jsCalendarPopup
-// 0 = sunday ... 6 = saturday
+// Not used any more (the date picker of the browser starts the week as the language of the browser)
 fh_conf('FH_JSCALENDARPOPUP_STARTDAY', 1);
 
 // The default size of the listfield field's
@@ -370,6 +373,7 @@ fh_conf('FH_HTML_ENCODING', 'UTF-8');
  * Set the configuration defines if they are
  * not defined by the user yet.
  *
+ * @return void
  */
 function fh_conf()
 {
@@ -395,31 +399,9 @@ function fh_conf()
     }
 }
 
-// make sure that array_key_exists exists! :D
-if (!function_exists('array_key_exists'))
-{
-    function array_key_exists($sKey, $aArray)
-    {
-        return in_array($sKey, array_keys($aArray));
-    }
-}
-
 // making sure we dont get notices on this in PHP versions < 5.4
 if (!defined('ENT_HTML401'))
 {
     define('ENT_HTML401', '');
 }
 
-// For PHP version < 4.2.0 missing the array_fill function..
-if (!function_exists('array_fill'))
-{
-    function array_fill($iStart, $iLen, $vValue)
-    {
-        $aResult = array();
-        for ($iCount = $iStart; $iCount < $iLen + $iStart; $iCount++)
-        {
-            $aResult[$iCount] = $vValue;
-        }
-        return $aResult;
-    }
-}

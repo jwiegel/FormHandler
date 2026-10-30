@@ -1,133 +1,236 @@
-var isOpera = navigator.userAgent.indexOf('Opera') > -1;
-var isIE = navigator.userAgent.indexOf('MSIE') > 1 && !isOpera;
-var isMoz = navigator.userAgent.indexOf('Mozilla/5.') == 0 && !isOpera;
+/**
+ * The suggestions of setAutoComplete() and setAutoCompleteAfter(): a list under the text
+ * field in the font of the field (class fh_autocomplete, a page can change its look).
+ * The values come from the datalist of the field; without javascript the browser shows
+ * that datalist itself. setAutoCompleteAfter() completes the text after a character
+ * (e.g. "@").
+ */
+( function()
+{
+	var MAX_ITEMS = 10;
 
-function textboxSelect (oTextbox, iStart, iEnd) {
-	switch(arguments.length) {
-       case 1:
-           oTextbox.select();
-           break;
+	function addStyle()
+	{
+		// first in the head, so the page can change it
+		var style = document.createElement( 'style' );
+		style.textContent =
+			'.fh_autocomplete{position:absolute;z-index:1000;margin:0;padding:2px 0;list-style:none;' +
+			'background:#fff;color:#222;border:1px solid #aaa;border-radius:3px;' +
+			'box-shadow:0 3px 8px rgba(0,0,0,.15);max-height:16em;overflow-y:auto;box-sizing:border-box}' +
+			'.fh_autocomplete li{padding:3px 8px;cursor:pointer;white-space:nowrap}' +
+			'.fh_autocomplete li[aria-selected=true],.fh_autocomplete li:hover{background:#dbe6f4}' +
+			'.fh_autocomplete strong{font-weight:bold}';
+		document.head.insertBefore( style, document.head.firstChild );
+	}
 
-       case 2:
-           iEnd = oTextbox.value.length;
-           /* falls through */
+	function setup( input, list )
+	{
+		var values = list.hasAttribute( 'data-fh-values' )
+			? JSON.parse( list.getAttribute( 'data-fh-values' ) )
+			: Array.prototype.map.call( list.options, function( option ) { return option.value; } );
+		var after = list.getAttribute( 'data-fh-after' );
+		// textSelectField(): a click shows all values, typing filters them
+		var showAll = list.hasAttribute( 'data-fh-show-all' );
 
-       case 3:
-           if (isIE) {
-               var oRange = oTextbox.createTextRange();
-               oRange.moveStart("character", iStart);
-               oRange.moveEnd("character", -oTextbox.value.length + iEnd);
-               oRange.select();
-           } else if (isMoz){
-               oTextbox.setSelectionRange(iStart, iEnd);
-           }
-   	}
+		var menu = document.createElement( 'ul' );
+		menu.className = 'fh_autocomplete';
+		menu.id = list.id + '_menu';
+		menu.setAttribute( 'role', 'listbox' );
+		menu.hidden = true;
+		document.body.appendChild( menu );
 
-   	oTextbox.focus();
-}
+		// the own list instead of the one of the browser
+		input.removeAttribute( 'list' );
+		input.setAttribute( 'autocomplete', 'off' );
+		input.setAttribute( 'role', 'combobox' );
+		input.setAttribute( 'aria-autocomplete', 'list' );
+		input.setAttribute( 'aria-controls', menu.id );
+		input.setAttribute( 'aria-expanded', 'false' );
 
-function textboxReplaceSelect (oTextbox, sText) {
-   	if (isIE) {
-    	var oRange = document.selection.createRange();
-       	oRange.text = sText;
-       	oRange.collapse(true);
-       	oRange.select();
-   	} else if (isMoz) {
-       	var iStart = oTextbox.selectionStart;
-       	oTextbox.value = oTextbox.value.substring(0, iStart) + sText + oTextbox.value.substring(oTextbox.selectionEnd, oTextbox.value.length);
-       	oTextbox.setSelectionRange(iStart + sText.length, iStart + sText.length);
-   	}
+		var items = [];
+		var active = -1;
 
-   	oTextbox.focus();
-}
+		// the values for the text: first those which start with it, then those which contain it
+		// (everything: all values, whatever is typed)
+		function find( all, everything )
+		{
+			if ( everything )
+			{
+				return values.slice( 0 ).map( function( value ) { return { value: value, mark: 0, length: 0 }; } );
+			}
 
-// @since 12-02-2008 ADDED BY Johan Wiegel Replace existing function in order to let autocomplete after work
-function autocompleteMatch (sText, arrValues) {
-    if(sText!=null){
-        for (var i=0; i < arrValues.length; i++) {
-            if (arrValues[i].toLowerCase().indexOf(sText.toLowerCase()) == 0) {
-                return arrValues[i];
-            }
-        }
-    }
+			var text = input.value;
+			var prefix = '';
+			if ( after !== null )
+			{
+				var pos = text.indexOf( after );
+				if ( pos < 0 )
+				{
+					return [];
+				}
+				prefix = text.substring( 0, pos + after.length );
+			}
+			var search = text.substring( prefix.length ).toLowerCase();
+			if ( search === '' && !all && after === null )
+			{
+				return [];
+			}
 
-    return null;
-}
+			var start = [];
+			var inside = [];
+			values.forEach( function( value )
+			{
+				var pos = value.toLowerCase().indexOf( search );
+				var item = { value: prefix + value, mark: prefix.length + pos, length: search.length };
+				if ( pos === 0 )
+				{
+					start.push( item );
+				}
+				else if ( pos > 0 && after === null )
+				{
+					inside.push( item );
+				}
+			} );
 
-function FH_autocomplete(oTextbox, oEvent, arrValues) {
-   	switch (oEvent.keyCode) {
-       case 38: //up arrow
-       case 40: //down arrow
-       case 37: //left arrow
-       case 39: //right arrow
-       case 33: //page up
-       case 34: //page down
-       case 36: //home
-       case 35: //end
-       case 13: //enter
-       case 9: //tab
-       case 27: //esc
-       case 16: //shift
-       case 17: //ctrl
-       case 18: //alt
-       case 20: //caps lock
-       case 8: //backspace
-       case 46: //delete
-           return true;
-           break;
+			return start.concat( inside ).slice( 0, showAll ? values.length : MAX_ITEMS );
+		}
 
-       default:
-           textboxReplaceSelect(oTextbox, String.fromCharCode(isIE ? oEvent.keyCode : oEvent.charCode));
-           var iLen = oTextbox.value.length;
+		function open( all, everything )
+		{
+			items = find( all || showAll, everything );
+			active = -1;
+			menu.textContent = '';
 
-           var sMatch = autocompleteMatch(oTextbox.value, arrValues);
+			// nothing to suggest, or the text is already the only suggestion
+			if ( items.length === 0 || ( !everything && items.length === 1 && items[0].value === input.value ) )
+			{
+				close();
+				return;
+			}
 
-           if (sMatch != null) {
-               oTextbox.value = sMatch;
-               textboxSelect(oTextbox, iLen, oTextbox.value.length);
-           }
+			items.forEach( function( item, i )
+			{
+				var li = document.createElement( 'li' );
+				li.id = menu.id + '_' + i;
+				li.setAttribute( 'role', 'option' );
+				li.setAttribute( 'aria-selected', 'false' );
 
-           return false;
-   	}
-}
+				// the typed part in bold
+				if ( item.length > 0 )
+				{
+					var mark = document.createElement( 'strong' );
+					mark.textContent = item.value.substr( item.mark, item.length );
+					li.append( item.value.substring( 0, item.mark ), mark, item.value.substring( item.mark + item.length ) );
+				}
+				else
+				{
+					li.textContent = item.value;
+				}
 
-// @since 12-02-2008 ADDED BY Johan Wiegel
-function autocompleteafter(oTextbox, oEvent, After, arrValues) {
-       switch (oEvent.keyCode) {
-       case 38: //up arrow
-       case 40: //down arrow
-       case 37: //left arrow
-       case 39: //right arrow
-       case 33: //page up
-       case 34: //page down
-       case 36: //home
-       case 35: //end
-       case 13: //enter
-       case 9: //tab
-       case 27: //esc
-       case 16: //shift
-       case 17: //ctrl
-       case 18: //alt
-       case 20: //caps lock
-       case 8: //backspace
-       case 46: //delete
-           return true;
-           break;
+				// mousedown: before the field loses the focus
+				li.addEventListener( 'mousedown', function( event )
+				{
+					event.preventDefault();
+					choose( i );
+				} );
+				menu.appendChild( li );
+			} );
 
-       default:
-           textboxReplaceSelect(oTextbox, String.fromCharCode(isIE ? oEvent.keyCode : oEvent.charCode));
-           var iLen = oTextbox.value.length;
-           var my_string = oTextbox.value;
+			var rect = input.getBoundingClientRect();
+			var css = window.getComputedStyle( input );
+			menu.style.left = ( rect.left + window.scrollX ) + 'px';
+			menu.style.top = ( rect.bottom + window.scrollY + 2 ) + 'px';
+			menu.style.minWidth = rect.width + 'px';
+			menu.style.fontFamily = css.fontFamily;
+			menu.style.fontSize = css.fontSize;
+			menu.hidden = false;
+			input.setAttribute( 'aria-expanded', 'true' );
+		}
 
+		function close()
+		{
+			menu.hidden = true;
+			active = -1;
+			input.setAttribute( 'aria-expanded', 'false' );
+			input.removeAttribute( 'aria-activedescendant' );
+		}
 
-           var my_array = my_string.split(After);     
-           var sMatch = autocompleteMatch(my_array[1], arrValues);
-           
-           if (sMatch != null) {
-               oTextbox.value=my_array[0] + After + sMatch;
-               textboxSelect(oTextbox, iLen, oTextbox.value.length);
-           }
+		function highlight( i )
+		{
+			if ( active >= 0 )
+			{
+				menu.children[ active ].setAttribute( 'aria-selected', 'false' );
+			}
+			active = i;
+			menu.children[ i ].setAttribute( 'aria-selected', 'true' );
+			menu.children[ i ].scrollIntoView( { block: 'nearest' } );
+			input.setAttribute( 'aria-activedescendant', menu.children[ i ].id );
+		}
 
-           return false;
-       }
-} 
+		function choose( i )
+		{
+			input.value = items[ i ].value;
+			close();
+			input.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+		}
+
+		input.addEventListener( 'input', function() { open( false ); } );
+		input.addEventListener( 'blur', close );
+		if ( showAll )
+		{
+			input.addEventListener( 'click', function() { if ( menu.hidden ) open( true, true ); } );
+		}
+		input.addEventListener( 'keydown', function( event )
+		{
+			if ( menu.hidden )
+			{
+				if ( event.key === 'ArrowDown' )
+				{
+					event.preventDefault();
+					open( true, showAll );
+				}
+				return;
+			}
+
+			switch ( event.key )
+			{
+				case 'ArrowDown':
+					event.preventDefault();
+					highlight( ( active + 1 ) % items.length );
+					break;
+				case 'ArrowUp':
+					event.preventDefault();
+					highlight( active <= 0 ? items.length - 1 : active - 1 );
+					break;
+				case 'Enter':
+					// only take the suggestion, do not send the form
+					if ( active >= 0 )
+					{
+						event.preventDefault();
+						choose( active );
+					}
+					break;
+				case 'Escape':
+					event.preventDefault();
+					close();
+					break;
+				case 'Tab':
+					close();
+					break;
+			}
+		} );
+	}
+
+	document.addEventListener( 'DOMContentLoaded', function()
+	{
+		addStyle();
+		document.querySelectorAll( 'input[list]' ).forEach( function( input )
+		{
+			var list = input.list;
+			if ( list && list.hasAttribute( 'data-fh-autocomplete' ) )
+			{
+				setup( input, list );
+			}
+		} );
+	} );
+} )();

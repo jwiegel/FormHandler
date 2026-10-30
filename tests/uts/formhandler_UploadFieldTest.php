@@ -23,6 +23,40 @@ function delete_directory($dirname)
     return true;
 }
 
+/**
+ * PHPUnit has no real upload: copy the test file instead of moving it
+ */
+class uploadTest_UploadField extends UploadField
+{
+    protected function _isUploadedFile($sFile)
+    {
+        return is_file($sFile);
+    }
+
+    protected function _moveUploadedFile($sFrom, $sTo)
+    {
+        return copy($sFrom, $sTo);
+    }
+}
+
+/**
+ * A form whose uploadField() creates an uploadTest_UploadField
+ */
+class uploadTest_FormHandler extends FormHandler
+{
+    public function uploadField($title, $name, $config = array(), $validator = null, $extra = null, $alertOverwrite = null)
+    {
+        $fld = new uploadTest_UploadField($this, $name, $config);
+
+        if (!empty($validator))        $fld->setValidator($validator);
+        if (!empty($extra))            $fld->setExtra($extra);
+        if (!is_null($alertOverwrite)) $fld->setAlertOverwrite($alertOverwrite);
+
+        $this->_registerField($name, $fld, $title);
+        $this->_upload[] = $name;
+    }
+}
+
 final class formhandler_UploadFieldTest extends FormhandlerTestCase
 {
     private ?string $_tempPath = null;
@@ -86,7 +120,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "path" => $this->_tempPath
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -99,7 +133,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
 
         static::assertEquals($_FILES['uploadfield'], $data);
 
-        $this->setPrivateProperty($form, "_unittestmode", true);
         static::assertFlush($form);
 
         static::assertTrue(unlink("{$this->_tempPath}/uploaded.jpg"));
@@ -125,7 +158,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "size" => 100
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -137,8 +170,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
         $data  = $form->GetFileInfo("uploadfield");
 
         static::assertEquals($_FILES['uploadfield'], $data);
-
-        $this->setPrivateProperty($form, "_unittestmode", true);
 
         static::assertFormFlushContains($form, [
             'Uploadfield:<input type="file" name="uploadfield" id="uploadfield" onchange="fh_checkUpload(this, \'jpg jpeg jpe\', \'Only the following extensions are allowed: %s.\')"  class="error" />error_uploadfield',
@@ -165,7 +196,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "path" => $this->_tempPath
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -177,8 +208,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
         $data  = $form->GetFileInfo("uploadfield");
 
         static::assertEquals($_FILES['uploadfield'], $data);
-
-        $this->setPrivateProperty($form, "_unittestmode", true);
 
         static::assertFormFlushContains($form, [
             'Uploadfield:<input type="file" name="uploadfield" id="uploadfield" onchange="fh_checkUpload(this, \'php\', \'Only the following extensions are allowed: %s.\')"  class="error" />error_uploadfield',
@@ -205,7 +234,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "path" => $this->_tempPath
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -217,8 +246,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
         $data  = $form->GetFileInfo("uploadfield");
 
         static::assertEquals($_FILES['uploadfield'], $data);
-
-        $this->setPrivateProperty($form, "_unittestmode", true);
 
         static::assertFormFlushContains($form, [
             'Uploadfield:<input type="file" name="uploadfield" id="uploadfield" onchange="fh_checkUpload(this, \'txt\', \'Only the following extensions are allowed: %s.\')"  class="error" />error_uploadfield',
@@ -247,7 +274,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "height" => 100
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -259,8 +286,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
         $data  = $form->GetFileInfo("uploadfield");
 
         static::assertEquals($_FILES['uploadfield'], $data);
-
-        $this->setPrivateProperty($form, "_unittestmode", true);
 
         static::assertFormFlushContains($form, [
             'Uploadfield:<input type="file" name="uploadfield" id="uploadfield" onchange="fh_checkUpload(this, \'jpg jpeg jpe\', \'Only the following extensions are allowed: %s.\')"  class="error" />error_uploadfield',
@@ -290,7 +315,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "path" => $this->_tempPath
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -303,7 +328,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
 
         static::assertEquals($_FILES['uploadfield'], $data);
 
-        $this->setPrivateProperty($form, "_unittestmode", true);
         static::assertFormFlushContains($form, '<span id="error_uploadfield" class="error">The file you tried to upload already exists!</span>');
     }
 
@@ -330,7 +354,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "exists" => "rename"
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -343,7 +367,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
 
         static::assertEquals($_FILES['uploadfield'], $data);
 
-        $this->setPrivateProperty($form, "_unittestmode", true);
         static::assertFlush($form);
 
         static::assertTrue(unlink("{$this->_tempPath}/uploaded.jpg"));
@@ -373,7 +396,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "exists" => "overwrite"
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -386,7 +409,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
 
         static::assertEquals($_FILES['uploadfield'], $data);
 
-        $this->setPrivateProperty($form, "_unittestmode", true);
         static::assertFlush($form);
 
         static::assertTrue(unlink("{$this->_tempPath}/uploaded.jpg"));
@@ -499,7 +521,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "path" => $this->_tempPath
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -513,7 +535,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
 
         $form->resizeImage("uploadfield", $this->_tempPath . "/resize" . $form->getValue("uploadfield"), 30, 30);
 
-        $this->setPrivateProperty($form, "_unittestmode", true);
         static::assertFlush($form);
 
         $image_info = getimagesize("{$this->_tempPath}/resizeuploaded.jpg");
@@ -543,7 +564,7 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
             "path" => $this->_tempPath
         );
 
-        $form = new FormHandler();
+        $form = new uploadTest_FormHandler();
 
         static::assertTrue($form->isPosted());
 
@@ -557,7 +578,6 @@ final class formhandler_UploadFieldTest extends FormhandlerTestCase
 
         $form->mergeImage("uploadfield", dirname(__FILE__) . "/mergetext.png");
 
-        $this->setPrivateProperty($form, "_unittestmode", true);
         static::assertFlush($form);
 
         $filesize = filesize("{$this->_tempPath}/uploadedandmerged.jpg");

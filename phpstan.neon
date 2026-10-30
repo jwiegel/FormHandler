@@ -1,12 +1,11 @@
 parameters:
-	level: 5
+	level: 6
 	phpVersion: 80200 # PHP 8.2
 	treatPhpDocTypesAsCertain: false
 	paths:
 		- src
 	excludePaths:
 		- src/FHTML/*
-		- src/includes/class.ImageConverter.php
 	ignoreErrors:
 		- '#Constant [a-zA-Z0-9\\_]+ not found.#'
 		- '#Binary operation "|" between 2 and .. results in an error.#'

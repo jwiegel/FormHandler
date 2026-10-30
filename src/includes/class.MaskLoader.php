@@ -19,9 +19,12 @@
  */
 class MaskLoader
 {
-    private $_mask;
-    private $_search;
-    private $_subject;
+    /** @var string|null */
+    private ?string $_mask = null;
+    /** @var array<int, string>|string|null */
+    private array|string|null $_search = null;
+    /** @var string|null */
+    private ?string $_subject = null;
 
     /**
      * Constructor
@@ -53,7 +56,8 @@ class MaskLoader
      * Fill the mask with the given replace values. When no argument
      * is given, a possible half filled mask will be returned
      *
-     * @param string|array $replace
+     * @param array<int, mixed>|string|null $replace
+     * @param int $limit
      * @return string
      * @author Teye Heimans
      * @access public
@@ -64,7 +68,7 @@ class MaskLoader
         if ($replace === null)
         {
             // dont we have a subject?  return an empty string
-            if (!isset($this->_subject) || $this->_subject === null)
+            if (!isset($this->_subject))
             {
                 return '';
             }
@@ -88,7 +92,7 @@ class MaskLoader
 
         // get a fresh copy from the mask if the last
         // subject was completly filled..
-        if (!isset($this->_subject) || $this->_subject === null)
+        if (!isset($this->_subject))
         {
             $this->_subject = $this->_mask;
         }
@@ -134,7 +138,7 @@ class MaskLoader
      *
      * Set the values where we should search for
      *
-     * @param string|array $search: An regex string or array with the values where we should search for
+     * @param array<int, string>|string $search: An regex string or array with the values where we should search for
      * @return void
      * @access public
      * @author Teye Heimans

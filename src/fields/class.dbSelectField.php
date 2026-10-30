@@ -23,7 +23,7 @@ class dbSelectField extends SelectField
      * @param string $sTable: the table to get the fields from
      * @param mixed $mFields: array of string with the names of the fields which data we should get
      * @param string $sExtraSQL: extra SQL statements
-     * @param array  $aMergeArray: array of items where the options should be merged with
+     * @param array<int|string, mixed> $aMergeArray: array of items where the options should be merged with
      * @return dbSelectField
      * @access public
      * @author Teye Heimans

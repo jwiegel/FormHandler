@@ -62,23 +62,31 @@ final class formhandler_EditorTest extends FormhandlerTestCase
     {
         $form = new FormHandler();
 
+        // the path linked the file manager, which is removed since 4.7
         $form->editor("Editor", "editor", null, "thisisthepath");
 
-        static::assertFormFlushContains($form, [
-            'FHTML/ckeditor/ckeditor.js',
+        $html = static::assertFormFlushContains($form, [
             'Editor:<textarea name="editor" id="editor" cols="40" rows="7"></textarea>error_editor',
             'CKEDITOR.replace( \'editor\', {"toolbar":"Default"',
-            '"language":"en","width":720,"height":400,"skin":"moono-lisa","filebrowserBrowseUrl"',
-            'thisisthepath","filebrowserUploadUrl"',
-            'thisisthepath"}'
         ]);
+        static::assertStringNotContainsString('filebrowser', $html);
+        static::assertStringNotContainsString('filemanager', $html);
+    }
+
+    public function test_ownFileBrowser(): void
+    {
+        $form = new FormHandler();
+
+        // a project can link an own file browser
+        $form->editor("Editor", "editor", null, null, null, null, null, null, array('filebrowserBrowseUrl' => '/admin/browse.php'));
+
+        static::assertFormFlushContains($form, ['"filebrowserBrowseUrl":"\/admin\/browse.php"']);
     }
 
     public function test_new_noFileBrowser(): void
     {
         $form = new FormHandler();
 
-        // without a path the editor does not link the file manager, which has no login
         $form->editor("Editor", "editor");
 
         static::assertStringNotContainsString('filebrowser', (string) $form->flush(true));

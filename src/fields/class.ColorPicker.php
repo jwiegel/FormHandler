@@ -3,7 +3,8 @@
 /**
  * class ColorPicker
  *
- * Allows the user to pick a color
+ * Allows the user to pick a color: a text field with the color as hex value
+ * (e.g. FFCC00, empty when no color is chosen) and the color input of the browser
  *
  * @author Rick den Haan
  * @package FormHandler
@@ -12,6 +13,7 @@
  */
 class ColorPicker extends TextField
 {
+    /** @var string not used any more (it was added to the title), removed in 5.0 */
     public $sTitleAdd = "";
 
     /**
@@ -36,7 +38,7 @@ class ColorPicker extends TextField
         {
             // include the needed javascript
             $bSetJS = true;
-            $oForm->_setJS(FH_FHTML_DIR . "js/jscolor/jscolor.js", true);
+            $oForm->_setJS(FH_FHTML_DIR . "js/colorpicker.js", true);
         }
     }
     /**
@@ -68,14 +70,21 @@ class ColorPicker extends TextField
             $this->_sExtra = "class=\"color\"" . (isset($this->_sExtra) ? $this->_sExtra : '');
         }
 
+        // the color input of the browser can not be empty, so the value stays in the text
+        // field and the color input (without a name) only picks it (js/colorpicker.js)
+        $sValue = isset($this->_mValue) && is_string($this->_mValue) ? $this->_mValue : '';
+        $sColor = preg_match('/^#?([0-9a-fA-F]{6})$/', $sValue, $aMatch) ? '#' . strtolower($aMatch[1]) : '#000000';
+
         return sprintf(
-            '<input type="text" name="%s" id="%1$s" value="%s" size="%d" %s' . FH_XHTML_CLOSE . '>%s',
+            '<input type="text" name="%s" id="%1$s" value="%s" size="%d" %s' . FH_XHTML_CLOSE . '>' .
+                '<input type="color" id="%1$s_picker" value="%s" data-fh-color="%1$s" ' . FH_XHTML_CLOSE . '>%s',
             $this->_sName,
-            (isset($this->_mValue) ? htmlspecialchars($this->_mValue, ENT_COMPAT | ENT_HTML401, FH_HTML_ENCODING) : ''),
+            htmlspecialchars($sValue, ENT_COMPAT | ENT_HTML401, FH_HTML_ENCODING),
             $this->_iSize,
             (!empty($this->_iMaxlength) ? 'maxlength="' . $this->_iMaxlength . '" ' : '') .
                 (isset($this->_iTabIndex) ? 'tabindex="' . $this->_iTabIndex . '" ' : '') .
                 (isset($this->_sExtra) ? ' ' . $this->_sExtra . ' ' : ''),
+            $sColor,
             (isset($this->_sExtraAfter) ? $this->_sExtraAfter : '')
         );
     }

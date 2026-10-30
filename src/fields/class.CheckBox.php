@@ -12,11 +12,15 @@
 
 class CheckBox extends Field
 {
-    protected $_aOptions;           // array: contains all the options!
+    /** @var array<int|string, mixed>|string contains all the options! */
+    protected $_aOptions;
     // $this->_mValue contains the values which are selected!
-    private $_bUseArrayKeyAsValue;  // boolean: if the keys of the array should be used as values
-    private $_sMask;                // string: what kind of "glue" should be used to merge the checkboxes
-    private $_oLoader;              // object: The maskLoader
+    /** @var bool|null if the keys of the array should be used as values */
+    private ?bool $_bUseArrayKeyAsValue = null;
+    /** @var string|null what kind of "glue" should be used to merge the checkboxes */
+    private ?string $_sMask = null;
+    /** @var MaskLoader|null The maskLoader */
+    private ?MaskLoader $_oLoader = null;
 
     /**
      * CheckBox::CheckBox()
@@ -25,7 +29,7 @@ class CheckBox extends Field
      *
      * @param object $oForm: The form where this field is located on
      * @param string $sName: The name of the field
-     * @param array|string $aOptions - The options for the field
+     * @param array<int|string, mixed>|string $aOptions - The options for the field
      * @return CheckBox
      * @access public
      * @author Teye Heimans
@@ -49,7 +53,7 @@ class CheckBox extends Field
      *
      * Set the value of the field
      *
-     * @param string|array $aValue: the value to set
+     * @param array<int|string, mixed>|string|null $aValue: the value to set
      * @return void
      * @access public
      * @author Teye Heimans
@@ -187,7 +191,7 @@ class CheckBox extends Field
      * @access private
      * @author Teye Heimans
      */
-    private function _getCheckBox($sValue, $sTitle, $bUseMask = false)
+    private function _getCheckBox(mixed $sValue, mixed $sTitle, bool $bUseMask = false): string
     {
         static $iCounter = 1;
 

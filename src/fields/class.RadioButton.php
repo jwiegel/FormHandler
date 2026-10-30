@@ -11,10 +11,14 @@
  */
 class RadioButton extends Field
 {
-    public $_aOptions;              // string: the value with is selected
-    private $_bUseArrayKeyAsValue;   // boolean: if the keys of the array should be used as values
-    private $_sMask;                 // string: what kind of "glue" should be used to merge the fields
-    private $_oLoader;               // object: a maskloader object
+    /** @var array<int|string, mixed>|string the options of the field (public only for older code, protected in 5.0: use getOptions()) */
+    public $_aOptions;
+    /** @var bool|null if the keys of the array should be used as values */
+    private ?bool $_bUseArrayKeyAsValue = null;
+    /** @var string|null what kind of "glue" should be used to merge the fields */
+    private ?string $_sMask = null;
+    /** @var MaskLoader|null a maskloader object */
+    private ?MaskLoader $_oLoader = null;
 
     /**
      * RadioButton::RadioButton()
@@ -23,7 +27,7 @@ class RadioButton extends Field
      *
      * @param object $oForm: The form where this field is located on
      * @param string $sName: The name of the field
-     * @param array|string $aOptions: The options for the field
+     * @param array<int|string, mixed>|string $aOptions: The options for the field
      * @return RadioButton
      * @author Teye Heimans
      */
@@ -36,6 +40,19 @@ class RadioButton extends Field
 
         $this->setMask(FH_DEFAULT_GLUE_MASK);
         $this->useArrayKeyAsValue(FH_DEFAULT_USEARRAYKEY);
+    }
+
+    /**
+     * RadioButton::getOptions()
+     *
+     * Return the options of the field
+     *
+     * @return array<int|string, mixed>|string value => text, or the value of a single radio button
+     * @access public
+     */
+    public function getOptions(): array|string
+    {
+        return $this->_aOptions;
     }
 
     /**
@@ -138,7 +155,7 @@ class RadioButton extends Field
      * @access Private
      * @author Teye Heimans
      */
-    private function _getRadioButton($sValue, $sTitle, $bUseMask = false)
+    private function _getRadioButton(mixed $sValue, mixed $sTitle, bool $bUseMask = false): string
     {
 
         static $counter = 1;

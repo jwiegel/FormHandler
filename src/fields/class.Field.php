@@ -19,15 +19,24 @@ class Field
      * @var FormHandler
      */
     protected $_oForm;          // object: the form where the field is located in
-    protected $_sName;          // string: name of the field
-    protected $_sValidator;     // string: callback function to validate the value of the field
-    protected $_mValue;         // mixed: the value of the field
-    public $_sError;            // string: if the field is not valid, this var contains the error message
-    protected $_sExtra;         // string: extra data which should be added into the HTML tag (like CSS or JS)
-    protected $_iTabIndex;      // int: tabindex or null when no tabindex is set
-    protected $_sExtraAfter;    // string: extra data which should be added AFTER the HTML tag
-    public $_viewMode;          // boolean: should we only display the value instead of the field ?
-    protected $_isValid;        // boolean: field is valid 
+    /** @var string name of the field */
+    protected $_sName;
+    /** @var string|array<int, mixed>|null callback function to validate the value of the field */
+    protected $_sValidator;
+    /** @var mixed the value of the field */
+    protected $_mValue;
+    /** @var string|null if the field is not valid, this var contains the error message (public only for older code, protected in 5.0: use getErrorMessage() and setError()) */
+    public $_sError;
+    /** @var string|null extra data which should be added into the HTML tag (like CSS or JS) */
+    protected $_sExtra;
+    /** @var int|string|null tabindex or null when no tabindex is set */
+    protected $_iTabIndex;
+    /** @var string|null extra data which should be added AFTER the HTML tag */
+    protected $_sExtraAfter;
+    /** @var bool|null should we only display the value instead of the field ? (public only for older code, protected in 5.0: use getViewMode() and setViewMode()) */
+    public $_viewMode;
+    /** @var bool|null field is valid */
+    protected $_isValid;
 
 
     /**
@@ -288,7 +297,7 @@ class Field
      * If you want to use a method to validate the value use it like this:
      * array(&$obj, 'NameOfTheMethod')
      *
-     * @param string|array|null $sValidator: the name of the validator, null for none
+     * @param string|array<int, mixed>|null $sValidator: the name of the validator, null for none
      * @return void
      * @access public
      * @author Teye Heimans
@@ -323,6 +332,19 @@ class Field
     }
 
     /**
+     * Field::getExtraAfter()
+     *
+     * Return the HTML which is put after the field
+     *
+     * @return string|null
+     * @access public
+     */
+    public function getExtraAfter(): ?string
+    {
+        return $this->_sExtraAfter;
+    }
+
+    /**
      * Field::setExtraAfter()
      *
      * Set some extra HTML, JS or something like that (to use after the html tag)
@@ -350,6 +372,19 @@ class Field
     public function setError($sError)
     {
         $this->_sError = $sError;
+    }
+
+    /**
+     * Field::getErrorMessage()
+     *
+     * Return the error message of the field, without the FH_ERROR_MASK of getError()
+     *
+     * @return string|null null when the field has no error
+     * @access public
+     */
+    public function getErrorMessage(): ?string
+    {
+        return $this->_sError;
     }
 
     /**
