@@ -21,9 +21,13 @@
         "doctrine/dbal": "^4.2",
         "symfony/html-sanitizer": "^7.4 || ^8.0"
     },
+    "suggest": {
+        "gregwar/captcha": "Needed for captchaField() (^2.1)"
+    },
     "require-dev": {
         "phpunit/phpunit": "^11.5",
-        "phpstan/phpstan": "^2.2"
+        "phpstan/phpstan": "^2.2",
+        "gregwar/captcha": "^2.1"
     },
     "autoload": {
         "files": [

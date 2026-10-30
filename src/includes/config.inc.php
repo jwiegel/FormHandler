@@ -162,9 +162,9 @@ fh_conf('FH_DEFAULT_TABLE_CELLSPACING', 0);
 // The default cellpadding of the table where the form will be located in
 fh_conf('FH_DEFAULT_TABLE_CELLPADDING', 3);
 
-// The default number of caracters used in the captcha
+// The number of characters of the captcha code (captchaField() needs gregwar/captcha)
 fh_conf('FH_CAPTCHA_LENGTH', 6);
-// The width of a captcha image
+// The width of the captcha image in pixels
 fh_conf('FH_CAPTCHA_WIDTH', 200);
 
 

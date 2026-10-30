@@ -525,25 +525,25 @@ class Validator
     }
 
     /**
-     * Check the capthcafield using Securimage
+     * Check the captchafield: the code of the image which was shown with the posted
+     * form (see FormHandler::captchaField()), not case sensitive
      *
-     * @param string $value
+     * @param mixed $value
      * @return boolean
      * @author Johan Wiegel
      * @since 27-11-2008
      */
     public static function FH_CAPTCHA($value)
     {
-        require(FH_FHTML_INCLUDE_DIR . 'securimage/securimage.php');
-        $img = new Securimage(); // @phpstan-ignore-line (Instantiated class Securimage not found.)
-        $valid = $img->check($value); // @phpstan-ignore-line (Call to method check() on an unknown class Securimage.)
-        if ($valid == true)
-        {
-            return true;
-        }
-        else
+        $sCode = isset($_SESSION['FH_CAPTCHA_POSTED']) ? $_SESSION['FH_CAPTCHA_POSTED'] : null;
+        if (!is_string($sCode) || $sCode === '' || !is_string($value))
         {
             return false;
         }
+
+        return hash_equals(
+            \Gregwar\Captcha\PhraseBuilder::doNiceize($sCode),
+            \Gregwar\Captcha\PhraseBuilder::doNiceize($value)
+        );
     }
 }

@@ -115,6 +115,10 @@ class StyledEditor extends Editor
 callback, invalid date mask, editing a record that does not exist, ...) throws a
 `FormHandlerException` instead of `trigger_error(..., E_USER_ERROR)`.
 
+**Captcha with gregwar/captcha.** `captchaField()` needs the package `gregwar/captcha`
+(`composer require gregwar/captcha`), FormHandler does not install it for every project.
+The image is part of the form and its code is kept in the PHP session.
+
 **Composer only** (4.3). All classes are loaded by Composer's autoloader, so you can extend
 e.g. `TextArea` in your own fields. Including `class.FormHandler.php` without Composer is
 no longer supported.

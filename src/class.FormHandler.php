@@ -362,7 +362,10 @@ class FormHandler
     /**
      * FormHandler::captchaField()
      *
-     * Creates a captchafield on the form using Securimage - A PHP class for creating and managing form CAPTCHA images
+     * Creates a captchafield on the form: an image with a code (made by the package
+     * gregwar/captcha, which the project has to require) and a field to enter it.
+     * The image is part of the form (a data URI), its code is kept in the PHP session.
+     * Every request gets a new image, so a code can only be used once.
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
@@ -370,6 +373,7 @@ class FormHandler
      * @param int $maxlength: The allowed max input of the field
      * @param string $extra: CSS, Javascript or other which are inserted into the HTML tag
      * @return void
+     * @throws FormHandlerException when gregwar/captcha is not installed
      * @access public
      * @author Johan Wiegel
      * @since 27-11-2007
@@ -382,10 +386,33 @@ class FormHandler
         $extra     = null
     )
     {
+        if (!class_exists(\Gregwar\Captcha\CaptchaBuilder::class))
+        {
+            throw new FormHandlerException(
+                'captchaField() needs the package gregwar/captcha: composer require gregwar/captcha'
+            );
+        }
+
         static $bCaptcha = true;
         if ($bCaptcha)
         {
             $bCaptcha = false;
+
+            if (!$this->_startSession())
+            {
+                trigger_error(
+                    'FormHandler: captchaField() needs a PHP session. Start the session before any output.',
+                    E_USER_WARNING
+                );
+            }
+
+            // the code of the image which was shown with the posted form (checked by
+            // Validator::FH_CAPTCHA), then a new image: a code works only once
+            $_SESSION['FH_CAPTCHA_POSTED'] = $this->isPosted() && isset($_SESSION['FH_CAPTCHA']) ? $_SESSION['FH_CAPTCHA'] : null;
+
+            $oCaptcha = new \Gregwar\Captcha\CaptchaBuilder(null, new \Gregwar\Captcha\PhraseBuilder((int) FH_CAPTCHA_LENGTH));
+            $oCaptcha->build((int) FH_CAPTCHA_WIDTH, (int) round(FH_CAPTCHA_WIDTH * 4 / 15));
+            $_SESSION['FH_CAPTCHA'] = $oCaptcha->getPhrase();
 
             // create the field
             $fld = new TextField($this, $name);
@@ -397,7 +424,7 @@ class FormHandler
             if (!empty($maxlength)) $fld->setMaxlength($maxlength);
             if (!empty($extra))     $fld->setExtra($extra);
 
-            $this->ImageButton(FH_FHTML_DIR . 'securimage/securimage_show.php?sid=' . md5(uniqid((string) time())), null, 'onclick="return false;" style="cursor:default;"');
+            $this->ImageButton($oCaptcha->inline(), null, 'onclick="return false;" style="cursor:default;"');
 
             // register the field
             $this->_registerField($name, $fld, $title);
@@ -3248,12 +3275,7 @@ class FormHandler
      */
     private function _getCsrfSessionToken(): ?string
     {
-        if (session_status() === PHP_SESSION_NONE && !headers_sent())
-        {
-            session_start();
-        }
-
-        if (session_status() !== PHP_SESSION_ACTIVE)
+        if (!$this->_startSession())
         {
             return null;
         }
@@ -3264,6 +3286,24 @@ class FormHandler
         }
 
         return $_SESSION['FH_CSRF_TOKEN'];
+    }
+
+    /**
+     * FormHandler::_startSession()
+     *
+     * Start the PHP session if no output was sent yet
+     *
+     * @return bool is there an active session?
+     * @access private
+     */
+    private function _startSession(): bool
+    {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent())
+        {
+            session_start();
+        }
+
+        return session_status() === PHP_SESSION_ACTIVE;
     }
 
     /**
