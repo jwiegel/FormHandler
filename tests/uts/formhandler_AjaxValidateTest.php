@@ -3,55 +3,54 @@
 declare(strict_types=1);
 
 /**
- * The answer of src/FHTML/ajax/validate.php (AjaxValidator::Validate()). The request
- * comes from the browser, so it must not bring own HTML or javascript into the answer.
+ * The answer of src/FHTML/ajax/validate.php (AjaxValidator::Validate()): JSON, which
+ * ajax_validator.js shows as text, so the request can not bring HTML into the page.
  */
 final class formhandler_AjaxValidateTest extends FormhandlerTestCase
 {
-    private function request(array $request): string
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function request(array $request): ?array
     {
         $validator = new AjaxValidator();
-        return (string) $validator->Validate($request + array(
+        $answer = (string) $validator->Validate($request + array(
             'validator' => 'IsDigit',
             'msg'       => 'Only digits',
-            'msgbox'    => 'error_age',
             'value'     => 'abc',
         ), new Validator());
+
+        return $answer === '' ? null : json_decode($answer, true);
     }
 
     public function test_invalidValue(): void
     {
-        $answer = $this->request(array());
-
-        static::assertStringContainsString("jQuery('#error_age').addClass( 'fh_error' );", $answer);
-        static::assertStringEndsWith('</script>Only digits', $answer);
+        static::assertSame(array('status' => 'error', 'msg' => 'Only digits'), $this->request(array()));
     }
 
     public function test_validValue(): void
     {
-        $answer = $this->request(array('value' => '42'));
-
-        static::assertStringContainsString("jQuery('#error_age').addClass( 'fh_ok' );", $answer);
+        static::assertSame(array('status' => 'ok', 'msg' => ''), $this->request(array('value' => '42')));
     }
 
-    public function test_messageIsEscaped(): void
+    public function test_emptyValue(): void
     {
-        $answer = $this->request(array('msg' => '<img src=x onerror=alert(1)>'));
-
-        static::assertStringEndsWith('</script>&lt;img src=x onerror=alert(1)&gt;', $answer);
+        static::assertSame(array('status' => 'mandatory', 'msg' => ''), $this->request(array('validator' => '_IsDigit', 'value' => '')));
     }
 
-    public function test_msgboxIsChecked(): void
+    public function test_moreValidators(): void
     {
-        static::assertSame('', $this->request(array('msgbox' => "error_age').html('<b>x</b>');//")));
-        static::assertSame('', $this->request(array('msgbox' => 'age')));
+        // every validator is checked, not only the first one
+        static::assertSame('error', $this->request(array('validator' => 'IsString|IsDigit'))['status']);
     }
 
-    public function test_missingParameter(): void
+    public function test_wrongRequest(): void
     {
         $validator = new AjaxValidator();
 
-        static::assertSame('', $validator->Validate(array('validator' => 'IsDigit'), new Validator()));
+        static::assertSame('', $validator->Validate(array('validator' => 'IsDigit'), new Validator()), 'missing parameter');
+        static::assertNull($this->request(array('validator' => 'NoSuchValidator')));
+        static::assertNull($this->request(array('validator' => 'FH_CAPTCHA')));
     }
 
     public function test_endpointIgnoresIncludedir(): void
@@ -61,14 +60,12 @@ final class formhandler_AjaxValidateTest extends FormhandlerTestCase
             'includedir' => '/does/not/exist/',
             'validator'  => 'IsDigit',
             'msg'        => 'Only digits',
-            'msgbox'     => 'error_age',
             'value'      => 'abc',
         );
         $code = '$_REQUEST = ' . var_export($request, true) . '; include ' . var_export(dirname(__DIR__, 2) . '/src/FHTML/ajax/validate.php', true) . ';';
 
         $answer = (string) shell_exec(escapeshellarg(PHP_BINARY) . ' -n -r ' . escapeshellarg($code) . ' 2>&1');
 
-        static::assertStringContainsString("jQuery('#error_age').addClass( 'fh_error' );", $answer);
-        static::assertStringEndsWith('</script>Only digits', $answer);
+        static::assertSame('{"status":"error","msg":"Only digits"}', $answer);
     }
 }

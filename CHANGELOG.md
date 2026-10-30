@@ -20,17 +20,23 @@ and the project follows [Semantic Versioning](https://semver.org/).
   without it the field throws a `FormHandlerException`. The image is part of the form (a
   data URI), so there is no image script in `FHTML` any more. A code works only once, and
   `FH_CAPTCHA_LENGTH` and `FH_CAPTCHA_WIDTH` are used now.
+- The AJAX validator (`enableAjaxValidator()`) needs no jQuery any more: plain javascript
+  (`fetch()`), and `validate.php` answers JSON, which is shown as text. The second parameter
+  of `enableAjaxValidator()` (include jQuery) is not used any more. Messages are put into
+  the javascript with `json_encode()` instead of `addslashes()`.
 
 ### Removed
 
 - The PHP 4 fallbacks for `array_key_exists()` and `array_fill()` in `config.inc.php`.
 - The bundled Securimage in `src/FHTML/securimage` (see `captchaField()` above).
+- The bundled jQuery 1.4.2 (2010, with known security issues); only the AJAX validator used it.
 - `FormHandler::isUnittestmode()` and the unit test mode of `UploadField`. The upload is in
   the overridable methods `UploadField::_isUploadedFile()` and `_moveUploadedFile()`, the
   unit tests replace them and so test the same code as a real upload.
 
 ### Fixed
 
+- The AJAX validator only checked the first validator of a field (`"IsString|IsDigit"`).
 - `getFileInfo()` and `isUploaded()` rejected subclasses of `UploadField` ("the field is not
   an uploadfield"), they compared the class name.
 

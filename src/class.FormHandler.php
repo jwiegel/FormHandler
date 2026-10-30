@@ -2199,7 +2199,7 @@ class FormHandler
      * FormHandler::enableAjaxValidator
      *
      * @param boolean $mode: The new state of the AjaxValidator
-     * @param boolean $bScript: Should the library (jQuery) be included by FH
+     * @param boolean $bScript: not used any more (it included jQuery, the javascript needs no library since 4.7)
      * @return void
      * 
      * @since 03-12-2008

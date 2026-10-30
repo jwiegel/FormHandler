@@ -12,7 +12,7 @@
 require_once __DIR__ . '/../../includes/class.Validator.php';
 require_once __DIR__ . '/../../includes/class.AjaxValidator.php';
 
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
 
 $oAjaxValidator = new AjaxValidator();
 echo $oAjaxValidator->Validate($_REQUEST, new Validator());
