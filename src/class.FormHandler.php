@@ -2987,7 +2987,7 @@ class FormHandler
      * @throws FormHandlerException when the form has no field with this name
      * @access public
      */
-    public function getField($sField)
+    public function getField(string $sField): Field|Button
     {
         if (!$this->fieldExists($sField) || !is_object($this->_fields[$sField][1]))
         {
