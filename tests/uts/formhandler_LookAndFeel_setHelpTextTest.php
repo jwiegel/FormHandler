@@ -12,10 +12,9 @@ final class formhandler_LookAndFeel_setHelpTextTest extends FormhandlerTestCase
         $form->setHelpText("textfield", "This ist a help text");
 
         static::assertFormFlushContains($form, [
-            'FHTML/overlib/overlib.js',
-            'FHTML/overlib/overlib_hideform.js',
+            'FHTML/js/helptext.js',
             'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20" /><img src="',
-            'FHTML/images/helpicon.gif" border="0" onmouseover="return overlib(\'This ist a help text\', DELAY, \'400\', FGCOLOR, \'#CCCCCC\', BGCOLOR, \'#666666\', TEXTCOLOR, \'#666666\', TEXTFONT, \'Verdana\', TEXTSIZE, \'12px\', CELLPAD, 8, BORDER, 1, CAPTION, \'&nbsp;Textfield - Help\', CAPTIONSIZE, \'12px\');" onmouseout="return nd();" style="color:333333;cursor:help;" />error_textfield'
+            'FHTML/images/helpicon.gif" alt="?" border="0" tabindex="0" data-fh-help="This ist a help text" data-fh-help-title="Textfield - Help" style="cursor:help;" />error_textfield'
         ]);
     }
 
@@ -27,10 +26,8 @@ final class formhandler_LookAndFeel_setHelpTextTest extends FormhandlerTestCase
         $form->setHelpText("textfield", "This ist a help text", "The helptitle");
 
         static::assertFormFlushContains($form, [
-            'FHTML/overlib/overlib.js',
-            'FHTML/overlib/overlib_hideform.js',
-            'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20" /><img src="',
-            'FHTML/images/helpicon.gif" border="0" onmouseover="return overlib(\'This ist a help text\', DELAY, \'400\', FGCOLOR, \'#CCCCCC\', BGCOLOR, \'#666666\', TEXTCOLOR, \'#666666\', TEXTFONT, \'Verdana\', TEXTSIZE, \'12px\', CELLPAD, 8, BORDER, 1, CAPTION, \'&nbsp;The helptitle\', CAPTIONSIZE, \'12px\');" onmouseout="return nd();" style="color:333333;cursor:help;" />error_textfield'
+            'FHTML/js/helptext.js',
+            'data-fh-help="This ist a help text" data-fh-help-title="The helptitle" style="cursor:help;" />error_textfield'
         ]);
     }
 
@@ -43,9 +40,30 @@ final class formhandler_LookAndFeel_setHelpTextTest extends FormhandlerTestCase
         $form->setHelpIcon("theicon.gif");
 
         static::assertFormFlushContains($form, [
-            'FHTML/overlib/overlib.js',
-            'FHTML/overlib/overlib_hideform.js',
-            'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20" /><img src="theicon.gif" border="0" onmouseover="return overlib(\'This ist a help text\', DELAY, \'400\', FGCOLOR, \'#CCCCCC\', BGCOLOR, \'#666666\', TEXTCOLOR, \'#666666\', TEXTFONT, \'Verdana\', TEXTSIZE, \'12px\', CELLPAD, 8, BORDER, 1, CAPTION, \'&nbsp;Textfield - Help\', CAPTIONSIZE, \'12px\');" onmouseout="return nd();" style="color:333333;cursor:help;" />error_textfield'
+            'Textfield:<input type="text" name="textfield" id="textfield" value="" size="20" /><img src="theicon.gif" alt="?" border="0" tabindex="0" data-fh-help="This ist a help text"'
         ]);
+    }
+
+    public function test_html(): void
+    {
+        $form = new FormHandler();
+
+        $form->textField("Textfield", "textfield");
+        $form->setHelpText("textfield", "Line one<br>\"two\" & 'three'", "It's <b>bold</b>");
+
+        // escaped for the attribute; helptext.js shows the text as HTML and the title as text
+        static::assertFormFlushContains($form, [
+            'data-fh-help="Line one&lt;br&gt;&quot;two&quot; &amp; &#039;three&#039;" data-fh-help-title="It&#039;s &lt;b&gt;bold&lt;/b&gt;"'
+        ]);
+    }
+
+    public function test_noJavascript(): void
+    {
+        $form = new FormHandler();
+
+        $form->textField("Textfield", "textfield");
+        $form->setHelpText("textfield", "This ist a help text");
+
+        static::assertStringNotContainsString('overlib', $form->flush(true));
     }
 };

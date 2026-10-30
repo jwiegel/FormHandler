@@ -141,13 +141,15 @@ fh_conf(
         "  </table>"
 );
 
-// Should Overlib javascript be included for help messages?
+// Should the javascript for the help messages (FHTML/js/helptext.js) be included?
+// (The name is from the time this was the library overLIB.)
 fh_conf('FH_USE_OVERLIB', true);
 
-// The help mask used to surround the help messages
+// The help mask used to surround the help messages. helptext.js shows the box for every
+// element with a data-fh-help attribute (the help text is HTML, the title text).
 fh_conf(
     'FH_HELP_MASK',
-    '<img src="%helpicon%" border="0" onmouseover="return overlib(\'%helptext%\', DELAY, \'400\', FGCOLOR, \'#CCCCCC\', BGCOLOR, \'#666666\', TEXTCOLOR, \'#666666\', TEXTFONT, \'Verdana\', TEXTSIZE, \'12px\', CELLPAD, 8, BORDER, 1, CAPTION, \'&nbsp;%helptitle%\', CAPTIONSIZE, \'12px\');" onmouseout="return nd();" style="color:333333;cursor:help;" />'
+    '<img src="%helpicon%" alt="?" border="0" tabindex="0" data-fh-help="%helptext%" data-fh-help-title="%helptitle%" style="cursor:help;" />'
 );
 
 // Default table width. When "false", no width will be set

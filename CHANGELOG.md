@@ -27,6 +27,11 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - `colorPicker()` uses the color input of the browser instead of jscolor 1.0.9: a color input
   (without a name) next to the text field fills it. The value is unchanged (`FFCC00`, empty
   when no color is chosen), so stored colors and validators keep working.
+- The help texts (`setHelpText()`) are shown by the small `FHTML/js/helptext.js` instead of
+  overLIB 4.21 (2004), also when the help icon gets the focus with the keyboard. The text is
+  HTML and the title text, as before. Text and title are in `data-fh-help` attributes now:
+  **a project with its own `FH_HELP_MASK` that calls `overlib()` has to change it** (see
+  `config.inc.php`). `FH_USE_OVERLIB` keeps its name and now includes `helptext.js`.
 
 ### Removed
 
@@ -34,6 +39,7 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - The bundled Securimage in `src/FHTML/securimage` (see `captchaField()` above).
 - The bundled jQuery 1.4.2 (2010, with known security issues); only the AJAX validator used it.
 - The bundled jscolor 1.0.9 and the unused images of an older color picker (`FHTML/images/ColorPicker`).
+- The bundled overLIB 4.21 with its Internet Explorer workaround `overlib_hideform.js`.
 - `FormHandler::isUnittestmode()` and the unit test mode of `UploadField`. The upload is in
   the overridable methods `UploadField::_isUploadedFile()` and `_moveUploadedFile()`, the
   unit tests replace them and so test the same code as a real upload.

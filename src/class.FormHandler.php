@@ -1547,23 +1547,17 @@ class FormHandler
             $setJS = true;
         }
 
-        // make sure that the overlib js file is included
+        // make sure that the javascript is included
         if (!$setJS)
         {
             $setJS = true;
-            $this->_setJS(FH_FHTML_DIR . 'overlib/overlib.js', true);
-            $this->_setJS(FH_FHTML_DIR . 'overlib/overlib_hideform.js', true);
+            $this->_setJS(FH_FHTML_DIR . 'js/helptext.js', true);
         }
 
-        // escape the values from dangerous characters
-        $helpTitle = is_null($helpTitle) ? "%title% - " . $this->_text(41) : htmlentities($helpTitle, encoding: FH_HTML_ENCODING);
-        $helpTitle = preg_replace("/\r?\n/", "\\n", addslashes($helpTitle));
-        $helpText  = preg_replace("/\r?\n/", "\\n", addslashes($helpText));
-
-        // set the help text
+        // the help text is HTML, the title text; both are escaped when the form is shown
         $this->_help[$field] = array(
-            htmlentities($helpText, encoding: FH_HTML_ENCODING),
-            $helpTitle
+            (string) $helpText,
+            is_null($helpTitle) ? "%title% - " . $this->_text(41) : (string) $helpTitle
         );
     }
 
@@ -4038,18 +4032,19 @@ class FormHandler
                         $help = '';
                         if (array_key_exists($name, $this->_help) && !$this->isViewMode() && !$this->isFieldViewMode($name))
                         {
+                            // the values go into HTML attributes
+                            $aHelp = array(
+                                htmlspecialchars($this->_helpIcon, ENT_QUOTES, FH_HTML_ENCODING),
+                                htmlspecialchars($this->_help[$name][0], ENT_QUOTES, FH_HTML_ENCODING),
+                                htmlspecialchars(str_replace('%title%', (string) $title, $this->_help[$name][1]), ENT_QUOTES, FH_HTML_ENCODING)
+                            );
                             if (strpos(FH_HELP_MASK, '%s'))
                             {
-                                $help = sprintf(
-                                    FH_HELP_MASK,
-                                    $this->_helpIcon,
-                                    $this->_help[$name][0],
-                                    str_replace('%title%', addslashes(htmlentities($title, encoding: FH_HTML_ENCODING)), $this->_help[$name][1])
-                                );
+                                $help = sprintf(FH_HELP_MASK, ...$aHelp);
                             }
                             else
                             {
-                                $help = str_replace(array('%helpicon%', '%helptext%', '%helptitle%'), array($this->_helpIcon, $this->_help[$name][0], str_replace('%title%',    addslashes(htmlentities($title, encoding: FH_HTML_ENCODING)), $this->_help[$name][1])), FH_HELP_MASK);
+                                $help = str_replace(array('%helpicon%', '%helptext%', '%helptitle%'), $aHelp, FH_HELP_MASK);
                             }
                         }
 
