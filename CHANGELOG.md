@@ -32,6 +32,12 @@ and the project follows [Semantic Versioning](https://semver.org/).
   HTML and the title text, as before. Text and title are in `data-fh-help` attributes now:
   **a project with its own `FH_HELP_MASK` that calls `overlib()` has to change it** (see
   `config.inc.php`). `FH_USE_OVERLIB` keeps its name and now includes `helptext.js`.
+- `jsDateField()` and `jsDateTextField()` open the date picker of the browser instead of
+  CalendarPopup (2003). The fields, their values and the year interval are unchanged; the
+  calendar shows the language and the first weekday of the browser, so
+  `FH_JSCALENDARPOPUP_USE_DROPDOWN` and `FH_JSCALENDARPOPUP_STARTDAY` are not used any more.
+  `cal_<field>.setReturnFunction()`, `set<field>Values()` and `LZ()` still work. New forms
+  should rather use `html5DateField()`.
 
 ### Removed
 
@@ -40,6 +46,7 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - The bundled jQuery 1.4.2 (2010, with known security issues); only the AJAX validator used it.
 - The bundled jscolor 1.0.9 and the unused images of an older color picker (`FHTML/images/ColorPicker`).
 - The bundled overLIB 4.21 with its Internet Explorer workaround `overlib_hideform.js`.
+- The bundled CalendarPopup (`calendar_popup.js`, `calendar_hideselect.js`).
 - `FormHandler::isUnittestmode()` and the unit test mode of `UploadField`. The upload is in
   the overridable methods `UploadField::_isUploadedFile()` and `_moveUploadedFile()`, the
   unit tests replace them and so test the same code as a real upload.

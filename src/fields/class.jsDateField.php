@@ -1,9 +1,10 @@
 <?php
 
 /**
- * class DateField
+ * class jsDateField
  *
- * Create a datefield with a jscalendar
+ * Create a datefield with a calendar (the date picker of the browser, js/datepicker.js).
+ * New forms should rather use html5DateField(): one date input, the value is yyyy-mm-dd.
  *
  * @author Teye Heimans *
  * @package FormHandler
@@ -55,31 +56,7 @@ class jsDateField extends DateField
             // add the needed javascript
             if ($bIncludeJS == true)
             {
-                $oForm->_setJS(
-                    FH_FHTML_DIR . "js/calendar_popup.js",
-                    true
-                );
-
-                $oForm->_setJS(
-                    "document.write(getCalendarStyles());\n" .
-                        "function getDateString( fldForm, fldYear, fldMonth, fldDay ) {\n" .
-                        //"    var frm = document.forms['".$oForm->_name."'];\n".
-                        "    var frm = document.getElementById(fldForm);\n" .
-                        "    var objY = frm.elements[fldYear];\n" .
-                        "    var objM = frm.elements[fldMonth];\n" .
-                        "    var objD = frm.elements[fldDay];\n" .
-                        "    var y    = objY.options[objY.selectedIndex].value;\n" .
-                        "    var m    = objM.options[objM.selectedIndex].value;\n" .
-                        "    var d    = objD.options[objD.selectedIndex].value;\n" .
-                        "    if (y=='' || m== '') { \n" .
-                        "        return null;\n" .
-                        "    }\n" .
-                        "    if (d=='') { \n" .
-                        "        d = 1;\n" .
-                        "    }\n" .
-                        "    return y+'-'+m+'-'+d;\n" .
-                        "}\n"
-                );
+                $oForm->_setJS(FH_FHTML_DIR . "js/datepicker.js", true);
             }
         }
     }
@@ -120,28 +97,19 @@ class jsDateField extends DateField
             $iStart = $tmp;
         }
 
-        // add the javascript needed for the js calendar field
+        $sName = $this->_sName;
+        $sForm = $this->_oForm->getFormName();
+
+        // the calendar: the date picker of the browser, only the years of the interval.
+        // cal_<name> and set<name>Values() are kept for projects which use them.
         $this->_oForm->_setJS(
-            "// create popup calendar\n" .
-                "if( document.getElementById('" . $this->_sName . "_span') ) \n" .
-                "{\n" .
-                "   var cal_" . $this->_sName . " = new CalendarPopup('" . $this->_sName . "_span');\n" .
-                "   cal_" . $this->_sName . ".setMonthNames('" . $this->_oForm->_text(1) . "','" . $this->_oForm->_text(2) . "','" . $this->_oForm->_text(3) . "','" . $this->_oForm->_text(4) . "','" . $this->_oForm->_text(5) . "','" . $this->_oForm->_text(6) . "','" . $this->_oForm->_text(7) . "','" . $this->_oForm->_text(8) . "','" . $this->_oForm->_text(9) . "','" . $this->_oForm->_text(10) . "','" . $this->_oForm->_text(11) . "','" . $this->_oForm->_text(12) . "');\n" .
-                "   cal_" . $this->_sName . ".setDayHeaders(" . $this->_oForm->_text(43) . ");\n" .
-                "   cal_" . $this->_sName . ".setWeekStartDay(" . FH_JSCALENDARPOPUP_STARTDAY . ");\n" .
-                "   cal_" . $this->_sName . ".setTodayText('" . addslashes($this->_oForm->_text(42)) . "');\n" .
-                "   cal_" . $this->_sName . ".showYearNavigation();\n" .
-                "   cal_" . $this->_sName . ".showYearNavigationInput();\n" .
-                (FH_JSCALENDARPOPUP_USE_DROPDOWN ? "   cal_" . $this->_sName . ".showNavigationDropdowns();\n" : "") .
-                "   cal_" . $this->_sName . ".setReturnFunction('set" . $this->_sName . "Values');\n" .
-                "   cal_" . $this->_sName . ".addDisabledDates(null,'Dec 31, " . (date('Y') - $iStart - 1) . "');\n" .
-                "   cal_" . $this->_sName . ".addDisabledDates('Jan 1, " . (date('Y') + $iEnd + 1) . "',null);\n" .
-                "   function set" . $this->_sName . "Values(y,m,d) {\n" .
-                "       document.forms['" . $this->_oForm->getFormName() . "'].elements['" . $this->_sName . "_day'].value   = LZ(d);\n" .
-                "       document.forms['" . $this->_oForm->getFormName() . "'].elements['" . $this->_sName . "_month'].value = LZ(m);\n" .
-                "       document.forms['" . $this->_oForm->getFormName() . "'].elements['" . $this->_sName . "_year'].value  = y;\n" .
-                //"    cal_".$sName.".setDate(
-                "   }\n" .
+            "// calendar of the date field '" . $sName . "'\n" .
+                "var cal_" . $sName . " = new FH_DatePicker('" . (date('Y') - $iStart) . "-01-01', '" . (date('Y') + $iEnd) . "-12-31');\n" .
+                "cal_" . $sName . ".setReturnFunction('set" . $sName . "Values');\n" .
+                "function set" . $sName . "Values(y, m, d) {\n" .
+                "    document.forms['" . $sForm . "'].elements['" . $sName . "_day'].value   = LZ(d);\n" .
+                "    document.forms['" . $sForm . "'].elements['" . $sName . "_month'].value = LZ(m);\n" .
+                "    document.forms['" . $sForm . "'].elements['" . $sName . "_year'].value  = y;\n" .
                 "}\n",
             false,
             false
@@ -149,11 +117,9 @@ class jsDateField extends DateField
 
         $html .=
             "<a href='javascript:;' " .
-            "onclick=\"if( cal_" . $this->_sName . " ) cal_" . $this->_sName . ".showCalendar('anchor_" . $this->_sName . "', getDateString('" . $this->_oForm->getFormName() . "','" . $this->_sName . "_year', '" . $this->_sName . "_month', '" . $this->_sName . "_day')); return false;\" " .
-            " name='anchor_" . $this->_sName . "' id='anchor_" . $this->_sName . "'>" .
-            "<img src='" . FH_FHTML_DIR . "images/calendar.gif' border='0' alt='Select Date' " . FH_XHTML_CLOSE . "></a>\n" .
-            "<span id='" . $this->_sName . "_span' " .
-            " style='position:absolute;visibility:hidden;background-color:white;layer-background-color:white;'></span>\n";
+            "onclick=\"cal_" . $sName . ".show(this, FH_DatePicker.fromFields('" . $sForm . "', '" . $sName . "_year', '" . $sName . "_month', '" . $sName . "_day')); return false;\" " .
+            " name='anchor_" . $sName . "' id='anchor_" . $sName . "'>" .
+            "<img src='" . FH_FHTML_DIR . "images/calendar.gif' border='0' alt='Select Date' " . FH_XHTML_CLOSE . "></a>\n";
 
         return $html;
     }

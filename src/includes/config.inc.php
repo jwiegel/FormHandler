@@ -325,11 +325,10 @@ fh_conf('FH_DATETEXTFIELD_DEFAULT_DISPLAY', 'd-m-Y');
 // safe content. A style with url(), expression(), javascript: etc. is always removed.
 fh_conf('FH_EDITOR_ALLOW_STYLE', false);
 
-// Use dropdown in jsCalendarPopup
+// Not used any more: jsDateField() and jsDateTextField() use the date picker of the browser
 fh_conf('FH_JSCALENDARPOPUP_USE_DROPDOWN', false);
 
-// start day in jsCalendarPopup
-// 0 = sunday ... 6 = saturday
+// Not used any more (the date picker of the browser starts the week as the language of the browser)
 fh_conf('FH_JSCALENDARPOPUP_STARTDAY', 1);
 
 // The default size of the listfield field's

@@ -922,7 +922,8 @@ class FormHandler
     /**
      * FormHandler::jsDateField()
      *
-     * Create a dateField with a jscalendar popup on the form
+     * Create a dateField with a calendar (the date picker of the browser) on the form.
+     * New forms should rather use html5DateField(): one date input, the value is yyyy-mm-dd.
      *
      * @param string $title: The title of the field
      * @param string $name: The name of the field
@@ -1080,7 +1081,8 @@ class FormHandler
     /**
      * FormHandler::jsdateTextField()
      *
-     * Create a dateTextField on the form
+     * Create a dateTextField with a calendar (the date picker of the browser) on the form.
+     * New forms should rather use html5DateField().
      * Validator added by Johan Wiegel
      *
      * @param string $title: The title of the field

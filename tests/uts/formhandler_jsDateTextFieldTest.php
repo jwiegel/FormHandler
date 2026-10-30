@@ -15,20 +15,26 @@ final class formhandler_jsDateTextFieldTest extends FormhandlerTestCase
         static::assertEmpty($form->getValue("jsdatetextfield"));
 
         static::assertFormFlushContains($form, [
-            'FHTML/js/calendar_popup.js',
+            'FHTML/js/datepicker.js',
             'jsDatejsdatetextfield:<input type="text" name="jsdatetextfield" id="jsdatetextfield" value="" size="20" />',
-            '<a href=\'javascript:;\' onclick="if( cal_jsdatetextfield ) cal_jsdatetextfield.select(document.forms[\'FormHandler\'].elements[\'jsdatetextfield\'], \'anchor_jsdatetextfield\', \'dd-MM-yyyy\'); return false;"  name=\'anchor_jsdatetextfield\' id=\'anchor_jsdatetextfield\'>',
-            'FHTML/images/calendar.gif\' border=\'0\' alt=\'Select Date\' /></a>',
-            '<span id=\'jsdatetextfield_span\'  style=\'position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\'></span>',
-            'error_jsdatetextfield',
-            'if( document.getElementById(\'jsdatetextfield_span\') )',
-            'var cal_jsdatetextfield = new CalendarPopup(\'jsdatetextfield_span\');',
-            "cal_jsdatetextfield.setMonthNames('January','February','March','April','May','June','July','August','September','October','November','December');",
-            "cal_jsdatetextfield.setDayHeaders('S','M','T','W','T','F','S');",
-            'cal_jsdatetextfield.setWeekStartDay(1);',
-            "cal_jsdatetextfield.setTodayText('Today');",
-            'cal_jsdatetextfield.showYearNavigation();',
-            'cal_jsdatetextfield.showYearNavigationInput();'
+            '<a href=\'javascript:;\' onclick="cal_jsdatetextfield.show(this, FH_DatePicker.parse(\'d-m-Y\', document.forms[\'FormHandler\'].elements[\'jsdatetextfield\'].value)); return false;"  name=\'anchor_jsdatetextfield\' id=\'anchor_jsdatetextfield\'>',
+            'FHTML/images/calendar.gif\' border=\'0\' alt=\'Select Date\' /></a>' . "\n" . 'error_jsdatetextfield',
+            "var cal_jsdatetextfield = new FH_DatePicker(null, null, function(y, m, d) {\n" .
+                "    document.forms['FormHandler'].elements['jsdatetextfield'].value = FH_DatePicker.format('d-m-Y', y, m, d);\n" .
+                "});\n"
+        ]);
+    }
+
+    public function test_mask(): void
+    {
+        $form = new FormHandler();
+
+        // the date picker writes the date in the mask of the field (D and M: without leading zero)
+        $form->jsDateTextField("jsDatejsdatetextfield", "jsdatetextfield", null, "D.M.Y");
+
+        static::assertFormFlushContains($form, [
+            "FH_DatePicker.parse('j.n.Y', ",
+            "FH_DatePicker.format('j.n.Y', y, m, d);"
         ]);
     }
 
@@ -83,18 +89,10 @@ final class formhandler_jsDateTextFieldTest extends FormhandlerTestCase
 
         static::assertFormFlushContains($form, [
             'jsDatejsdatetextfield:<input type="text" name="jsdatetextfield" id="jsdatetextfield" value="14-04-2020" size="20" class="error" />',
-            '<a href=\'javascript:;\' onclick="if( cal_jsdatetextfield ) cal_jsdatetextfield.select(document.forms[\'FormHandler\'].elements[\'jsdatetextfield\'], \'anchor_jsdatetextfield\', \'dd-MM-yyyy\'); return false;"  name=\'anchor_jsdatetextfield\' id=\'anchor_jsdatetextfield\'>',
+            '<a href=\'javascript:;\' onclick="cal_jsdatetextfield.show(this, FH_DatePicker.parse(\'d-m-Y\', document.forms[\'FormHandler\'].elements[\'jsdatetextfield\'].value)); return false;"  name=\'anchor_jsdatetextfield\' id=\'anchor_jsdatetextfield\'>',
             'FHTML/images/calendar.gif\' border=\'0\' alt=\'Select Date\' class="error" /></a>',
-            '<span id=\'jsdatetextfield_span\'  style=\'position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\'></span>',
             'error_jsdatetextfield<span id="error_jsdatetextfield" class="error">forcedError</span>',
-            'if( document.getElementById(\'jsdatetextfield_span\') )',
-            'var cal_jsdatetextfield = new CalendarPopup(\'jsdatetextfield_span\');',
-            "cal_jsdatetextfield.setMonthNames('January','February','March','April','May','June','July','August','September','October','November','December');",
-            "cal_jsdatetextfield.setDayHeaders('S','M','T','W','T','F','S');",
-            'cal_jsdatetextfield.setWeekStartDay(1);',
-            "cal_jsdatetextfield.setTodayText('Today');",
-            'cal_jsdatetextfield.showYearNavigation();',
-            'cal_jsdatetextfield.showYearNavigationInput();'
+            'var cal_jsdatetextfield = new FH_DatePicker(null, null, function(y, m, d) {'
         ]);
     }
 
